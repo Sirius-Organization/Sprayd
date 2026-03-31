@@ -13,29 +13,21 @@ struct ContentView: View {
     @Query private var items: [Item]
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
+        TabView {
+            
+            Tab("Map", systemImage: "map") {
+                Color.green.ignoresSafeArea()
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
+            
+            Tab("Featured", systemImage: "star") {
+                EmptyView()
             }
-        } detail: {
-            Text("Select an item")
+            
+            
+            Tab("Account", systemImage: "person.crop.circle.fill") {
+                    EmptyView()
+            }
+            
         }
     }
 
