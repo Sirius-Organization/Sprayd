@@ -1,6 +1,6 @@
 //
-//  ProductNameApp.swift
-//  ProductName
+//  SpraydApp.swift
+//  Sprayd
 //
 //  Created by Егор Мальцев on 31.03.2026.
 //
@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct ProductNameApp: App {
+struct SpraydApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,

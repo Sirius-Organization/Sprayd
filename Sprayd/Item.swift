@@ -1,6 +1,6 @@
 //
 //  Item.swift
-//  ProductName
+//  Sprayd
 //
 //  Created by Егор Мальцев on 31.03.2026.
 //

@@ -12,50 +12,50 @@
 			containerPortal = 5ED16F032F7C05F3009EB0DA /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 5ED16F0A2F7C05F3009EB0DA;
-			remoteInfo = ProductName;
+			remoteInfo = Sprayd;
 		};
 		5ED16F272F7C05F5009EB0DA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5ED16F032F7C05F3009EB0DA /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 5ED16F0A2F7C05F3009EB0DA;
-			remoteInfo = ProductName;
+			remoteInfo = Sprayd;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		5ED16F0B2F7C05F3009EB0DA /* ProductName.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProductName.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		5ED16F1C2F7C05F5009EB0DA /* ProductNameTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProductNameTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		5ED16F262F7C05F5009EB0DA /* ProductNameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProductNameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5ED16F0B2F7C05F3009EB0DA /* Sprayd.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sprayd.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5ED16F1C2F7C05F5009EB0DA /* SpraydTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SpraydTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5ED16F262F7C05F5009EB0DA /* SpraydUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SpraydUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		5ED16F2E2F7C05F5009EB0DA /* Exceptions for "ProductName" folder in "ProductName" target */ = {
+		5ED16F2E2F7C05F5009EB0DA /* Exceptions for "Sprayd" folder in "Sprayd" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 5ED16F0A2F7C05F3009EB0DA /* ProductName */;
+			target = 5ED16F0A2F7C05F3009EB0DA /* Sprayd */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		5ED16F0D2F7C05F3009EB0DA /* ProductName */ = {
+		5ED16F0D2F7C05F3009EB0DA /* Sprayd */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				5ED16F2E2F7C05F5009EB0DA /* Exceptions for "ProductName" folder in "ProductName" target */,
+				5ED16F2E2F7C05F5009EB0DA /* Exceptions for "Sprayd" folder in "Sprayd" target */,
 			);
-			path = ProductName;
+			path = Sprayd;
 			sourceTree = "<group>";
 		};
-		5ED16F1F2F7C05F5009EB0DA /* ProductNameTests */ = {
+		5ED16F1F2F7C05F5009EB0DA /* SpraydTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ProductNameTests;
+			path = SpraydTests;
 			sourceTree = "<group>";
 		};
-		5ED16F292F7C05F5009EB0DA /* ProductNameUITests */ = {
+		5ED16F292F7C05F5009EB0DA /* SpraydUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ProductNameUITests;
+			path = SpraydUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -88,9 +88,9 @@
 		5ED16F022F7C05F3009EB0DA = {
 			isa = PBXGroup;
 			children = (
-				5ED16F0D2F7C05F3009EB0DA /* ProductName */,
-				5ED16F1F2F7C05F5009EB0DA /* ProductNameTests */,
-				5ED16F292F7C05F5009EB0DA /* ProductNameUITests */,
+				5ED16F0D2F7C05F3009EB0DA /* Sprayd */,
+				5ED16F1F2F7C05F5009EB0DA /* SpraydTests */,
+				5ED16F292F7C05F5009EB0DA /* SpraydUITests */,
 				5ED16F0C2F7C05F3009EB0DA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -98,9 +98,9 @@
 		5ED16F0C2F7C05F3009EB0DA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5ED16F0B2F7C05F3009EB0DA /* ProductName.app */,
-				5ED16F1C2F7C05F5009EB0DA /* ProductNameTests.xctest */,
-				5ED16F262F7C05F5009EB0DA /* ProductNameUITests.xctest */,
+				5ED16F0B2F7C05F3009EB0DA /* Sprayd.app */,
+				5ED16F1C2F7C05F5009EB0DA /* SpraydTests.xctest */,
+				5ED16F262F7C05F5009EB0DA /* SpraydUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,9 +108,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		5ED16F0A2F7C05F3009EB0DA /* ProductName */ = {
+		5ED16F0A2F7C05F3009EB0DA /* Sprayd */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5ED16F2F2F7C05F5009EB0DA /* Build configuration list for PBXNativeTarget "ProductName" */;
+			buildConfigurationList = 5ED16F2F2F7C05F5009EB0DA /* Build configuration list for PBXNativeTarget "Sprayd" */;
 			buildPhases = (
 				5ED16F072F7C05F3009EB0DA /* Sources */,
 				5ED16F082F7C05F3009EB0DA /* Frameworks */,
@@ -121,18 +121,18 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				5ED16F0D2F7C05F3009EB0DA /* ProductName */,
+				5ED16F0D2F7C05F3009EB0DA /* Sprayd */,
 			);
-			name = ProductName;
+			name = Sprayd;
 			packageProductDependencies = (
 			);
-			productName = ProductName;
-			productReference = 5ED16F0B2F7C05F3009EB0DA /* ProductName.app */;
+			productName = Sprayd;
+			productReference = 5ED16F0B2F7C05F3009EB0DA /* Sprayd.app */;
 			productType = "com.apple.product-type.application";
 		};
-		5ED16F1B2F7C05F5009EB0DA /* ProductNameTests */ = {
+		5ED16F1B2F7C05F5009EB0DA /* SpraydTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5ED16F342F7C05F5009EB0DA /* Build configuration list for PBXNativeTarget "ProductNameTests" */;
+			buildConfigurationList = 5ED16F342F7C05F5009EB0DA /* Build configuration list for PBXNativeTarget "SpraydTests" */;
 			buildPhases = (
 				5ED16F182F7C05F5009EB0DA /* Sources */,
 				5ED16F192F7C05F5009EB0DA /* Frameworks */,
@@ -144,18 +144,18 @@
 				5ED16F1E2F7C05F5009EB0DA /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				5ED16F1F2F7C05F5009EB0DA /* ProductNameTests */,
+				5ED16F1F2F7C05F5009EB0DA /* SpraydTests */,
 			);
-			name = ProductNameTests;
+			name = SpraydTests;
 			packageProductDependencies = (
 			);
-			productName = ProductNameTests;
-			productReference = 5ED16F1C2F7C05F5009EB0DA /* ProductNameTests.xctest */;
+			productName = SpraydTests;
+			productReference = 5ED16F1C2F7C05F5009EB0DA /* SpraydTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		5ED16F252F7C05F5009EB0DA /* ProductNameUITests */ = {
+		5ED16F252F7C05F5009EB0DA /* SpraydUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5ED16F372F7C05F5009EB0DA /* Build configuration list for PBXNativeTarget "ProductNameUITests" */;
+			buildConfigurationList = 5ED16F372F7C05F5009EB0DA /* Build configuration list for PBXNativeTarget "SpraydUITests" */;
 			buildPhases = (
 				5ED16F222F7C05F5009EB0DA /* Sources */,
 				5ED16F232F7C05F5009EB0DA /* Frameworks */,
@@ -167,13 +167,13 @@
 				5ED16F282F7C05F5009EB0DA /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				5ED16F292F7C05F5009EB0DA /* ProductNameUITests */,
+				5ED16F292F7C05F5009EB0DA /* SpraydUITests */,
 			);
-			name = ProductNameUITests;
+			name = SpraydUITests;
 			packageProductDependencies = (
 			);
-			productName = ProductNameUITests;
-			productReference = 5ED16F262F7C05F5009EB0DA /* ProductNameUITests.xctest */;
+			productName = SpraydUITests;
+			productReference = 5ED16F262F7C05F5009EB0DA /* SpraydUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -199,7 +199,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 5ED16F062F7C05F3009EB0DA /* Build configuration list for PBXProject "ProductName" */;
+			buildConfigurationList = 5ED16F062F7C05F3009EB0DA /* Build configuration list for PBXProject "Sprayd" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -213,9 +213,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				5ED16F0A2F7C05F3009EB0DA /* ProductName */,
-				5ED16F1B2F7C05F5009EB0DA /* ProductNameTests */,
-				5ED16F252F7C05F5009EB0DA /* ProductNameUITests */,
+				5ED16F0A2F7C05F3009EB0DA /* Sprayd */,
+				5ED16F1B2F7C05F5009EB0DA /* SpraydTests */,
+				5ED16F252F7C05F5009EB0DA /* SpraydUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -271,12 +271,12 @@
 /* Begin PBXTargetDependency section */
 		5ED16F1E2F7C05F5009EB0DA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 5ED16F0A2F7C05F3009EB0DA /* ProductName */;
+			target = 5ED16F0A2F7C05F3009EB0DA /* Sprayd */;
 			targetProxy = 5ED16F1D2F7C05F5009EB0DA /* PBXContainerItemProxy */;
 		};
 		5ED16F282F7C05F5009EB0DA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 5ED16F0A2F7C05F3009EB0DA /* ProductName */;
+			target = 5ED16F0A2F7C05F3009EB0DA /* Sprayd */;
 			targetProxy = 5ED16F272F7C05F5009EB0DA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -287,12 +287,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = ProductName/ProductName.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sprayd/Sprayd.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ProductName/Info.plist;
+				INFOPLIST_FILE = Sprayd/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -303,7 +303,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = siriusTeam.ProductName;
+				PRODUCT_BUNDLE_IDENTIFIER = siriusTeam.Sprayd;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -320,12 +320,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = ProductName/ProductName.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sprayd/Sprayd.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ProductName/Info.plist;
+				INFOPLIST_FILE = Sprayd/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -336,7 +336,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = siriusTeam.ProductName;
+				PRODUCT_BUNDLE_IDENTIFIER = siriusTeam.Sprayd;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -476,7 +476,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = siriusTeam.ProductNameTests;
+				PRODUCT_BUNDLE_IDENTIFIER = siriusTeam.SpraydTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -484,7 +484,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ProductName.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ProductName";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sprayd.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Sprayd";
 			};
 			name = Debug;
 		};
@@ -497,7 +497,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = siriusTeam.ProductNameTests;
+				PRODUCT_BUNDLE_IDENTIFIER = siriusTeam.SpraydTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -505,7 +505,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ProductName.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ProductName";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sprayd.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Sprayd";
 			};
 			name = Release;
 		};
@@ -516,7 +516,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = siriusTeam.ProductNameUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = siriusTeam.SpraydUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -524,7 +524,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = ProductName;
+				TEST_TARGET_NAME = Sprayd;
 			};
 			name = Debug;
 		};
@@ -535,7 +535,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = siriusTeam.ProductNameUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = siriusTeam.SpraydUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -543,14 +543,14 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = ProductName;
+				TEST_TARGET_NAME = Sprayd;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5ED16F062F7C05F3009EB0DA /* Build configuration list for PBXProject "ProductName" */ = {
+		5ED16F062F7C05F3009EB0DA /* Build configuration list for PBXProject "Sprayd" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5ED16F322F7C05F5009EB0DA /* Debug */,
@@ -559,7 +559,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5ED16F2F2F7C05F5009EB0DA /* Build configuration list for PBXNativeTarget "ProductName" */ = {
+		5ED16F2F2F7C05F5009EB0DA /* Build configuration list for PBXNativeTarget "Sprayd" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5ED16F302F7C05F5009EB0DA /* Debug */,
@@ -568,7 +568,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5ED16F342F7C05F5009EB0DA /* Build configuration list for PBXNativeTarget "ProductNameTests" */ = {
+		5ED16F342F7C05F5009EB0DA /* Build configuration list for PBXNativeTarget "SpraydTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5ED16F352F7C05F5009EB0DA /* Debug */,
@@ -577,7 +577,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5ED16F372F7C05F5009EB0DA /* Build configuration list for PBXNativeTarget "ProductNameUITests" */ = {
+		5ED16F372F7C05F5009EB0DA /* Build configuration list for PBXNativeTarget "SpraydUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5ED16F382F7C05F5009EB0DA /* Debug */,
