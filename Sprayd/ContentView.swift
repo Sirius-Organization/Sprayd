@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  ProductName
+//  Sprayd
 //
 //  Created by Егор Мальцев on 31.03.2026.
 //
@@ -16,16 +16,15 @@ struct ContentView: View {
         TabView {
             
             Tab("Map", systemImage: "map") {
-                Color.green.ignoresSafeArea()
+                MapView()
             }
             
             Tab("Featured", systemImage: "star") {
-                EmptyView()
+                FeaturedView()
             }
             
-            
             Tab("Account", systemImage: "person.crop.circle.fill") {
-                    EmptyView()
+                ProfileView()
             }
             
         }

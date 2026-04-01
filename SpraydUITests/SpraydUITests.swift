@@ -1,13 +1,13 @@
 //
-//  ProductNameUITests.swift
-//  ProductNameUITests
+//  SpraydUITests.swift
+//  SpraydUITests
 //
 //  Created by Егор Мальцев on 31.03.2026.
 //
 
 import XCTest
 
-final class ProductNameUITests: XCTestCase {
+final class SpraydUITests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
