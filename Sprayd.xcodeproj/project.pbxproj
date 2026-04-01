@@ -30,6 +30,28 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		59B456432F7D5CF2002447EB /* Exceptions for "Sprayd" folder in "SpraydTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets/Fonts/ClimateCrisis.ttf,
+				"Assets/Fonts/InstrumentSans-Bold.ttf",
+				"Assets/Fonts/InstrumentSans-Medium.ttf",
+				"Assets/Fonts/InstrumentSans-Regular.ttf",
+				"Assets/Fonts/InstrumentSans-SemiBold.ttf",
+			);
+			target = 5ED16F1B2F7C05F5009EB0DA /* SpraydTests */;
+		};
+		59B456442F7D5CF2002447EB /* Exceptions for "Sprayd" folder in "SpraydUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets/Fonts/ClimateCrisis.ttf,
+				"Assets/Fonts/InstrumentSans-Bold.ttf",
+				"Assets/Fonts/InstrumentSans-Medium.ttf",
+				"Assets/Fonts/InstrumentSans-Regular.ttf",
+				"Assets/Fonts/InstrumentSans-SemiBold.ttf",
+			);
+			target = 5ED16F252F7C05F5009EB0DA /* SpraydUITests */;
+		};
 		5ED16F2E2F7C05F5009EB0DA /* Exceptions for "Sprayd" folder in "Sprayd" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -44,6 +66,8 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				5ED16F2E2F7C05F5009EB0DA /* Exceptions for "Sprayd" folder in "Sprayd" target */,
+				59B456432F7D5CF2002447EB /* Exceptions for "Sprayd" folder in "SpraydTests" target */,
+				59B456442F7D5CF2002447EB /* Exceptions for "Sprayd" folder in "SpraydUITests" target */,
 			);
 			path = Sprayd;
 			sourceTree = "<group>";
