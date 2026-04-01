@@ -23,3 +23,8 @@ extension Color {
 
     static let secondaryColor = Color(white: 217/255)
 }
+
+extension Font {
+    static let InstrumentBold22 = Font.custom("InstrumentSans-Bold", size: 22)
+    static let InstrumentMedium16 = Font.custom("InstrumentSans-Medium", size: 16)
+}
