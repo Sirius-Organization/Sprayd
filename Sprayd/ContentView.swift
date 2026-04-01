@@ -14,19 +14,17 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            
             Tab("Map", systemImage: "map") {
                 MapView()
             }
-            
+
             Tab("Featured", systemImage: "star") {
                 FeaturedView()
             }
-            
+
             Tab("Account", systemImage: "person.crop.circle.fill") {
                 ProfileView()
             }
-            
         }
     }
 
