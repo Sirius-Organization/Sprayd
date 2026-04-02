@@ -8,19 +8,23 @@
 import SwiftUI
 
 struct PhotoPagerView: View {
+    @Binding var selectedPhotoIndex: Int
+    let onPhotoTap: (String) -> Void
+
     private let cornerRadius: CGFloat = 30
     private let dateLabelText = "02.03.2024"
 
     var body: some View {
         GeometryReader { outerGeo in
-            let width = outerGeo.size.width - 40
+            let width = max(1, outerGeo.size.width - 40)
             let photoHeight = width
 
             VStack(spacing: 0) {
-                TabView {
-                    photoPage("art", width: width, height: photoHeight)
-                    photoPage("bird", width: width, height: photoHeight)
-                    photoPage("cube", width: width, height: photoHeight)
+                TabView(selection: $selectedPhotoIndex) {
+                    ForEach(ArtObjectViewModel.photoImageNames.indices, id: \.self) { index in
+                        let imageName = ArtObjectViewModel.photoImageNames[index]
+                        photoPage(imageName, width: width, height: photoHeight)
+                    }
                 }
                 .frame(height: photoHeight)
                 .tabViewStyle(.page(indexDisplayMode: .automatic))
@@ -28,7 +32,7 @@ struct PhotoPagerView: View {
                 Spacer(minLength: 0)
             }
         }
-        .frame(height: UIScreen.main.bounds.width - 40)
+        .frame(height: max(1, UIScreen.main.bounds.width - 40))
     }
 
     private func photoPage(_ imageName: String, width: CGFloat, height: CGFloat) -> some View {
@@ -37,7 +41,8 @@ struct PhotoPagerView: View {
             width: width,
             height: height,
             cornerRadius: cornerRadius,
-            dateLabel: dateLabel
+            dateLabel: dateLabel,
+            onTap: { onPhotoTap(imageName) }
         )
     }
 
@@ -60,6 +65,7 @@ private struct PhotoPage<DateLabel: View>: View {
     let height: CGFloat
     let cornerRadius: CGFloat
     let dateLabel: DateLabel
+    let onTap: () -> Void
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -69,6 +75,7 @@ private struct PhotoPage<DateLabel: View>: View {
                 .frame(width: width, height: height)
                 .clipped()
                 .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                .onTapGesture(perform: onTap)
 
             dateLabel
         }
@@ -77,5 +84,5 @@ private struct PhotoPage<DateLabel: View>: View {
 }
 
 #Preview {
-    PhotoPagerView()
+    PhotoPagerView(selectedPhotoIndex: .constant(0), onPhotoTap: { _ in })
 }
