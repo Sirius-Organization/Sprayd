@@ -8,16 +8,14 @@
 import SwiftUI
 
 struct ArtObjectView: View {
-    let fonts = UIFont.familyNames.sorted()
     var body: some View {
         ZStack {
             Color.appBackground
                 .ignoresSafeArea(edges: .all)
             ScrollView {
                 Spacer(minLength: 20)
-                HStack {
-                    PhotoPagerView()
-                }
+                PhotoPagerView()
+                    .padding(.horizontal, 20)
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Name of Art")
                         .font(Font.InstrumentBold22)

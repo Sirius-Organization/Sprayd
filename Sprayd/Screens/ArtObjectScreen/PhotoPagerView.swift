@@ -9,37 +9,33 @@ import SwiftUI
 
 struct PhotoPagerView: View {
     let images = ["art", "bird", "cube"]
+    private let cornerRadius: CGFloat = 30
+    private let dateLabelText = "02.03.2024"
 
     var body: some View {
-        GeometryReader { outerGeo in
-            let width = outerGeo.size.width - 40
-            let photoHeight = width
+        let side = UIScreen.main.bounds.width - 40
 
-            VStack(spacing: 0) {
-                TabView {
-                    ForEach(images, id: \.self) { imageName in
-                        Image(imageName)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: width, height: photoHeight)
-                            .clipped()
-                            .clipShape(RoundedRectangle(cornerRadius: 30))
-                            .overlay(alignment: .topLeading) {
-                                DateLabel
-                            }
-                    }
+        TabView {
+            ForEach(images, id: \.self) { imageName in
+                ZStack(alignment: .topLeading) {
+                    Image(imageName)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: side, height: side)
+                        .clipped()
+
+                    dateLabel
                 }
-                .frame(height: photoHeight)
-                .tabViewStyle(.page(indexDisplayMode: .automatic))
-
-                Spacer(minLength: 0)
+                .frame(width: side, height: side)
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             }
         }
-        .frame(height: UIScreen.main.bounds.width - 40)
+        .tabViewStyle(.page(indexDisplayMode: .automatic))
+        .frame(height: side)
     }
     
-    var DateLabel: some View {
-        Text("02.03.2024")
+    private var dateLabel: some View {
+        Text(dateLabelText)
             .foregroundColor(.white)
             .fontWeight(.medium)
             .padding(.horizontal, 8)
