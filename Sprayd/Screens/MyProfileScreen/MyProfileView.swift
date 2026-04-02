@@ -28,12 +28,13 @@ struct ProfileView: View {
     // MARK: - Fields
     @State private var selectedOption = "Posted"
     
+    // MARK: - Subviews
+    
     // MARK: - Body
     var body: some View {
         ZStack {
             Color(Color.appBackground)
                         .ignoresSafeArea()
-            
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {

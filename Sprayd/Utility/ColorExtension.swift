@@ -21,5 +21,9 @@ extension Color {
         blue: 65 / 255
     )
 
-    static let secondaryColor = Color(white: 217/255)
+    static let secondaryColor = Color(
+        red: 107 / 255,
+        green: 106 / 255,
+        blue: 105 / 255
+    )
 }
