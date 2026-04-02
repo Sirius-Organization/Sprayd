@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct PhotoPagerView: View {
-    private let images = ["art", "bird", "cube"]
     private let cornerRadius: CGFloat = 30
     private let dateLabelText = "02.03.2024"
 
@@ -19,15 +18,9 @@ struct PhotoPagerView: View {
 
             VStack(spacing: 0) {
                 TabView {
-                    ForEach(images.indices, id: \.self) { index in
-                        PhotoPage(
-                            imageName: images[index],
-                            width: width,
-                            height: photoHeight,
-                            cornerRadius: cornerRadius,
-                            dateLabel: dateLabel
-                        )
-                    }
+                    photoPage("art", width: width, height: photoHeight)
+                    photoPage("bird", width: width, height: photoHeight)
+                    photoPage("cube", width: width, height: photoHeight)
                 }
                 .frame(height: photoHeight)
                 .tabViewStyle(.page(indexDisplayMode: .automatic))
@@ -36,6 +29,16 @@ struct PhotoPagerView: View {
             }
         }
         .frame(height: UIScreen.main.bounds.width - 40)
+    }
+
+    private func photoPage(_ imageName: String, width: CGFloat, height: CGFloat) -> some View {
+        PhotoPage(
+            imageName: imageName,
+            width: width,
+            height: height,
+            cornerRadius: cornerRadius,
+            dateLabel: dateLabel
+        )
     }
 
     private var dateLabel: some View {
