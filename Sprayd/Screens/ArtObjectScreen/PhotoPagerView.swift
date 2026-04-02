@@ -20,15 +20,16 @@ struct PhotoPagerView: View {
             VStack(spacing: 0) {
                 TabView {
                     ForEach(images, id: \.self) { imageName in
-                        Image(imageName)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: width, height: photoHeight)
-                            .clipped()
-                            .clipShape(RoundedRectangle(cornerRadius: 30))
-                            .overlay(alignment: .topLeading) {
-                                dateLabel
-                            }
+                        ZStack(alignment: .topLeading) {
+                            Image(imageName)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: width, height: photoHeight)
+                                .clipped()
+                                .clipShape(RoundedRectangle(cornerRadius: 30))
+                            
+                            dateLabel
+                        }
                     }
                 }
                 .frame(height: photoHeight)
