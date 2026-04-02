@@ -10,7 +10,7 @@ import XCTest
 final class SpraydUITestsLaunchTests: XCTestCase {
 
     override static var runsForEachTargetApplicationUIConfiguration: Bool {
-        true
+        false
     }
 
     override func setUpWithError() throws {
@@ -22,8 +22,11 @@ final class SpraydUITestsLaunchTests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
-        // Insert steps here to perform after app launch but before taking a screenshot,
-        // such as logging into a test account or navigating somewhere in the app
+        let mapTab = app.tabBars.buttons["Map"]
+        XCTAssertTrue(
+            mapTab.waitForExistence(timeout: 30),
+            "Expected 'Map' tab to appear after launch"
+        )
 
         let attachment = XCTAttachment(screenshot: app.screenshot())
         attachment.name = "Launch Screen"

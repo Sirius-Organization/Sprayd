@@ -6,45 +6,28 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
-
     var body: some View {
         TabView {
-            Tab("Map", systemImage: "map") {
-                MainMapView()
-            }
+            MainMapView()
+                .tabItem {
+                    Label("Map", systemImage: "map")
+                }
 
-            Tab("Featured", systemImage: "star") {
-                FeaturedView()
-            }
+            FeaturedView()
+                .tabItem {
+                    Label("Featured", systemImage: "star")
+                }
 
-            Tab("Account", systemImage: "person.crop.circle.fill") {
-                ProfileView()
-            }
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
+            ProfileView()
+                .tabItem {
+                    Label("Account", systemImage: "person.crop.circle.fill")
+                }
         }
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
 }
