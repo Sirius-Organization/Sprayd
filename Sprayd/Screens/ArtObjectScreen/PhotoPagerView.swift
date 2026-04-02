@@ -13,34 +13,41 @@ struct PhotoPagerView: View {
     var body: some View {
         GeometryReader { outerGeo in
             let width = outerGeo.size.width - 40
-            let height = width * 1.2
+            let photoHeight = width
 
-            TabView {
-                ForEach(images, id: \.self) { imageName in
-                    Image(imageName)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: width, height: height)
-                        .clipped()
-                        .clipShape(RoundedRectangle(cornerRadius: 30))
-                        .overlay(alignment: .topLeading) {
-                            Text("02.03.2024")
-                                .foregroundColor(.white)
-                                .fontWeight(.medium)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .cornerRadius(10)
-                                .background(Color.accentRed)
-                                .clipShape(Capsule())
-                                .padding(20)
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+            VStack(spacing: 0) {
+                TabView {
+                    ForEach(images, id: \.self) { imageName in
+                        Image(imageName)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: width, height: photoHeight)
+                            .clipped()
+                            .clipShape(RoundedRectangle(cornerRadius: 30))
+                            .overlay(alignment: .topLeading) {
+                                DateLabel
+                            }
+                    }
                 }
+                .frame(height: photoHeight)
+                .tabViewStyle(.page(indexDisplayMode: .automatic))
+
+                Spacer(minLength: 0)
             }
-            .frame(height: height)
-            .tabViewStyle(.page(indexDisplayMode: .automatic))
         }
-        .frame(height: (UIScreen.main.bounds.width - 40) * 1.2)
+        .frame(height: UIScreen.main.bounds.width - 40)
+    }
+    
+    var DateLabel: some View {
+        Text("02.03.2024")
+            .foregroundColor(.white)
+            .fontWeight(.medium)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .cornerRadius(10)
+            .background(Color.accentRed)
+            .clipShape(Capsule())
+            .padding(20)
     }
 }
 
