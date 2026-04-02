@@ -15,7 +15,6 @@ struct ArtObjectView: View {
             ScrollView {
                 Spacer(minLength: 20)
                 PhotoPagerView()
-                    .padding(.horizontal, 20)
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Name of Art")
                         .font(Font.InstrumentBold22)
