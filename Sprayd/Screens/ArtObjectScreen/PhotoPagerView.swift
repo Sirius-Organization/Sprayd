@@ -9,6 +9,8 @@ import SwiftUI
 
 struct PhotoPagerView: View {
     let images = ["art", "bird", "cube"]
+    private let cornerRadius: CGFloat = 30
+    private let dateLabelText = "02.03.2024"
 
     var body: some View {
         GeometryReader { outerGeo in
@@ -25,7 +27,7 @@ struct PhotoPagerView: View {
                             .clipped()
                             .clipShape(RoundedRectangle(cornerRadius: 30))
                             .overlay(alignment: .topLeading) {
-                                DateLabel
+                                dateLabel
                             }
                     }
                 }
@@ -37,9 +39,9 @@ struct PhotoPagerView: View {
         }
         .frame(height: UIScreen.main.bounds.width - 40)
     }
-    
-    var DateLabel: some View {
-        Text("02.03.2024")
+
+    private var dateLabel: some View {
+        Text(dateLabelText)
             .foregroundColor(.white)
             .fontWeight(.medium)
             .padding(.horizontal, 8)
