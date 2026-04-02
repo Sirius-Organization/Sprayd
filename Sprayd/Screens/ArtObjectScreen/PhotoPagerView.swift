@@ -9,29 +9,37 @@ import SwiftUI
 
 struct PhotoPagerView: View {
     let images = ["art", "bird", "cube"]
-    private let cornerRadius: CGFloat = 30
-    private let dateLabelText = "02.03.2024"
 
     var body: some View {
-        TabView {
-            ForEach(images, id: \.self) { imageName in
-                Image(imageName)
-                    .resizable()
-                    .scaledToFill()
-                    .aspectRatio(1, contentMode: .fit)
-                    .frame(maxWidth: .infinity)
-                    .clipped()
-                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-                    .overlay(alignment: .topLeading) {
-                        dateLabel
+        GeometryReader { outerGeo in
+            let width = outerGeo.size.width - 40
+            let photoHeight = width
+
+            VStack(spacing: 0) {
+                TabView {
+                    ForEach(images, id: \.self) { imageName in
+                        Image(imageName)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: width, height: photoHeight)
+                            .clipped()
+                            .clipShape(RoundedRectangle(cornerRadius: 30))
+                            .overlay(alignment: .topLeading) {
+                                DateLabel
+                            }
                     }
+                }
+                .frame(height: photoHeight)
+                .tabViewStyle(.page(indexDisplayMode: .automatic))
+
+                Spacer(minLength: 0)
             }
         }
-        .tabViewStyle(.page(indexDisplayMode: .automatic))
+        .frame(height: UIScreen.main.bounds.width - 40)
     }
-
-    private var dateLabel: some View {
-        Text(dateLabelText)
+    
+    var DateLabel: some View {
+        Text("02.03.2024")
             .foregroundColor(.white)
             .fontWeight(.medium)
             .padding(.horizontal, 8)

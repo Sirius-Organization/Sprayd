@@ -31,7 +31,6 @@ struct ArtObjectView: View {
                 .padding(.bottom, 20)
             }
         }
-
     }
 }
 
