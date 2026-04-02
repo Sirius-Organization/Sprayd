@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PhotoPagerView: View {
-    let images = ["art", "bird", "cube"]
+    private let images = ["art", "bird", "cube"]
     private let cornerRadius: CGFloat = 30
     private let dateLabelText = "02.03.2024"
 
@@ -19,18 +19,14 @@ struct PhotoPagerView: View {
 
             VStack(spacing: 0) {
                 TabView {
-                    ForEach(images, id: \.self) { imageName in
-                        ZStack(alignment: .topLeading) {
-                            Image(imageName)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: width, height: photoHeight)
-                                .clipped()
-                                .clipShape(RoundedRectangle(cornerRadius: 30))
-                            
-                            dateLabel
-                        }
-                        .frame(width: width, height: photoHeight)
+                    ForEach(images.indices, id: \.self) { index in
+                        PhotoPage(
+                            imageName: images[index],
+                            width: width,
+                            height: photoHeight,
+                            cornerRadius: cornerRadius,
+                            dateLabel: dateLabel
+                        )
                     }
                 }
                 .frame(height: photoHeight)
@@ -52,6 +48,28 @@ struct PhotoPagerView: View {
             .background(Color.accentRed)
             .clipShape(Capsule())
             .padding(20)
+    }
+}
+
+private struct PhotoPage<DateLabel: View>: View {
+    let imageName: String
+    let width: CGFloat
+    let height: CGFloat
+    let cornerRadius: CGFloat
+    let dateLabel: DateLabel
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            Image(imageName)
+                .resizable()
+                .scaledToFill()
+                .frame(width: width, height: height)
+                .clipped()
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+
+            dateLabel
+        }
+        .frame(width: width, height: height)
     }
 }
 
