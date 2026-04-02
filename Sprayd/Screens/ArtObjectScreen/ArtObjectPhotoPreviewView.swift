@@ -21,7 +21,6 @@ struct ArtObjectPhotoPreviewView: View {
 
                 VStack {
                     Spacer(minLength: 0)
-
                     TabView(selection: $selectedPhotoIndex) {
                         ForEach(ArtObjectViewModel.photoImageNames.indices, id: \.self) { index in
                             Image(ArtObjectViewModel.photoImageNames[index])
