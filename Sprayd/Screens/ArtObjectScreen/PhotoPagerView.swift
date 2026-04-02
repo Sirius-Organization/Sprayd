@@ -11,23 +11,36 @@ struct PhotoPagerView: View {
     let images = ["art", "bird", "cube"]
 
     var body: some View {
-        TabView {
-            ForEach(images, id: \.self) { imageName in
-                GeometryReader { geo in
-                    let side = geo.size.width - 40
+        GeometryReader { outerGeo in
+            let width = outerGeo.size.width - 40
+            let height = width * 1.2
 
+            TabView {
+                ForEach(images, id: \.self) { imageName in
                     Image(imageName)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: side, height: side)
+                        .frame(width: width, height: height)
                         .clipped()
                         .clipShape(RoundedRectangle(cornerRadius: 30))
+                        .overlay(alignment: .topLeading) {
+                            Text("02.03.2024")
+                                .foregroundColor(.white)
+                                .fontWeight(.medium)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .cornerRadius(10)
+                                .background(Color.accentRed)
+                                .clipShape(Capsule())
+                                .padding(20)
+                        }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
+            .frame(height: height)
+            .tabViewStyle(.page(indexDisplayMode: .automatic))
         }
-        .frame(height: UIScreen.main.bounds.width - 40)
-        .tabViewStyle(.page(indexDisplayMode: .automatic))
+        .frame(height: (UIScreen.main.bounds.width - 40) * 1.2)
     }
 }
 
