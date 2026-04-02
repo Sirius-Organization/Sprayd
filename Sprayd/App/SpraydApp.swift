@@ -12,6 +12,7 @@ struct SpraydApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .tint(.accentRed)
         }
     }
 }
