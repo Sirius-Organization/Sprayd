@@ -18,7 +18,6 @@ struct PhotoPagerView: View {
                 Image(imageName)
                     .resizable()
                     .scaledToFill()
-                    // Стабильная квадратность: высота автоматически соответствует ширине.
                     .aspectRatio(1, contentMode: .fit)
                     .frame(maxWidth: .infinity)
                     .clipped()
