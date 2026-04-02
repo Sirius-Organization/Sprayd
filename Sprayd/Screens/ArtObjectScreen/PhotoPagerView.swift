@@ -30,6 +30,7 @@ struct PhotoPagerView: View {
                             
                             dateLabel
                         }
+                        .frame(width: width, height: photoHeight)
                     }
                 }
                 .frame(height: photoHeight)
