@@ -1,20 +1,16 @@
 //
-//  ProfileView.swift
+//  UserProfileView.swift
 //  Sprayd
 //
-//  Created by Егор Мальцев on 01.04.2026.
+//  Created by loxxy on 02.04.2026.
 //
 
 import SwiftUI
 
-struct ProfileView: View {
+struct UserProfileView: View {
     // MARK: - Constants
     private enum Const {
         // Strings
-        static let postedButtonBottomText: String = "Add new seen art"
-        
-        static let vButtonBottomText: String = "Add new seen art"
-        
         static let postedSectionText: String = "Posted"
         static let visitedSectionText: String = "Visited"
         
@@ -47,14 +43,12 @@ struct ProfileView: View {
                 HStack {
                     Text("Username")
                         .font(Const.usernameFont)
-                    Image(systemName: "pencil")
                 }
                 .frame(maxWidth: .infinity)
                 
                 HStack {
                     Text("Description")
                         .font(Const.descriptionFont)
-                    Image(systemName: "pencil")
                 }
                 .frame(maxWidth: .infinity)
             }
@@ -76,16 +70,6 @@ struct ProfileView: View {
             .font(Const.sectionTitleFont)
     }
     
-    private var addButtonView: some View {
-        VStack(alignment: .center) {
-            AddButton()
-            
-            Text(Const.postedButtonBottomText)
-                .font(Const.buttonBottomTextFont)
-        }
-        .frame(maxWidth: .infinity)
-    }
-    
     // TODO: - Replace with an array of posts
     private var postView: some View = ArtMediumCardView()
         
@@ -102,9 +86,7 @@ struct ProfileView: View {
                     pickerView
                     
                     sectionTitle
-                    
-                    addButtonView
-                    
+                                        
                     postView
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -114,5 +96,5 @@ struct ProfileView: View {
 }
 
 #Preview {
-    ProfileView()
+    UserProfileView()
 }
