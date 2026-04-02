@@ -47,7 +47,6 @@ struct ArtMediumCardView: View {
         
         // Text
         static let titleText = "The Gliders"
-        static let likesText = "22"
         static let locationText = "St. Petersburg"
         static let dateText = "24.02.2025"
         static let descriptionText = "Mural by Ana Markov originally painted in 2015. It explores themes of loneliness and social issues. ..."
@@ -61,7 +60,15 @@ struct ArtMediumCardView: View {
         
         // Icons
         static let heartIcon: String = "heartIcon"
+        static let filledHeartIcon: String = "filledHeartIcon"
         static let locationIcon: String = "locationIcon"
+    }
+    
+    // MARK: - Fields
+    @State private var isLiked: Bool = false
+    @State private var likesCount: Int = 0
+    private var currentHeartIcon: String {
+        isLiked ? Const.filledHeartIcon : Const.heartIcon
     }
     
     // MARK: - Subviews
@@ -86,16 +93,21 @@ struct ArtMediumCardView: View {
             Spacer(minLength: 12)
             
             HStack(spacing: 8) {
-                Text(Const.likesText)
+                Text(String(likesCount))
                     .font(Const.likesFont)
                     .foregroundStyle(.black)
                 
-                Image(Const.heartIcon)
+                
+                Image(currentHeartIcon)
                     .renderingMode(.template)
                     .resizable()
                     .scaledToFit()
                     .frame(width: Const.heartIconSize, height: Const.heartIconSize)
                     .foregroundStyle(Const.heartColor)
+                    .onTapGesture {
+                        toggleLike()
+                    }
+                
             }
         }
     }
@@ -172,6 +184,17 @@ struct ArtMediumCardView: View {
             .padding(.top, Const.cardTopPadding)
             .padding(.bottom, Const.cardTopPadding)
             .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+    
+    // MARK: - Display logic
+    private func toggleLike() {
+        isLiked.toggle()
+        
+        if (isLiked) {
+            likesCount += 1
+        } else {
+            likesCount -= 1
         }
     }
 }
