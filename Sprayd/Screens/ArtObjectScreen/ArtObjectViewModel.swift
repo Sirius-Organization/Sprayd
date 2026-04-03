@@ -9,8 +9,17 @@ import Foundation
 
 @Observable
 final class ArtObjectViewModel {
-    /// Same order as assets used in `PhotoPagerView` / `ArtObjectPhotoPreviewView`.
+    struct PhotoItem: Identifiable {
+        let index: Int
+        let imageName: String
+
+        var id: Int { index }
+    }
+
     static let photoImageNames = ["art", "bird", "cube"]
+    static let photoItems = photoImageNames.enumerated().map {
+        PhotoItem(index: $0.offset, imageName: $0.element)
+    }
 
     var selectedPhotoIndex = 0
     var isPhotoPreviewPresented = false
@@ -22,4 +31,3 @@ final class ArtObjectViewModel {
         isPhotoPreviewPresented = true
     }
 }
-

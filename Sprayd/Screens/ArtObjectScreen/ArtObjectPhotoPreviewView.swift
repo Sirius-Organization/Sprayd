@@ -22,13 +22,13 @@ struct ArtObjectPhotoPreviewView: View {
                 VStack {
                     Spacer(minLength: 0)
                     TabView(selection: $selectedPhotoIndex) {
-                        ForEach(ArtObjectViewModel.photoImageNames.indices, id: \.self) { index in
-                            Image(ArtObjectViewModel.photoImageNames[index])
+                        ForEach(ArtObjectViewModel.photoItems) { photo in
+                            Image(photo.imageName)
                                 .resizable()
                                 .scaledToFit()
                                 .cornerRadius(20)
                                 .frame(width: safeWidth, height: tabHeight)
-                                .tag(index)
+                                .tag(photo.index)
                         }
                     }
                     .frame(height: tabHeight)
