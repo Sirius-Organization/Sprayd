@@ -17,7 +17,7 @@ struct ArtObjectView: View {
                     .ignoresSafeArea(edges: .all)
                 ScrollView {
                     Spacer(minLength: 20)
-                    ArtMediumCardView()
+                    ArtCardView()
                     VStack(spacing: 12) {
                         markVisitedButton
                         contributeButton

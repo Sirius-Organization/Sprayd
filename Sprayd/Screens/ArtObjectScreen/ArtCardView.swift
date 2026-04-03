@@ -11,10 +11,10 @@ struct ArtCardView: View {
     // MARK: - Constants
     private enum Const {
         static let cardHorizontalPadding: CGFloat = 24
-        static let cardTopPadding: CGFloat = 22
-        
-        static let imageHeight: CGFloat = 318
+        static let cardTopPadding: CGFloat = 5
+
         static let imageCornerRadius: CGFloat = 30
+        static let photoImageNames = ["art", "bird", "cube"]
         
         static let contentSpacing: CGFloat = 18
         static let sectionSpacing: CGFloat = 10
@@ -54,21 +54,30 @@ struct ArtCardView: View {
     // MARK: - Fields
     @State private var isLiked: Bool = false
     @State private var likesCount: Int = 0
+    @State private var selectedPhotoIndex: Int = 0
     private var currentHeartIcon: String {
         isLiked ? Const.filledHeartIcon : Const.heartIcon
     }
     
     // MARK: - Subviews
-    private var artworkImage: some View {
-        RoundedRectangle(cornerRadius: Const.imageCornerRadius)
-            .fill(Const.placeholderColor)
-            .frame(maxWidth: .infinity)
-            .frame(height: Const.imageHeight)
-            .overlay {
-                Image(systemName: Const.placeholderImageName)
-                    .font(.system(size: 34, weight: .regular))
-                    .foregroundStyle(Color.secondaryColor)
+    private var photoPager: some View {
+        GeometryReader { geo in
+            let side = geo.size.width
+            TabView(selection: $selectedPhotoIndex) {
+                ForEach(Const.photoImageNames.indices, id: \.self) { index in
+                    Image(Const.photoImageNames[index])
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: side, height: side)
+                        .clipped()
+                        .tag(index)
+                }
             }
+            .tabViewStyle(.page(indexDisplayMode: .always))
+            .frame(width: side, height: side)
+        }
+        .aspectRatio(1, contentMode: .fit)
+        .clipShape(RoundedRectangle(cornerRadius: Const.imageCornerRadius))
     }
     
     private var titleRow: some View {
@@ -144,7 +153,7 @@ struct ArtCardView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: Const.contentSpacing) {
-                artworkImage
+                photoPager
                 
                 VStack(alignment: .leading, spacing: Const.titleToMetaSpacing) {
                     titleRow
@@ -187,5 +196,5 @@ struct ArtCardView: View {
 }
 
 #Preview {
-    ArtMediumCardView()
+    ArtCardView()
 }
