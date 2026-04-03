@@ -8,12 +8,19 @@
 import SwiftUI
 
 struct MainMapView: View {
-    @State private var viewModel = MainMapViewModel()
+    @State private var viewModel: MainMapViewModel
+
+    init(viewModel: MainMapViewModel) {
+        _viewModel = State(initialValue: viewModel)
+    }
 
     var body: some View {
         UIKitMapView(
             region: viewModel.region,
-            markers: viewModel.markers
+            items: viewModel.items,
+            imageProvider: { urlString in
+                await viewModel.imageData(for: urlString)
+            }
         )
         .ignoresSafeArea()
     }

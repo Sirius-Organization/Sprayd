@@ -12,7 +12,7 @@ import SwiftData
 final class ArtItem {
     var name: String
     var itemDescription: String
-    var images: [String]
+    var imageUrls: [String]
     var location: String
     var author: String
     var stateRawValue: String
@@ -26,7 +26,7 @@ final class ArtItem {
     }
 
     var primaryImageURL: URL? {
-        guard let first = images.first else { return nil }
+        guard let first = imageUrls.first else { return nil }
         return URL(string: first)
     }
 
@@ -43,7 +43,7 @@ final class ArtItem {
     ) {
         self.name = name
         self.itemDescription = itemDescription
-        self.images = images
+        self.imageUrls = images
         self.location = location
         self.author = author
         self.stateRawValue = state.rawValue
@@ -58,6 +58,7 @@ final class ArtImage {
     @Attribute(.externalStorage) var img: Data
     var urlString: String
     var date: Date
+    var timeStamp: TimeInterval
     var userId: UUID
 
     init(
@@ -70,6 +71,7 @@ final class ArtImage {
         self.img = img
         self.urlString = urlString
         self.date = date
+        self.timeStamp = timeStamp
         self.userId = userId
     }
 }
