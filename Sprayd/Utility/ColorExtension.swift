@@ -26,4 +26,10 @@ extension Color {
         green: 106 / 255,
         blue: 105 / 255
     )
+    
+    static let placeholderGrey = Color(
+        red: 137 / 255,
+        green: 137 / 255,
+        blue: 137 / 255
+    )
 }
