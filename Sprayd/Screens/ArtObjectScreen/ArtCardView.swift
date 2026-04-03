@@ -150,7 +150,7 @@ struct ArtCardView: View {
             VStack(alignment: .leading, spacing: Const.peopleBlockSpacing) {
                 personSection(
                     title: "Author",
-                    titleFont: Font.InstrumentBold13,
+                    titleFont: Font.InstrumentMedium13,
                     name: viewModel.author
                 )
 

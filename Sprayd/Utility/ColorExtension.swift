@@ -26,22 +26,10 @@ extension Color {
         green: 106 / 255,
         blue: 105 / 255
     )
-<<<<<<< feature/pager-art-object
-}
 
-extension Font {
-    static let InstrumentBold22 = Font.custom("InstrumentSans-Bold", size: 22)
-    static let InstrumentMedium16 = Font.custom("InstrumentSans-Medium", size: 16)
-    static let InstrumentBold20: Font = .custom("InstrumentSans-Bold", size: 20)
-    static let InstrumentMedium13: Font = .custom("InstrumentSans-Medium", size: 13)
-    static let InstrumentRegular13: Font = .custom("InstrumentSans-Regular", size: 13)
-    static let InstrumentBold13: Font = .custom("InstrumentSans-Bold", size: 13)
-=======
-    
     static let placeholderGrey = Color(
         red: 137 / 255,
         green: 137 / 255,
         blue: 137 / 255
     )
->>>>>>> main
 }
