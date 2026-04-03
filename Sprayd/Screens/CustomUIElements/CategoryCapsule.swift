@@ -16,8 +16,8 @@ struct CategoryCapsule: View {
         Text(title)
             .foregroundStyle(Color.white)
             .font(Font.InstrumentMedium13)
-            .padding(5)
-            .frame(height: 30)
+            .padding(10)
+            .frame(height: 40)
             .background(Color.accentRed)
             .clipShape(Capsule())
     }
