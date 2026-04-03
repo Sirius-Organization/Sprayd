@@ -37,23 +37,27 @@ struct ArtCardView: View {
         viewModel.isLiked ? Const.filledHeartIcon : Const.heartIcon
     }
 
+    private func photoPage(_ photo: ArtObjectViewModel.PhotoItem, side: CGFloat) -> some View {
+        Image(photo.imageName)
+            .resizable()
+            .scaledToFill()
+            .frame(width: side, height: side)
+            .clipped()
+            .contentShape(Rectangle())
+            .onTapGesture {
+                viewModel.openPhotoPreview(at: photo.index)
+            }
+            .tag(photo.index)
+    }
+
     // MARK: - Subviews
     private var photoPager: some View {
         @Bindable var vm = viewModel
         return GeometryReader { geo in
             let side = geo.size.width
             TabView(selection: $vm.selectedPhotoIndex) {
-                SwiftUI.ForEach(viewModel.photoImageNames.indices, id: \.self) { index in
-                    Image(viewModel.photoImageNames[index])
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: side, height: side)
-                        .clipped()
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            viewModel.openPhotoPreview(at: index)
-                        }
-                        .tag(index)
+                SwiftUI.ForEach(viewModel.photoItems) { photo in
+                    photoPage(photo, side: side)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .always))

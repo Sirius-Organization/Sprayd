@@ -7,6 +7,13 @@ import Foundation
 
 @Observable
 final class ArtObjectViewModel {
+    struct PhotoItem: Identifiable {
+        let index: Int
+        let imageName: String
+
+        var id: Int { index }
+    }
+
     // MARK: - Data fields
     let name: String
     let itemDescription: String
@@ -23,6 +30,12 @@ final class ArtObjectViewModel {
     var isLiked: Bool = false
     var likesCount: Int = 0
     var isVisited: Bool = false
+
+    var photoItems: [PhotoItem] {
+        photoImageNames.enumerated().map {
+            PhotoItem(index: $0.offset, imageName: $0.element)
+        }
+    }
 
     // MARK: - Init
     init(
