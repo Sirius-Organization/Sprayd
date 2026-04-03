@@ -16,9 +16,9 @@ extension Color {
     )
 
     static let accentRed = Color(
-        red: 228 / 255,
-        green: 76 / 255,
-        blue: 65 / 255
+        red: 255 / 255,
+        green: 85 / 255,
+        blue: 73 / 255
     )
 
     static let secondaryColor = Color(
@@ -26,9 +26,10 @@ extension Color {
         green: 106 / 255,
         blue: 105 / 255
     )
-}
-
-extension Font {
-    static let InstrumentBold22 = Font.custom("InstrumentSans-Bold", size: 22)
-    static let InstrumentMedium16 = Font.custom("InstrumentSans-Medium", size: 16)
+    
+    static let placeholderGrey = Color(
+        red: 137 / 255,
+        green: 137 / 255,
+        blue: 137 / 255
+    )
 }

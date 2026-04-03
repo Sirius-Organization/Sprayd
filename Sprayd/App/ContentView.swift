@@ -20,7 +20,7 @@ struct ContentView: View {
                     Label("Featured", systemImage: "star")
                 }
 
-            ProfileView()
+            MyProfileView()
                 .tabItem {
                     Label("Account", systemImage: "person.crop.circle.fill")
                 }
