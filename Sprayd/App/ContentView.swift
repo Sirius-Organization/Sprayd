@@ -8,15 +8,24 @@
 import SwiftUI
 import SwiftData
 
+@MainActor
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
+    private let compositionRoot: CompositionRoot
+
+    init(compositionRoot: CompositionRoot) {
+        self.compositionRoot = compositionRoot
+    }
 
     var body: some View {
         TabView {
-            MainMapAssembly(modelContext: modelContext).makeView()
-                .tabItem {
-                    Label("Map", systemImage: "map")
-                }
+            MainMapAssembly(
+                modelContext: compositionRoot.modelContext,
+                imageLoader: compositionRoot.imageLoaderService
+            )
+            .build()
+            .tabItem {
+                Label("Map", systemImage: "map")
+            }
 
             FeaturedView()
                 .tabItem {
@@ -29,12 +38,4 @@ struct ContentView: View {
                 }
         }
     }
-}
-
-#Preview {
-    ContentView()
-        .modelContainer(for: [
-            ArtItem.self,
-            ArtImage.self
-        ], inMemory: true)
 }

@@ -7,19 +7,43 @@
 
 import SwiftUI
 import SwiftData
+import MapKit
 
 struct MainMapAssembly {
     let modelContext: ModelContext
+    let imageLoader: ImageLoaderService
 
-    func makeImageLoaderService() -> ImageLoaderService {
-        ImageLoaderService(modelContext: modelContext)
-    }
-
-    func makeViewModel() -> MainMapViewModel {
-        MainMapViewModel(imageLoader: makeImageLoaderService())
-    }
-
-    func makeView() -> MainMapView {
-        MainMapView(viewModel: makeViewModel())
+    func build() -> some View {
+        let coord = MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 55.7558, longitude: 37.6176),
+            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+        )
+        
+        var items: [ArtItem] = []
+        for i in 1...50 {
+            items.append(
+                ArtItem(
+                    name: "Москва\(i)",
+                    itemDescription: "Большой мурал в центре города",
+                    images: [
+                        "https://picsum.photos/id/\(i)/200/300"
+                    ],
+                    location: "Moscow",
+                    author: "Ana Markov",
+                    state: .new,
+                    category: "Mural",
+                    latitude: 55.7558 + Double(Int.random(in: 1...100)) / 10000,
+                    longitude: 37.6176 + Double(Int.random(in: 1...100)) / 10000
+                )
+            )
+        }
+        
+        let viewModel = MainMapViewModel(
+            modelContext: modelContext,
+            imageLoader: imageLoader,
+            region: coord,
+            items: items
+        )
+        return MainMapView(viewModel: viewModel)
     }
 }

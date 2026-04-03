@@ -10,6 +10,13 @@ import UIKit
 
 final class ArtItemAnnotationView: MKAnnotationView {
     static let reuseIdentifier = "ArtItemAnnotationView"
+    
+    private struct Constants {
+        static let fatalError = "init(coder:) has not been implemented"
+        static let annotationSize: CGFloat = 52
+        static let annotationCornerRadius: CGFloat = 26
+        static let countBadgeSize: CGFloat = 24
+    }
 
     private let containerView = UIView()
     private let imageView = UIImageView()
@@ -24,24 +31,26 @@ final class ArtItemAnnotationView: MKAnnotationView {
     }
 
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        fatalError(Constants.fatalError)
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
         imageTask?.cancel()
         imageTask = nil
-        imageView.image = UIImage(systemName: "photo")
+        imageView.image = UIImage()
         countLabel.isHidden = true
         countLabel.text = nil
     }
+    
+    // MARK: Configure
 
     func configure(
         annotation: any ArtMapAnnotation,
         imageProvider: ((String) async -> Data?)?
     ) {
         imageTask?.cancel()
-        imageView.image = UIImage(systemName: "photo")
+        imageView.image = UIImage()
 
         if let clusterAnnotation = annotation as? ArtClusterAnnotation {
             countLabel.isHidden = false
@@ -72,19 +81,25 @@ final class ArtItemAnnotationView: MKAnnotationView {
     }
 
     private func setupView() {
-        frame = CGRect(x: 0, y: 0, width: 52, height: 52)
+        frame = CGRect(
+            x: 0,
+            y: 0,
+            width: Constants.annotationSize,
+            height: Constants.annotationSize
+        )
         centerOffset = CGPoint(x: 0, y: -26)
         canShowCallout = true
         collisionMode = .circle
 
         containerView.translatesAutoresizingMaskIntoConstraints = false
         containerView.backgroundColor = .white
-        containerView.layer.cornerRadius = 26
+        containerView.clipsToBounds = true
+        containerView.layer.cornerRadius = Constants.annotationCornerRadius
         containerView.layer.borderWidth = 2
         containerView.layer.borderColor = UIColor.systemGray4.cgColor
 
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.tintColor = .red
 
         countLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -92,7 +107,7 @@ final class ArtItemAnnotationView: MKAnnotationView {
         countLabel.textColor = .white
         countLabel.textAlignment = .center
         countLabel.backgroundColor = .black
-        countLabel.layer.cornerRadius = 10
+        countLabel.layer.cornerRadius = Constants.countBadgeSize / 2
         countLabel.clipsToBounds = true
         countLabel.isHidden = true
 
@@ -108,13 +123,13 @@ final class ArtItemAnnotationView: MKAnnotationView {
 
             imageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            imageView.widthAnchor.constraint(equalToConstant: 24),
-            imageView.heightAnchor.constraint(equalToConstant: 24),
+            imageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            imageView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
 
-            countLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            countLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            countLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 22),
-            countLabel.heightAnchor.constraint(equalToConstant: 22)
+            countLabel.centerXAnchor.constraint(equalTo: containerView.trailingAnchor),
+            countLabel.centerYAnchor.constraint(equalTo: containerView.bottomAnchor),
+            countLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: Constants.countBadgeSize),
+            countLabel.heightAnchor.constraint(equalToConstant: Constants.countBadgeSize)
         ])
     }
 }
