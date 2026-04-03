@@ -12,20 +12,34 @@ import SwiftData
 final class ArtItem {
     var name: String
     var itemDescription: String
-    @Relationship(deleteRule: .cascade) var images: [ArtImage]
+    var images: [String]
     var location: String
     var author: String
     var stateRawValue: String
     var category: String
+    var latitude: Double
+    var longitude: Double
+
+    var state: ArtState {
+        get { ArtState(rawValue: stateRawValue) ?? .new }
+        set { stateRawValue = newValue.rawValue }
+    }
+
+    var primaryImageURL: URL? {
+        guard let first = images.first else { return nil }
+        return URL(string: first)
+    }
 
     init(
         name: String = "",
         itemDescription: String = "",
-        images: [ArtImage] = [],
+        images: [String] = [],
         location: String = "",
         author: String = "",
         state: ArtState = .new,
-        category: String = ""
+        category: String = "",
+        latitude: Double = 0,
+        longitude: Double = 0
     ) {
         self.name = name
         self.itemDescription = itemDescription
@@ -34,30 +48,28 @@ final class ArtItem {
         self.author = author
         self.stateRawValue = state.rawValue
         self.category = category
-    }
-
-    var state: ArtState {
-        get { ArtState(rawValue: stateRawValue) ?? .new }
-        set { stateRawValue = newValue.rawValue }
+        self.latitude = latitude
+        self.longitude = longitude
     }
 }
 
 @Model
 final class ArtImage {
     @Attribute(.externalStorage) var img: Data
+    var urlString: String
     var date: Date
-    var timeStamp: TimeInterval
     var userId: UUID
 
     init(
         img: Data = Data(),
+        urlString: String = "",
         date: Date = .now,
         timeStamp: TimeInterval = Date().timeIntervalSince1970,
         userId: UUID = UUID()
     ) {
         self.img = img
+        self.urlString = urlString
         self.date = date
-        self.timeStamp = timeStamp
         self.userId = userId
     }
 }

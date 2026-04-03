@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct SpraydApp: App {
@@ -14,5 +15,9 @@ struct SpraydApp: App {
             ContentView()
                 .tint(.accentRed)
         }
+        .modelContainer(for: [
+            ArtItem.self,
+            ArtImage.self
+        ])
     }
 }
