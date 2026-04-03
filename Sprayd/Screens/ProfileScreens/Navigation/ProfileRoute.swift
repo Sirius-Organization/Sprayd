@@ -7,4 +7,6 @@
 
 import Foundation
 
-enum ProfileRoute: Hashable { }
+enum ProfileRoute: Hashable {
+    case addArt
+}

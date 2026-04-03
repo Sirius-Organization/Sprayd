@@ -26,11 +26,12 @@ struct AddButton: View {
     }
     
     // MARK: - Fields
+    var onTap: () -> ()
     
     // MARK: - Body
     var body: some View {
         Button {
-            // action
+            onTap()
         } label: {
             Image(systemName: Const.imageName)
                 .font(Const.textFont)
@@ -45,6 +46,6 @@ struct AddButton: View {
     }
 }
 
-#Preview {
-    AddButton()
-}
+//#Preview {
+//    AddButton()
+//}

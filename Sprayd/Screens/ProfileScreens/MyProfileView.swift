@@ -40,6 +40,16 @@ struct MyProfileView: View {
     // MARK: - Fields
     @State private var selectedOption = "Posted"
     private var posts: [Post]?
+    let onAddArt: () -> ()
+    
+    // MARK: - Lifecycle
+    init(
+            posts: [Post]? = nil,
+            onAddArt: @escaping () -> Void
+        ) {
+            self.posts = posts
+            self.onAddArt = onAddArt
+        }
     
     // MARK: - Subviews
     private var bioView: some View {
@@ -100,7 +110,7 @@ struct MyProfileView: View {
     
     private var addButtonView: some View {
         VStack(alignment: .center) {
-            AddButton()
+            AddButton(onTap: onAddArt)
             
             Text(Const.postedButtonBottomText)
                 .font(Const.buttonBottomTextFont)
@@ -137,6 +147,6 @@ struct MyProfileView: View {
     }
 }
 
-#Preview {
-    MyProfileView()
-}
+//#Preview {
+//    MyProfileView(onArtAdd: {})
+//}

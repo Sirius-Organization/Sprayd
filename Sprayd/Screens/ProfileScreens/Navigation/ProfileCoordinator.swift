@@ -13,6 +13,10 @@ final class ProfileCoordinator: ObservableObject {
     @Published var path: [ProfileRoute] = []
     
     // MARK: - Navigation logic
+    func openAddArt() {
+        path.append(.addArt)
+    }
+    
     func pop() {
         guard !path.isEmpty else { return }
         path.removeLast()
@@ -24,11 +28,18 @@ final class ProfileCoordinator: ObservableObject {
     
     @ViewBuilder
     func makeRootView() -> some View {
-        MyProfileView()
+        MyProfileView(
+            onAddArt: { [weak self] in
+                self?.openAddArt()
+            }
+        )
     }
     
     @ViewBuilder
-        func destination(for route: ProfileRoute) -> some View {
-            // TODO: - Coordinate to designated route
+    func destination(for route: ProfileRoute) -> some View {
+        switch (route) {
+        case .addArt:
+            ArtAdditionView()
         }
+    }
 }

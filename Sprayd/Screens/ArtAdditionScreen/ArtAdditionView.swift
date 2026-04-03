@@ -128,6 +128,7 @@ struct ArtAdditionView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .toolbar(.hidden, for: .tabBar)
     }
     
     // MARK: - Subviews
