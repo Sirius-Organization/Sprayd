@@ -12,23 +12,29 @@ struct AppCoordinatorView: View {
     
     var body: some View {
         TabView(selection: $coordinator.selectedTab) {
-                    MapCoordinatorView(coordinator: coordinator.mapCoordinator)
-                        .tabItem {
-                            Label("Map", systemImage: "map")
-                        }
-                        .tag(AppTab.map)
-                    
-                    FeedCoordinatorView(coordinator: coordinator.feedCoordinator)
-                        .tabItem {
-                            Label("Featured", systemImage: "star")
-                        }
-                        .tag(AppTab.feed)
-                    
-                    ProfileCoordinatorView(coordinator: coordinator.profileCoordinator)
-                        .tabItem {
-                            Label("Account", systemImage: "person.crop.circle.fill")
-                        }
-                        .tag(AppTab.profile)
+            MapCoordinatorView(coordinator: coordinator.mapCoordinator)
+                .tabItem {
+                    Image("mapIcon")
+                        .renderingMode(.template)
+                        .foregroundColor(.accentRed)
                 }
+                .tag(AppTab.map)
+            
+            FeedCoordinatorView(coordinator: coordinator.feedCoordinator)
+                .tabItem {
+                    Image("homeIcon")
+                        .renderingMode(.template)
+                        .foregroundColor(.accentRed)
+                }
+                .tag(AppTab.feed)
+            
+            ProfileCoordinatorView(coordinator: coordinator.profileCoordinator)
+                .tabItem {
+                    Image("profileIcon")
+                        .renderingMode(.template)
+                        .foregroundColor(.accentRed)
+                }
+                .tag(AppTab.profile)
+        }
     }
 }
