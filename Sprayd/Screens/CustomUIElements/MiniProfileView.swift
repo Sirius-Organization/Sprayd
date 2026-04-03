@@ -19,7 +19,7 @@ struct MiniProfileView: View {
     
     // MARK: - Fields
     let name: String
-    
+
     // MARK: - Body
     var body: some View {
         HStack(spacing: Const.avatarSpacing) {

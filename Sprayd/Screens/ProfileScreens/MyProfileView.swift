@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ProfileView: View {
+struct MyProfileView: View {
     // MARK: - Constants
     private enum Const {
         // Strings
@@ -138,5 +138,5 @@ struct ProfileView: View {
 }
 
 #Preview {
-    ProfileView()
+    MyProfileView()
 }

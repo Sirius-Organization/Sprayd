@@ -16,9 +16,9 @@ extension Color {
     )
 
     static let accentRed = Color(
-        red: 228 / 255,
-        green: 76 / 255,
-        blue: 65 / 255
+        red: 255 / 255,
+        green: 85 / 255,
+        blue: 73 / 255
     )
 
     static let secondaryColor = Color(
@@ -26,6 +26,7 @@ extension Color {
         green: 106 / 255,
         blue: 105 / 255
     )
+<<<<<<< feature/pager-art-object
 }
 
 extension Font {
@@ -35,4 +36,12 @@ extension Font {
     static let InstrumentMedium13: Font = .custom("InstrumentSans-Medium", size: 13)
     static let InstrumentRegular13: Font = .custom("InstrumentSans-Regular", size: 13)
     static let InstrumentBold13: Font = .custom("InstrumentSans-Bold", size: 13)
+=======
+    
+    static let placeholderGrey = Color(
+        red: 137 / 255,
+        green: 137 / 255,
+        blue: 137 / 255
+    )
+>>>>>>> main
 }
