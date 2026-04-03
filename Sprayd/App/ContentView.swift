@@ -9,22 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        TabView {
-            MainMapView()
-                .tabItem {
-                    Label("Map", systemImage: "map")
-                }
-
-            FeaturedView()
-                .tabItem {
-                    Label("Featured", systemImage: "star")
-                }
-
-            MyProfileView()
-                .tabItem {
-                    Label("Account", systemImage: "person.crop.circle.fill")
-                }
-        }
+        AppCoordinatorView()
     }
 }
 
