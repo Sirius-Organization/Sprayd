@@ -21,9 +21,9 @@ struct PhotoPagerView: View {
 
             VStack(spacing: 0) {
                 TabView(selection: $selectedPhotoIndex) {
-                    ForEach(ArtObjectViewModel.photoImageNames.indices, id: \.self) { index in
-                        let imageName = ArtObjectViewModel.photoImageNames[index]
-                        photoPage(imageName, width: width, height: photoHeight)
+                    ForEach(ArtObjectViewModel.photoItems) { photo in
+                        photoPage(photo.imageName, width: width, height: photoHeight)
+                            .tag(photo.index)
                     }
                 }
                 .frame(height: photoHeight)
