@@ -38,21 +38,26 @@ struct ArtCardView: View {
     }
 
     // MARK: - Subviews
+    @ViewBuilder
+    private func photoPage(index: Int, side: CGFloat) -> some View {
+        Image(viewModel.photoImageNames[index])
+            .resizable()
+            .scaledToFill()
+            .frame(width: side, height: side)
+            .clipped()
+            .contentShape(Rectangle())
+            .onTapGesture {
+                viewModel.openPhotoPreview(at: index)
+            }
+            .tag(index)
+    }
+
     private func photoPager(selection: Binding<Int>) -> some View {
         GeometryReader { geo in
             let side = geo.size.width
             TabView(selection: selection) {
-                SwiftUI.ForEach(viewModel.photoImageNames.indices, id: \.self) { index in
-                    Image(viewModel.photoImageNames[index])
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: side, height: side)
-                        .clipped()
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            viewModel.openPhotoPreview(at: index)
-                        }
-                        .tag(index)
+                ForEach(viewModel.photoImageNames.indices, id: \.self) { index in
+                    photoPage(index: index, side: side)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .always))
@@ -112,7 +117,7 @@ struct ArtCardView: View {
 
     private var descriptionText: some View {
         Text(viewModel.itemDescription)
-            .font(Font.InstrumentBold13)
+            .font(Font.InstrumentRegular13)
             .foregroundStyle(Color.secondaryColor)
             .multilineTextAlignment(.leading)
             .fixedSize(horizontal: false, vertical: true)
@@ -151,7 +156,7 @@ struct ArtCardView: View {
 
                 personSection(
                     title: "Posted by",
-                    titleFont: Font.InstrumentBold13,
+                    titleFont: Font.InstrumentRegular13,
                     name: viewModel.postedBy
                 )
             }

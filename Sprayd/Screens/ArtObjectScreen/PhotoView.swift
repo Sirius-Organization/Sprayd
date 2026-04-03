@@ -11,6 +11,16 @@ struct PhotoView: View {
     @Binding var selectedPhotoIndex: Int
     let photoImageNames: [String]
 
+    @ViewBuilder
+    private func photoPage(index: Int, width: CGFloat, height: CGFloat) -> some View {
+        Image(photoImageNames[index])
+            .resizable()
+            .scaledToFit()
+            .cornerRadius(20)
+            .frame(width: width, height: height)
+            .tag(index)
+    }
+
     var body: some View {
         GeometryReader { geo in
             let safeWidth = max(1, geo.size.width - 40)
@@ -24,13 +34,8 @@ struct PhotoView: View {
                     Spacer(minLength: 0)
 
                     TabView(selection: $selectedPhotoIndex) {
-                        SwiftUI.ForEach(photoImageNames.indices, id: \.self) { index in
-                            Image(photoImageNames[index])
-                                .resizable()
-                                .scaledToFit()
-                                .cornerRadius(20)
-                                .frame(width: safeWidth, height: tabHeight)
-                                .tag(index)
+                        ForEach(photoImageNames.indices, id: \.self) { index in
+                            photoPage(index: index, width: safeWidth, height: tabHeight)
                         }
                     }
                     .frame(height: tabHeight)
