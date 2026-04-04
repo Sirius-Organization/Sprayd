@@ -46,6 +46,7 @@ struct ArtAdditionView: View {
     @State private var title: String = ""
     @State private var description: String = ""
     @State private var selectedCoordinate: CLLocationCoordinate2D?
+    @State private var selectedLocationName: String?
     @State private var isLocationPickerPresented = false
     @State private var selectedAuthor: Author? = Author(name: "Ana Markov")
     @State private var selectedCategory: Category? = Category(name: "Sponsored by government")
@@ -111,8 +112,9 @@ struct ArtAdditionView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .tabBar)
         .sheet(isPresented: $isLocationPickerPresented) {
-            LocationPickerView { coordinate in
-                selectedCoordinate = coordinate
+            LocationPickerView { picked in
+                selectedCoordinate = picked.coordinate
+                selectedLocationName = picked.displayName
             }
         }
     }
@@ -207,13 +209,23 @@ struct ArtAdditionView: View {
                 .foregroundStyle(Color.black)
             
             if let selectedCoordinate {
-                HStack(spacing: Metrics.halfModule) {
+                HStack(alignment: .top, spacing: Metrics.halfModule) {
                     Icons.location
                         .foregroundStyle(Color.secondaryColor)
                     
-                    Text(Self.formatCoordinate(selectedCoordinate))
-                        .font(.InstrumentRegular13)
-                        .foregroundStyle(Color.secondaryColor)
+                    VStack(alignment: .leading, spacing: Metrics.halfModule) {
+                        let coordText = Self.formatCoordinate(selectedCoordinate)
+                        if let selectedLocationName {
+                            Text(selectedLocationName)
+                                .font(.InstrumentMedium16)
+                                .foregroundStyle(Color.black)
+                        }
+                        if selectedLocationName != coordText {
+                            Text(coordText)
+                                .font(.InstrumentRegular13)
+                                .foregroundStyle(Color.secondaryColor)
+                        }
+                    }
                 }
             }
             
