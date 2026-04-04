@@ -46,8 +46,9 @@ struct ArtObjectView: View {
                 Text(viewModel.isVisited ? "Marked visited" : "Mark visited")
                     .font(Font.InstrumentMedium16)
                 Spacer()
-                Image(systemName: "checkmark")
-                    .fontWeight(.medium)
+                Icons.checkmark
+                    .renderingMode(.template)
+                    .foregroundColor(.black)
             }
             .foregroundStyle(viewModel.isVisited ? .white : .primary)
             .padding(.horizontal, Metrics.twoAndHalfModule)
@@ -75,8 +76,7 @@ struct ArtObjectView: View {
                 Text("Contribute")
                     .font(Font.InstrumentMedium16)
                 Spacer()
-                Image(systemName: "camera")
-                    .fontWeight(.medium)
+                Icons.camera
             }
             .foregroundStyle(.white)
             .padding(.horizontal, Metrics.twoAndHalfModule)

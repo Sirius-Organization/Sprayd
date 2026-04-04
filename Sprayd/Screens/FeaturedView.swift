@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct FeaturedView: View {
+    
     private let featuredItem = ArtItem(
         name: "The Gliders",
         itemDescription: "",
@@ -126,9 +127,8 @@ struct FeaturedView: View {
 
     private var searchBar: some View {
         HStack(spacing: Metrics.module) {
-            Image(systemName: "magnifyingglass")
+            Icons.magnifyingGlass
                 .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.gray)
 
             Text("Search for an art object")
                 .font(.InstrumentRegular13)
@@ -166,9 +166,8 @@ struct FeaturedView: View {
                             .fill(Color.gray.opacity(0.45))
                             .frame(width: 24, height: 24)
                             .overlay {
-                                Image(systemName: "person.fill")
+                                Icons.person
                                     .font(.system(size: 8))
-                                    .foregroundStyle(.white)
                             }
 
                         Text(item.author)
@@ -196,9 +195,8 @@ struct FeaturedView: View {
                     .font(.InstrumentBold17)
                     .foregroundStyle(.black)
 
-                Image(systemName: "chevron.right")
+                Icons.chevronRight
                     .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(.black.opacity(0.75))
             }
         }
         .frame(width: 90, alignment: .leading)
@@ -215,9 +213,8 @@ struct FeaturedView: View {
                         .foregroundStyle(.black)
 
                     HStack(spacing: Metrics.halfModule) {
-                        Image(systemName: "mappin.circle")
-                            .font(.system(size: 12))
-                            .foregroundStyle(.gray)
+                        Icons.location
+                            .frame(width: Metrics.oneAndHalfModule, height: Metrics.oneAndHalfModule)
 
                         Text(item.location)
                             .font(.InstrumentMedium13)
@@ -254,9 +251,8 @@ struct FeaturedView: View {
                             .fill(Color.gray.opacity(0.45))
                             .frame(width: 16, height: 16)
                             .overlay {
-                                Image(systemName: "person.fill")
+                                Icons.person
                                     .font(.system(size: 7))
-                                    .foregroundStyle(.white)
                             }
 
                         Text(item.author)
@@ -280,9 +276,7 @@ struct FeaturedView: View {
                 .font(.InstrumentMedium13)
                 .foregroundStyle(.black)
 
-            Image(systemName: "heart")
-                .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(Color.accentRed)
+            Icons.heart
         }
     }
 
@@ -291,9 +285,9 @@ struct FeaturedView: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(Color.gray.opacity(0.16))
 
-            Image(systemName: "photo")
-                .font(.system(size: 34, weight: .medium))
+            Icons.photo
                 .foregroundStyle(.gray.opacity(0.7))
+                .font(.system(size: 34, weight: .medium))
         }
         .frame(height: height)
     }

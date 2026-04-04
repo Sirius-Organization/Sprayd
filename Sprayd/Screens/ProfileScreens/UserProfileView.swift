@@ -16,7 +16,6 @@ struct UserProfileView: View {
         
         // UI constraint properties
         static let profileImageSize: CGFloat = 160
-        static let profileImageCornerRadius: CGFloat = profileImageSize / 2
     }
     
     // MARK: - Fields
@@ -26,11 +25,8 @@ struct UserProfileView: View {
     // MARK: - Subviews
     private var bioView: some View {
         VStack {
-            Image(systemName: "person.crop.circle.fill")
-                .resizable()
+            Icons.personCircle
                 .frame(width: Const.profileImageSize, height: Const.profileImageSize)
-                .cornerRadius(Const.profileImageCornerRadius)
-                .frame(maxWidth: .infinity)
             VStack(spacing: Metrics.oneAndHalfModule) {
                 HStack {
                     Text("Username")

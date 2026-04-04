@@ -11,7 +11,6 @@ struct MiniProfileView: View {
     // MARK: - Constants
     private enum Const {
         static let avatarSize: CGFloat = 35
-        static let avatarImageName: String = "person.crop.circle.fill"
     }
     
     // MARK: - Fields
@@ -20,9 +19,7 @@ struct MiniProfileView: View {
     // MARK: - Body
     var body: some View {
         HStack(spacing: Metrics.oneAndHalfModule) {
-            Image(systemName: Const.avatarImageName)
-                .resizable()
-                .scaledToFill()
+            Icons.personCircle
                 .frame(width: Const.avatarSize, height: Const.avatarSize)
                 .foregroundStyle(Color.secondaryColor.opacity(0.7))
             

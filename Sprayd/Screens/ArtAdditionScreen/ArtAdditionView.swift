@@ -37,13 +37,6 @@ struct ArtAdditionView: View {
 
         // Fonts
         static let iconFont: Font = .system(size: 16, weight: .medium)
-        
-        // Icons
-        static let photoIcon: String = "photo"
-        static let rightArrowIcon: String = "rightArrowIcon"
-        static let leftArrowIcon: String = "leftArrowIcon"
-        static let authorPlaceholderIcon: String = "person.fill"
-        static let createButtonIcon: String = "checkIcon"
     }
     
     // MARK: - Fields
@@ -112,7 +105,7 @@ struct ArtAdditionView: View {
                 Button {
                     // TODO: back action
                 } label: {
-                    Image(Const.leftArrowIcon)
+                    Icons.leftArrow
                 }
                 
                 Spacer()
@@ -143,7 +136,7 @@ struct ArtAdditionView: View {
             // TODO: - Open photo choice screen
         } label: {
             VStack(spacing: Metrics.oneAndHalfModule) {
-                Image(systemName: Const.photoIcon)
+                Icons.photo
                     .font(.system(size: 28, weight: .medium))
                     .foregroundStyle(Color.white)
                 
@@ -169,7 +162,7 @@ struct ArtAdditionView: View {
                         .fill(Color.gray.opacity(0.45))
                         .frame(width: Const.authorAvatarSize, height: Const.authorAvatarSize)
                         .overlay {
-                            Image(systemName: Const.authorPlaceholderIcon)
+                            Icons.person
                                 .foregroundStyle(Color.white.opacity(0.9))
                         }
                     
@@ -180,8 +173,7 @@ struct ArtAdditionView: View {
             }
             
             BlackSelectCapsuleButton(
-                title: Const.selectAuthButtonText,
-                iconName: Const.rightArrowIcon
+                title: Const.selectAuthButtonText
             ) {
                 // TODO: open author picker
             }
@@ -200,8 +192,7 @@ struct ArtAdditionView: View {
             }
             
             BlackSelectCapsuleButton(
-                title: Const.selectCategoryButtonText,
-                iconName: Const.rightArrowIcon
+                title: Const.selectCategoryButtonText
             ) {
                 // TODO: open category picker
             }
@@ -222,8 +213,7 @@ struct ArtAdditionView: View {
                 
                 Spacer()
                 
-                Image(Const.createButtonIcon)
-                    .foregroundStyle(Color.white)
+                Icons.checkmark
             }
             .padding(.horizontal, Metrics.tripleModule)
             .frame(height: Const.createButtonHeight)
