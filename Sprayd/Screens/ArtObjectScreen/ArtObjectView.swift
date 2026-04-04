@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct ArtObjectView: View {
     @State private var viewModel = ArtObjectViewModel.sample
+    @State private var showContributeSourceDialog = false
+    @State private var contributePickerSource: ContributePickerSource?
 
     var body: some View {
         @Bindable var viewModel = viewModel
@@ -34,6 +37,24 @@ struct ArtObjectView: View {
                     selectedPhotoIndex: $viewModel.selectedPhotoIndex,
                     photoImageNames: self.viewModel.photoImageNames
                 )
+            }
+            .confirmationDialog("Add a photo", isPresented: $showContributeSourceDialog, titleVisibility: .visible) {
+                if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                    Button("Take Photo") {
+                        contributePickerSource = .camera
+                    }
+                }
+                Button("Photo Library") {
+                    contributePickerSource = .photoLibrary
+                }
+                Button("Cancel", role: .cancel) {}
+            }
+            .fullScreenCover(item: $contributePickerSource) { source in
+                UIImagePickerBridge(
+                    sourceType: source.imagePickerSourceType,
+                    onDismiss: { contributePickerSource = nil }
+                )
+                .ignoresSafeArea()
             }
         }
     }
@@ -71,6 +92,7 @@ struct ArtObjectView: View {
 
     private var contributeButton: some View {
         Button {
+            showContributeSourceDialog = true
         } label: {
             HStack {
                 Text("Contribute")
@@ -86,6 +108,59 @@ struct ArtObjectView: View {
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
         .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Contribute media pickers
+
+private enum ContributePickerSource: Identifiable {
+    case camera
+    case photoLibrary
+
+    var id: Self { self }
+
+    var imagePickerSourceType: UIImagePickerController.SourceType {
+        switch self {
+        case .camera: return .camera
+        case .photoLibrary: return .photoLibrary
+        }
+    }
+}
+
+private struct UIImagePickerBridge: UIViewControllerRepresentable {
+    let sourceType: UIImagePickerController.SourceType
+    let onDismiss: () -> Void
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onDismiss: onDismiss)
+    }
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.sourceType = sourceType
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        let onDismiss: () -> Void
+
+        init(onDismiss: @escaping () -> Void) {
+            self.onDismiss = onDismiss
+        }
+
+        func imagePickerController(
+            _ picker: UIImagePickerController,
+            didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
+        ) {
+            onDismiss()
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            onDismiss()
+        }
     }
 }
 
