@@ -24,12 +24,12 @@ struct MyProfileView: View {
     
     // MARK: - Fields
     @State private var selectedOption = "Posted"
-    private var posts: [Post]?
+    private var posts: [ArtItem]?
     let onAddArt: () -> ()
     
     // MARK: - Lifecycle
     init(
-            posts: [Post]? = nil,
+            posts: [ArtItem]? = nil,
             onAddArt: @escaping () -> Void
         ) {
             self.posts = posts
