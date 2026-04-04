@@ -11,20 +11,10 @@ struct ArtCardView: View {
     // MARK: - Constants
     private enum Const {
         static let imageCornerRadius: CGFloat = 30
-        static let heartIconSize: CGFloat = 18
-        static let locationIconSize: CGFloat = 18
-
-        static let heartIcon = "heartIcon"
-        static let filledHeartIcon = "filledHeartIcon"
-        static let locationIcon = "locationIcon"
     }
 
     // MARK: - Fields
     var viewModel: ArtObjectViewModel
-
-    private var currentHeartIcon: String {
-        viewModel.isLiked ? Const.filledHeartIcon : Const.heartIcon
-    }
 
     // MARK: - Subviews
     @ViewBuilder
@@ -69,15 +59,11 @@ struct ArtCardView: View {
                     .font(Font.InstrumentMedium13)
                     .foregroundStyle(.black)
 
-                Image(currentHeartIcon)
-                    .renderingMode(.template)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: Const.heartIconSize, height: Const.heartIconSize)
-                    .foregroundStyle(Color.accentRed)
-                    .onTapGesture {
-                        viewModel.toggleLike()
-                    }
+                if viewModel.isLiked {
+                    Icons.filledHeart
+                } else {
+                    Icons.heart
+                }
             }
         }
     }
@@ -88,11 +74,7 @@ struct ArtCardView: View {
                 Text(viewModel.location)
                     .font(Font.InstrumentRegular13)
             } icon: {
-                Image(Const.locationIcon)
-                    .renderingMode(.template)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: Const.locationIconSize, height: Const.locationIconSize)
+                Icons.location
             }
             .foregroundStyle(Color.secondaryColor)
 

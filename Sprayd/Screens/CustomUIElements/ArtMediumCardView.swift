@@ -13,7 +13,6 @@ struct ArtMediumCardView: View {
         // UI constraint properties
         static let imageHeight: CGFloat = 318
         static let imageCornerRadius: CGFloat = 30
-        static let iconSize: CGFloat = 18
         
         static let placeholderColor = Color(
             red: 224 / 255,
@@ -30,22 +29,11 @@ struct ArtMediumCardView: View {
         static let artworkAuthorName = "Ana Markov"
         static let postAuthorSectionTitle = "Posted by"
         static let postAuthorName = "Loxxych"
-        
-        // Symbols
-        static let placeholderImageName = "photo"
-        
-        // Icons
-        static let heartIcon: String = "heartIcon"
-        static let filledHeartIcon: String = "filledHeartIcon"
-        static let locationIcon: String = "locationIcon"
     }
     
     // MARK: - Fields
     @State private var isLiked: Bool = false
     @State private var likesCount: Int = 0
-    private var currentHeartIcon: String {
-        isLiked ? Const.filledHeartIcon : Const.heartIcon
-    }
     
     // MARK: - Subviews
     private var artworkImage: some View {
@@ -54,7 +42,7 @@ struct ArtMediumCardView: View {
             .frame(maxWidth: .infinity)
             .frame(height: Const.imageHeight)
             .overlay {
-                Image(systemName: Const.placeholderImageName)
+                Icons.photo
                     .font(.system(size: 34, weight: .regular))
                     .foregroundStyle(Color.secondaryColor)
             }
@@ -73,16 +61,17 @@ struct ArtMediumCardView: View {
                     .font(.InstrumentMedium13)
                     .foregroundStyle(.black)
                 
-                
-                Image(currentHeartIcon)
-                    .renderingMode(.template)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: Const.iconSize, height: Const.iconSize)
-                    .foregroundStyle(Color.accentRed)
-                    .onTapGesture {
-                        toggleLike()
-                    }
+                if isLiked {
+                    Icons.filledHeart
+                        .onTapGesture {
+                            toggleLike()
+                        }
+                } else {
+                    Icons.heart
+                        .onTapGesture {
+                            toggleLike()
+                        }
+                }
                 
             }
         }
@@ -94,11 +83,7 @@ struct ArtMediumCardView: View {
                 Text(Const.locationText)
                     .font(.InstrumentRegular13)
             } icon: {
-                Image(Const.locationIcon)
-                    .renderingMode(.template)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: Const.iconSize, height: Const.iconSize)
+                Icons.location
             }
             .foregroundStyle(Color.secondaryColor)
             

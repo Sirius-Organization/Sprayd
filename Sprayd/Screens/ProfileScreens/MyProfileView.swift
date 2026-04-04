@@ -18,7 +18,6 @@ struct MyProfileView: View {
         
         // UI constraint properties
         static let profileImageSize: CGFloat = 160
-        static let profileImageCornerRadius: CGFloat = profileImageSize / 2
         static let choosePhotoButtonSize: CGFloat = 40
     }
     
@@ -40,16 +39,13 @@ struct MyProfileView: View {
     private var bioView: some View {
         VStack {
             ZStack(alignment: .bottomTrailing) {
-                Image(systemName: "person.crop.circle.fill")
-                    .resizable()
+                Icons.personCircle
                     .frame(width: Const.profileImageSize, height: Const.profileImageSize)
-                    .clipShape(Circle())
 
                 Button {
                     // TODO: - Open photo choice screen
                 } label: {
-                    Image(systemName: "photo")
-                        .font(.system(size: 16, weight: .medium))
+                    Icons.photo
                         .foregroundStyle(Color.accentRed)
                         .frame(width: Const.choosePhotoButtonSize, height: Const.choosePhotoButtonSize)
                         .background(Color.black)
@@ -64,14 +60,14 @@ struct MyProfileView: View {
                 HStack {
                     Text("Username")
                         .font(.ClimateCrisisRegular22)
-                    Image(systemName: "pencil")
+                    Icons.pencil
                 }
                 .frame(maxWidth: .infinity)
                 
                 HStack {
                     Text("Description")
                         .font(.InstrumentMedium13)
-                    Image(systemName: "pencil")
+                    Icons.pencil
                 }
                 .frame(maxWidth: .infinity)
             }

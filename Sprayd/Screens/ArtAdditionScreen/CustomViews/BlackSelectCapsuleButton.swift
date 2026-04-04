@@ -18,7 +18,6 @@ struct BlackSelectCapsuleButton: View {
     }
     
     let title: String
-    let iconName: String?
     let action: (() -> Void)
     
     var body: some View {
@@ -28,11 +27,7 @@ struct BlackSelectCapsuleButton: View {
                     .font(Const.textFont)
                     .foregroundStyle(Color.white)
                 
-                if let iconName {
-                    Image(iconName)
-                        .renderingMode(.template)
-                        .foregroundStyle(Color.white)
-                }
+                Icons.rightArrow
             }
             .padding(.horizontal, Metrics.oneAndHalfModule)
             .frame(height: Const.height)
@@ -43,5 +38,5 @@ struct BlackSelectCapsuleButton: View {
 }
 
 //#Preview {
-//    BlackSelectCapsuleButton(title: "Title", iconName: "rightArrowIcon")
+//    BlackSelectCapsuleButton(title: "Title")
 //}
