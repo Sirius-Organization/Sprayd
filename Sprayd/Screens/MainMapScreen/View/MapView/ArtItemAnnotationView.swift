@@ -6,24 +6,19 @@
 //
 
 import MapKit
+import SwiftUI
 import UIKit
 
 final class ArtItemAnnotationView: MKAnnotationView {
     static let annotationReuseIdentifier = "ArtItemAnnotationView"
     static let clusterReuseIdentifier = "ArtClusterAnnotationView"
     static let clusteringIdentifier = "art-item"
-    
-    private struct Constants {
-        static let fatalError = "init(coder:) has not been implemented"
-        static let annotationSize: CGFloat = 52
-        static let annotationCornerRadius: CGFloat = 26
-        static let countBadgeSize: CGFloat = 24
-    }
 
     private let containerView = UIView()
     private let imageView = UIImageView()
     private let countLabel = UILabel()
     private var imageTask: Task<Void, Never>?
+    private var representedImageURLString: String?
     
     // MARK: Lifecycle
 
@@ -33,16 +28,55 @@ final class ArtItemAnnotationView: MKAnnotationView {
     }
 
     required init?(coder: NSCoder) {
-        fatalError(Constants.fatalError)
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
         imageTask?.cancel()
         imageTask = nil
-        imageView.image = UIImage()
+        representedImageURLString = nil
+        imageView.image = placeholderImage()
         countLabel.isHidden = true
         countLabel.text = nil
+        setNeedsLayout()
+    }
+
+    override func prepareForDisplay() {
+        super.prepareForDisplay()
+        bounds = CGRect(
+            origin: .zero,
+            size: CGSize(
+                width: Metrics.eightTimesModule,
+                height: Metrics.eightTimesModule
+            )
+        )
+        setNeedsLayout()
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        bounds = CGRect(
+            origin: .zero,
+            size: CGSize(
+                width: Metrics.eightTimesModule,
+                height: Metrics.eightTimesModule
+            )
+        )
+        containerView.frame = bounds
+        imageView.frame = containerView.bounds
+
+        let labelWidth = max(
+            Metrics.tripleModule,
+            countLabel.intrinsicContentSize.width + Metrics.module
+        )
+        countLabel.frame = CGRect(
+            x: containerView.frame.maxX - labelWidth / 2,
+            y: containerView.frame.maxY - Metrics.tripleModule / 2,
+            width: labelWidth,
+            height: Metrics.tripleModule
+        ).integral
     }
     
     // MARK: Configure
@@ -52,7 +86,7 @@ final class ArtItemAnnotationView: MKAnnotationView {
         imageProvider: ((String) async -> Data?)?
     ) {
         imageTask?.cancel()
-        imageView.image = UIImage()
+        imageView.image = placeholderImage()
 
         if let clusterAnnotation = annotation as? MKClusterAnnotation {
             countLabel.isHidden = false
@@ -61,6 +95,7 @@ final class ArtItemAnnotationView: MKAnnotationView {
             countLabel.isHidden = true
             countLabel.text = nil
         }
+        setNeedsLayout()
 
         let imageURL: URL?
         if let clusterAnnotation = annotation as? MKClusterAnnotation {
@@ -71,6 +106,8 @@ final class ArtItemAnnotationView: MKAnnotationView {
         } else {
             imageURL = (annotation as? ArtItemAnnotation)?.imageURL
         }
+
+        representedImageURLString = imageURL?.absoluteString
 
         guard
             let imageProvider,
@@ -88,60 +125,58 @@ final class ArtItemAnnotationView: MKAnnotationView {
                 return
             }
 
+            guard self?.representedImageURLString == urlString else {
+                return
+            }
+
             self?.imageView.image = image
         }
     }
 
     private func setupView() {
-        frame = CGRect(
-            x: 0,
-            y: 0,
-            width: Constants.annotationSize,
-            height: Constants.annotationSize
+        bounds = CGRect(
+            origin: .zero,
+            size: CGSize(
+                width: Metrics.eightTimesModule,
+                height: Metrics.eightTimesModule
+            )
         )
-        centerOffset = CGPoint(x: 0, y: -26)
+        clipsToBounds = false
+        centerOffset = .zero
         canShowCallout = true
         collisionMode = .circle
 
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.backgroundColor = .white
+        containerView.frame = bounds
+        containerView.backgroundColor = UIColor(Color.appBackground)
         containerView.clipsToBounds = true
-        containerView.layer.cornerRadius = Constants.annotationCornerRadius
-        containerView.layer.borderWidth = 2
-        containerView.layer.borderColor = UIColor.systemGray4.cgColor
+        containerView.layer.cornerRadius = Metrics.tripleModule
+        containerView.layer.borderWidth = Metrics.halfModule
+        containerView.layer.borderColor = UIColor(Color.appBackground).cgColor
 
-        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.frame = containerView.bounds
         imageView.contentMode = .scaleAspectFill
-        imageView.tintColor = .red
+        imageView.tintColor = UIColor(Color.placeholderGrey)
+        imageView.image = placeholderImage()
 
-        countLabel.translatesAutoresizingMaskIntoConstraints = false
-        countLabel.font = .systemFont(ofSize: 13, weight: .bold)
-        countLabel.textColor = .white
+        countLabel.font = .InstrumentBold13
+        countLabel.textColor = UIColor(Color.appBackground)
         countLabel.textAlignment = .center
-        countLabel.backgroundColor = .black
-        countLabel.layer.cornerRadius = Constants.countBadgeSize / 2
+        countLabel.backgroundColor = UIColor(Color.accentRed)
+        countLabel.layer.cornerRadius = Metrics.threeQuartersModule
         countLabel.clipsToBounds = true
         countLabel.isHidden = true
 
         addSubview(containerView)
         containerView.addSubview(imageView)
         addSubview(countLabel)
+    }
 
-        NSLayoutConstraint.activate([
-            containerView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            containerView.topAnchor.constraint(equalTo: topAnchor),
-            containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
-
-            imageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            imageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            imageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            imageView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-
-            countLabel.centerXAnchor.constraint(equalTo: containerView.trailingAnchor),
-            countLabel.centerYAnchor.constraint(equalTo: containerView.bottomAnchor),
-            countLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: Constants.countBadgeSize),
-            countLabel.heightAnchor.constraint(equalToConstant: Constants.countBadgeSize)
-        ])
+    private func placeholderImage() -> UIImage? {
+        let configuration = UIImage.SymbolConfiguration(
+            pointSize: Metrics.doubleModule,
+            weight: .medium
+        )
+        return UIImage(systemName: "photo", withConfiguration: configuration)?
+            .withTintColor(UIColor(Color.placeholderGrey), renderingMode: .alwaysOriginal)
     }
 }
