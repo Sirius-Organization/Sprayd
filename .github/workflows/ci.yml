@@ -44,6 +44,7 @@ jobs:
             -scheme "Sprayd" \
             -sdk iphonesimulator \
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.2' \
+            -parallel-testing-enabled NO \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             test

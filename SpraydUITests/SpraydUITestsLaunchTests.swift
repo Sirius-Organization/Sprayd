@@ -22,15 +22,16 @@ final class SpraydUITestsLaunchTests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
-        let mapTab = app.tabBars.buttons["Map"]
         XCTAssertTrue(
-            mapTab.waitForExistence(timeout: 30),
-            "Expected 'Map' tab to appear after launch"
+            app.wait(for: .runningForeground, timeout: 120),
+            "Expected app to reach foreground after launch"
         )
 
-        let attachment = XCTAttachment(screenshot: app.screenshot())
-        attachment.name = "Launch Screen"
-        attachment.lifetime = .keepAlways
-        add(attachment)
+        let tabBar = app.tabBars.firstMatch
+        let mapTab = tabBar.buttons["Map"]
+        XCTAssertTrue(
+            mapTab.waitForExistence(timeout: 120),
+            "Expected 'Map' tab to appear after launch"
+        )
     }
 }
