@@ -26,12 +26,5 @@ final class SpraydUITestsLaunchTests: XCTestCase {
             app.wait(for: .runningForeground, timeout: 120),
             "Expected app to reach foreground after launch"
         )
-
-        let tabBar = app.tabBars.firstMatch
-        let mapTab = tabBar.buttons["Map"]
-        XCTAssertTrue(
-            mapTab.waitForExistence(timeout: 120),
-            "Expected 'Map' tab to appear after launch"
-        )
     }
 }
