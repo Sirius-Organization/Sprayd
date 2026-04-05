@@ -59,7 +59,7 @@ struct MyProfileView: View {
             VStack(spacing: Metrics.oneAndHalfModule) {
                 HStack {
                     Text("Username")
-                        .font(.ClimateCrisisRegular22)
+                        .font(.ClimateCrisis22)
                     Icons.pencil
                 }
                 .frame(maxWidth: .infinity)
@@ -86,7 +86,7 @@ struct MyProfileView: View {
     private var sectionTitle: some View {
         Text(selectedOption)
             .frame(maxWidth: 150)
-            .font(.ClimateCrisisRegular20)
+            .font(.ClimateCrisis20)
     }
     
     private var addButtonView: some View {

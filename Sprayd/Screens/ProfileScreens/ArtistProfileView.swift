@@ -30,7 +30,7 @@ struct ArtistProfileView: View {
             VStack(spacing: Metrics.oneAndHalfModule) {
                 HStack {
                     Text("Username")
-                        .font(.ClimateCrisisRegular22)
+                        .font(.ClimateCrisis22)
                 }
                 .frame(maxWidth: .infinity)
                 
@@ -46,7 +46,7 @@ struct ArtistProfileView: View {
     private var sectionTitle: some View {
         Text(Const.worksSectionText)
             .frame(maxWidth: 150)
-            .font(.ClimateCrisisRegular20)
+            .font(.ClimateCrisis20)
     }
     
     // TODO: - Replace with an array of works

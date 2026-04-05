@@ -5,7 +5,6 @@
 //  Created by Егор Мальцев on 01.04.2026.
 //
 
-import Foundation
 import SwiftUI
 
 extension Color {
@@ -32,4 +31,8 @@ extension Color {
         green: 137 / 255,
         blue: 137 / 255
     )
+    
+    static let gradientCenterColor = Color(red: 1, green: 0.53, blue: 0.28)
+    
+    static let gradientEdgeColor = Color(red: 1, green: 0.33, blue: 0.29)
 }

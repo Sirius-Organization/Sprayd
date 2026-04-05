@@ -22,6 +22,7 @@ extension Font {
     static let InstrumentMedium18 = Font.custom("InstrumentSans-Medium", size: 18)
     static let InstrumentMedium20 = Font.custom("InstrumentSans-Medium", size: 20)
     
-    static let ClimateCrisisRegular22 = Font.custom("ClimateCrisis-Regular", size: 22)
-    static let ClimateCrisisRegular20 = Font.custom("Climate Crisis", size: 20)
+    static let ClimateCrisis22 = Font.custom("ClimateCrisis-Regular", size: 22)
+    static let ClimateCrisis20 = Font.custom("Climate Crisis", size: 20)
+    static let ClimateCrisis52 = Font.custom("ClimateCrisis-Regular", size: 52)
 }
