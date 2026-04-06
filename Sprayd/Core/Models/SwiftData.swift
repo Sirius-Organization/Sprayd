@@ -14,9 +14,9 @@ final class ArtItem {
     var itemDescription: String
     @Relationship(deleteRule: .cascade) var images: [ArtImage]
     var location: String
-    var createdBy: String
-    var uploadedBy: String
-    var uploadedAt: Date
+    @Attribute(originalName: "author") var createdBy: String
+    var uploadedBy: String?
+    @Attribute(originalName: "createdAt") var uploadedAt: Date
     var stateRawValue: String
     var category: String
     var likesCount: Int
@@ -27,7 +27,7 @@ final class ArtItem {
         images: [ArtImage] = [],
         location: String = "",
         createdBy: String = "",
-        uploadedBy: String = "",
+        uploadedBy: String? = nil,
         uploadedAt: Date = .now,
         state: ArtState = .new,
         category: String = "",
@@ -48,6 +48,11 @@ final class ArtItem {
     var state: ArtState {
         get { ArtState(rawValue: stateRawValue) ?? .new }
         set { stateRawValue = newValue.rawValue }
+    }
+
+    var resolvedUploadedBy: String {
+        let value = uploadedBy?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return value.isEmpty ? createdBy : value
     }
 }
 
@@ -78,7 +83,13 @@ enum ArtState: String, Codable, CaseIterable {
 }
 
 enum ArtDataStore {
-    static let sharedModelContainer = makeModelContainer()
+    enum SharedLoadState {
+        case ready
+        case failed
+    }
+
+    static private(set) var sharedLoadState: SharedLoadState = .ready
+    static let sharedModelContainer = makeModelContainer(trackSharedLoadState: true)
     static let previewModelContainer = makeModelContainer(
         inMemoryOnly: true,
         seedSampleData: true
@@ -86,7 +97,8 @@ enum ArtDataStore {
 
     static func makeModelContainer(
         inMemoryOnly: Bool = false,
-        seedSampleData: Bool = false
+        seedSampleData: Bool = false,
+        trackSharedLoadState: Bool = false
     ) -> ModelContainer {
         let schema = Schema([
             ArtItem.self,
@@ -98,19 +110,56 @@ enum ArtDataStore {
         )
 
         do {
-            let container = try ModelContainer(
-                for: schema,
-                configurations: [configuration]
+            let container = try makeContainer(
+                schema: schema,
+                configuration: configuration,
+                seedSampleData: seedSampleData
             )
-
-            if seedSampleData {
-                try seedIfNeeded(in: container)
+            if trackSharedLoadState {
+                sharedLoadState = .ready
             }
-
             return container
         } catch {
-            fatalError("Failed to create SwiftData container: \(error)")
+            guard !inMemoryOnly else {
+                fatalError("Failed to create in-memory container: \(error)")
+            }
+
+            if trackSharedLoadState {
+                sharedLoadState = .failed
+            }
+            assertionFailure("Failed to create persistent model container: \(error)")
+
+            do {
+                let fallbackConfiguration = ModelConfiguration(
+                    schema: schema,
+                    isStoredInMemoryOnly: true
+                )
+                return try makeContainer(
+                    schema: schema,
+                    configuration: fallbackConfiguration,
+                    seedSampleData: false
+                )
+            } catch {
+                fatalError("Failed to create fallback in-memory container: \(error)")
+            }
         }
+    }
+
+    private static func makeContainer(
+        schema: Schema,
+        configuration: ModelConfiguration,
+        seedSampleData: Bool
+    ) throws -> ModelContainer {
+        let container = try ModelContainer(
+            for: schema,
+            configurations: [configuration]
+        )
+
+        if seedSampleData {
+            try seedIfNeeded(in: container)
+        }
+
+        return container
     }
 
     private static func seedIfNeeded(in container: ModelContainer) throws {

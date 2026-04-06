@@ -42,6 +42,10 @@ struct FeaturedView: View {
         }
     }
 
+    private var shouldShowLoadingErrorState: Bool {
+        items.isEmpty && ArtDataStore.sharedLoadState == .failed
+    }
+
     var body: some View {
         ZStack {
             Color.appBackground
@@ -89,7 +93,9 @@ struct FeaturedView: View {
                         }
                     }
 
-                    if items.isEmpty {
+                    if shouldShowLoadingErrorState {
+                        loadingErrorState
+                    } else if items.isEmpty {
                         emptyState
                     }
 
@@ -140,7 +146,7 @@ struct FeaturedView: View {
                         .foregroundStyle(.black)
 
                     personLine(label: "Creator", value: item.createdBy, size: 24, font: .InstrumentMedium13)
-                    personLine(label: "Uploaded by", value: item.uploadedBy, size: 20, font: .InstrumentMedium13)
+                    personLine(label: "Uploaded by", value: item.resolvedUploadedBy, size: 20, font: .InstrumentMedium13)
                     dateLine(uploadedAt: item.uploadedAt, font: .InstrumentMedium13)
                 }
 
@@ -184,7 +190,7 @@ struct FeaturedView: View {
                     metadataLine(text: displayLocation(for: item), icon: Icons.location, font: .InstrumentMedium13)
                     dateLine(uploadedAt: item.uploadedAt, font: .InstrumentMedium13)
                     personText(label: "Creator", value: item.createdBy, font: .InstrumentMedium13)
-                    personText(label: "Uploaded by", value: item.uploadedBy, font: .InstrumentMedium13)
+                    personText(label: "Uploaded by", value: item.resolvedUploadedBy, font: .InstrumentMedium13)
                 }
 
                 Spacer()
@@ -212,7 +218,7 @@ struct FeaturedView: View {
                         .lineLimit(1)
 
                     personLine(label: "Creator", value: item.createdBy, size: 16, font: .InstrumentMedium10)
-                    Text("Uploaded by: \(item.uploadedBy)")
+                    Text("Uploaded by: \(item.resolvedUploadedBy)")
                         .font(.InstrumentMedium10)
                         .foregroundStyle(.gray)
                         .lineLimit(1)
@@ -241,12 +247,26 @@ struct FeaturedView: View {
     }
 
     private var emptyState: some View {
+        stateCard(
+            title: "Nothing here yet",
+            message: "Featured objects will appear here as soon as new works are added."
+        )
+    }
+
+    private var loadingErrorState: some View {
+        stateCard(
+            title: "Unable to load the selection",
+            message: "Please try again a little later."
+        )
+    }
+
+    private func stateCard(title: String, message: String) -> some View {
         VStack(alignment: .leading, spacing: Metrics.module) {
-            Text("No art objects yet")
+            Text(title)
                 .font(.InstrumentBold20)
                 .foregroundStyle(.black)
 
-            Text("Featured will populate automatically from SwiftData when objects appear in the store.")
+            Text(message)
                 .font(.InstrumentRegular13)
                 .foregroundStyle(.gray)
                 .fixedSize(horizontal: false, vertical: true)
