@@ -6,14 +6,21 @@
 //
 
 import SwiftUI
+import SwiftData
 
+@MainActor
 struct ContentView: View {
+    private let compositionRoot: CompositionRoot
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+
+    init(compositionRoot: CompositionRoot) {
+        self.compositionRoot = compositionRoot
+    }
 
     var body: some View {
         ZStack {
             if hasCompletedOnboarding {
-                AppCoordinatorView()
+                AppCoordinatorView(compositionRoot: compositionRoot)
                     .transition(.asymmetric(
                         insertion: .opacity,
                         removal: .move(edge: .trailing).combined(with: .opacity)
@@ -32,8 +39,4 @@ struct ContentView: View {
         }
         .animation(.easeInOut(duration: 0.35), value: hasCompletedOnboarding)
     }
-}
-
-#Preview {
-    ContentView()
 }

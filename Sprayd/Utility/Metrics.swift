@@ -31,6 +31,9 @@ struct Metrics {
     
     /// 32
     static var quadrupleModule: CGFloat { doubleModule * 2 }
+
+    /// 64
+    static var eightTimesModule: CGFloat { module * 8 }
     
     /// 80
     static var tenTimesModule: CGFloat { module * 10 }
