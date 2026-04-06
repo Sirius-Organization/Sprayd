@@ -29,7 +29,7 @@ struct UserProfileView: View {
             VStack(spacing: Metrics.oneAndHalfModule) {
                 HStack {
                     Text(viewModel.username)
-                        .font(.ClimateCrisisRegular22)
+                        .font(.ClimateCrisis22)
                 }
                 .frame(maxWidth: .infinity)
                 
@@ -45,7 +45,7 @@ struct UserProfileView: View {
     private var sectionTitle: some View {
         Text(Const.postedSectionText)
             .frame(maxWidth: 150)
-            .font(.ClimateCrisisRegular20)
+            .font(.ClimateCrisis20)
     }
         
     private var postsView: some View {

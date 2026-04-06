@@ -18,6 +18,8 @@ struct MyProfileView: View {
         // UI constraint properties
         static let profileImageSize: CGFloat = 160
         static let choosePhotoButtonSize: CGFloat = 40
+        static let logoutButtonSize: CGFloat = 40
+        static let logoutIconPointSize: CGFloat = 17
     }
     
     // MARK: - Fields
@@ -57,7 +59,7 @@ struct MyProfileView: View {
             VStack(spacing: Metrics.oneAndHalfModule) {
                 HStack {
                     Text(viewModel.username)
-                        .font(.ClimateCrisisRegular22)
+                        .font(.ClimateCrisis22)
                     Icons.pencil
                 }
                 .frame(maxWidth: .infinity)
@@ -84,7 +86,7 @@ struct MyProfileView: View {
     private var sectionTitle: some View {
         Text(viewModel.selectedOptionTitle)
             .frame(maxWidth: 150)
-            .font(.ClimateCrisisRegular20)
+            .font(.ClimateCrisis20)
     }
     
     private var addButtonView: some View {
@@ -112,6 +114,25 @@ struct MyProfileView: View {
             }
         }
     }
+
+    private var logoutButton: some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.35)) {
+                viewModel.hasCompletedOnboarding = false
+            }
+        } label: {
+            Circle()
+                .fill(Color.accentRed)
+                .frame(width: Const.logoutButtonSize, height: Const.logoutButtonSize)
+                .overlay {
+                    Icons.logOut
+                        .font(.system(size: Const.logoutIconPointSize, weight: .semibold))
+                }
+                .shadow(radius: 3)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Log out")
+    }
     
     // MARK: - Body
     var body: some View {
@@ -134,9 +155,20 @@ struct MyProfileView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
+        .toolbar(.hidden, for: .navigationBar)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            HStack {
+                Spacer()
+                logoutButton
+            }
+            .padding(.leading, Metrics.tripleModule)
+            .padding(.trailing, Metrics.tripleModule)
+            .padding(.bottom, Metrics.module)
+            .background(Color.appBackground)
+        }
     }
 }
 
 //#Preview {
-//    MyProfileView(onArtAdd: {})
+//    MyProfileView(posts: nil, onAddArt: {})
 //}

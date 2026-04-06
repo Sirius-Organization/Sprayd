@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import UIKit
 
 extension Font {
     static let InstrumentRegular13 = Font.custom("InstrumentSans-Regular", size: 13)
+    static let InstrumentRegular16 = Font.custom("InstrumentSans-Regular", size: 16)
     static let InstrumentRegular18 = Font.custom("InstrumentSans-Regular", size: 18)
 
     static let InstrumentBold22 = Font.custom("InstrumentSans-Bold", size: 22)
@@ -22,6 +24,14 @@ extension Font {
     static let InstrumentMedium18 = Font.custom("InstrumentSans-Medium", size: 18)
     static let InstrumentMedium20 = Font.custom("InstrumentSans-Medium", size: 20)
     
-    static let ClimateCrisisRegular22 = Font.custom("ClimateCrisis-Regular", size: 22)
-    static let ClimateCrisisRegular20 = Font.custom("Climate Crisis", size: 20)
+    static let ClimateCrisis22 = Font.custom("ClimateCrisis-Regular", size: 22)
+    static let ClimateCrisis20 = Font.custom("Climate Crisis", size: 20)
+    static let ClimateCrisis52 = Font.custom("ClimateCrisis-Regular", size: 52)
+}
+
+extension UIFont {
+    static let InstrumentBold13 = UIFont(
+        name: "InstrumentSans-Bold",
+        size: 13
+    ) ?? .boldSystemFont(ofSize: 13)
 }

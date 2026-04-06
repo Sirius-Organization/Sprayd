@@ -7,25 +7,30 @@
 
 import Foundation
 import MapKit
-import _MapKit_SwiftUI
+import SwiftData
 
+@MainActor
 @Observable
 final class MainMapViewModel {
-    var position: MapCameraPosition
-    var markers: [MapMarker]
+    var region: MKCoordinateRegion
+    var items: [ArtItem]
+    
+    private let modelContext: ModelContext
+    private let imageLoader: ImageLoaderService
 
     init(
-        position: MapCameraPosition = .region(
-            MKCoordinateRegion(
-                center: CLLocationCoordinate2D(latitude: 55.7558, longitude: 37.6176),
-                span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-            )
-        ),
-        markers: [MapMarker] = [
-            MapMarker(title: "Москва", latitude: 55.7558, longitude: 37.6176)
-        ]
+        modelContext: ModelContext,
+        imageLoader: ImageLoaderService,
+        region: MKCoordinateRegion,
+        items: [ArtItem]
     ) {
-        self.position = position
-        self.markers = markers
+        self.modelContext = modelContext
+        self.imageLoader = imageLoader
+        self.region = region
+        self.items = items
+    }
+    
+    func imageData(for urlString: String) async -> Data? {
+        await imageLoader.loadImageData(from: urlString)
     }
 }
