@@ -1,27 +1,26 @@
 //
-//  UserProfileView.swift
+//  ArtistProfileView.swift
 //  Sprayd
 //
-//  Created by loxxy on 02.04.2026.
+//  Created by loxxy on 01.04.2026.
 //
 
 import SwiftUI
 
-struct UserProfileView: View {
+struct ArtistProfileView: View {
     // MARK: - Constants
     private enum Const {
         // Strings
-        static let postedSectionText: String = "Posted"
-        static let visitedSectionText: String = "Visited"
+        static let worksSectionText: String = "Works"
         
         // UI constraint properties
         static let profileImageSize: CGFloat = 160
+        static let profileImageCornerRadius: CGFloat = profileImageSize / 2
     }
     
     // MARK: - Fields
-    @State private var selectedOption = "Posted"
-    private var posts: [ArtItem]?
-
+    @ObservedObject var viewModel: ArtistProfileViewModel
+    
     // MARK: - Subviews
     private var bioView: some View {
         VStack {
@@ -29,13 +28,13 @@ struct UserProfileView: View {
                 .frame(width: Const.profileImageSize, height: Const.profileImageSize)
             VStack(spacing: Metrics.oneAndHalfModule) {
                 HStack {
-                    Text("Username")
+                    Text(viewModel.username)
                         .font(.ClimateCrisis22)
                 }
                 .frame(maxWidth: .infinity)
                 
                 HStack {
-                    Text("Description")
+                    Text(viewModel.bio)
                         .font(.InstrumentMedium13)
                 }
                 .frame(maxWidth: .infinity)
@@ -43,36 +42,40 @@ struct UserProfileView: View {
         }
     }
     
-    private var pickerView: some View {
-        Picker("", selection: $selectedOption) {
-            Text(Const.postedSectionText).tag(Const.postedSectionText)
-            Text(Const.visitedSectionText).tag(Const.visitedSectionText)
-        }
-        .pickerStyle(.segmented)
-        .padding(.horizontal)
-    }
-    
     private var sectionTitle: some View {
-        Text(Const.postedSectionText)
+        Text(Const.worksSectionText)
             .frame(maxWidth: 150)
             .font(.ClimateCrisis20)
     }
     
-    // TODO: - Replace with an array of posts
-    private var postView: some View = ArtMediumCardView()
-        
+    private var worksView: some View {
+        VStack {
+            ForEach(viewModel.works) { work in
+                ArtMediumCardView(
+                    title: work.name,
+                    location: work.location,
+                    description: work.itemDescription,
+                    date: "01.01.25",
+                    postAuthorName: "PostAuthor",
+                    artworkAuthorName: work.author
+                )
+            }
+        }
+    }
+    
     // MARK: - Body
     var body: some View {
         ZStack {
             Color(Color.appBackground)
-                        .ignoresSafeArea()
+                .ignoresSafeArea()
             
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: Metrics.doubleModule) {
                     bioView
-                    pickerView
+
                     sectionTitle
-                    postView
+                    
+                    worksView
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -80,6 +83,6 @@ struct UserProfileView: View {
     }
 }
 
-#Preview {
-    UserProfileView()
-}
+//#Preview {
+//    ArtistProfileView()
+//}
