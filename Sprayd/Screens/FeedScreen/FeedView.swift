@@ -118,10 +118,10 @@ struct FeaturedView: View {
                     Color.clear
                         .frame(height: Metrics.doubleModule)
                 }
-                .padding(.horizontal, Metrics.tripleModule)
-                .padding(.top, Metrics.oneAndHalfModule)
-                .padding(.bottom, Metrics.oneAndHalfModule)
             }
+            .safeAreaPadding(.horizontal, Metrics.tripleModule)
+            .safeAreaPadding(.top, Metrics.oneAndHalfModule)
+            .safeAreaPadding(.bottom, Metrics.oneAndHalfModule)
         }
     }
 
