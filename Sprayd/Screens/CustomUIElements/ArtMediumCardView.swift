@@ -21,19 +21,39 @@ struct ArtMediumCardView: View {
         )
         
         // Text
-        static let titleText = "The Gliders"
-        static let locationText = "St. Petersburg"
-        static let dateText = "24.02.2025"
-        static let descriptionText = "Mural by Ana Markov originally painted in 2015. It explores themes of loneliness and social issues. ..."
         static let artworkAuthorSectionTitle = "Author"
         static let artworkAuthorName = "Ana Markov"
         static let postAuthorSectionTitle = "Posted by"
-        static let postAuthorName = "Loxxych"
+    }
+    
+    // MARK: - Lifecycle
+    init(
+        title: String,
+        location: String,
+        description: String,
+        date: String,
+        postAuthorName: String,
+        artworkAuthorName: String,
+        likesCount: Int = 0
+    ) {
+        self.title = title
+        self.location = location
+        self.description = description
+        self.date = date
+        self.postAuthorName = postAuthorName
+        self.artworkAuthorName = artworkAuthorName
+        self.likesCount = likesCount
     }
     
     // MARK: - Fields
     @State private var isLiked: Bool = false
-    @State private var likesCount: Int = 0
+    @State private var likesCount: Int
+    private var title: String
+    private var location: String
+    private var description: String
+    private var date: String
+    private var postAuthorName: String
+    private var artworkAuthorName: String
     
     // MARK: - Subviews
     private var artworkImage: some View {
@@ -50,7 +70,7 @@ struct ArtMediumCardView: View {
     
     private var titleRow: some View {
         HStack(alignment: .firstTextBaseline) {
-            Text(Const.titleText)
+            Text(title)
                 .font(.InstrumentBold20)
                 .foregroundStyle(.black)
             
@@ -80,7 +100,7 @@ struct ArtMediumCardView: View {
     private var metaRow: some View {
         HStack(alignment: .center) {
             Label {
-                Text(Const.locationText)
+                Text(location)
                     .font(.InstrumentRegular13)
             } icon: {
                 Icons.location
@@ -89,14 +109,14 @@ struct ArtMediumCardView: View {
             
             Spacer(minLength: Metrics.oneAndHalfModule)
             
-            Text(Const.dateText)
+            Text(date)
                 .font(.InstrumentRegular13)
                 .foregroundStyle(Color.secondaryColor)
         }
     }
     
     private var descriptionText: some View {
-        Text(Const.descriptionText)
+        Text(description)
             .font(.InstrumentRegular13)
             .foregroundStyle(Color.secondaryColor)
             .multilineTextAlignment(.leading)
@@ -131,13 +151,13 @@ struct ArtMediumCardView: View {
                     personSection(
                         title: Const.artworkAuthorSectionTitle,
                         titleFont: .InstrumentBold13,
-                        name: Const.artworkAuthorName
+                        name: artworkAuthorName
                     )
                     
                     personSection(
                         title: Const.postAuthorSectionTitle,
                         titleFont: .InstrumentRegular13,
-                        name: Const.postAuthorName
+                        name: postAuthorName
                     )
                 }
             }
@@ -160,6 +180,7 @@ struct ArtMediumCardView: View {
     }
 }
 
-#Preview {
-    ArtMediumCardView()
-}
+//
+//#Preview {
+//    ArtMediumCardView()
+//}

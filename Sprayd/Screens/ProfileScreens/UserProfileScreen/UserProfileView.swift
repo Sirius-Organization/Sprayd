@@ -19,8 +19,7 @@ struct UserProfileView: View {
     }
     
     // MARK: - Fields
-    @State private var selectedOption = "Posted"
-    private var posts: [ArtItem]?
+    @ObservedObject var viewModel: UserProfileViewModel
 
     // MARK: - Subviews
     private var bioView: some View {
@@ -29,13 +28,13 @@ struct UserProfileView: View {
                 .frame(width: Const.profileImageSize, height: Const.profileImageSize)
             VStack(spacing: Metrics.oneAndHalfModule) {
                 HStack {
-                    Text("Username")
+                    Text(viewModel.username)
                         .font(.ClimateCrisisRegular22)
                 }
                 .frame(maxWidth: .infinity)
                 
                 HStack {
-                    Text("Description")
+                    Text(viewModel.bio)
                         .font(.InstrumentMedium13)
                 }
                 .frame(maxWidth: .infinity)
@@ -43,24 +42,27 @@ struct UserProfileView: View {
         }
     }
     
-    private var pickerView: some View {
-        Picker("", selection: $selectedOption) {
-            Text(Const.postedSectionText).tag(Const.postedSectionText)
-            Text(Const.visitedSectionText).tag(Const.visitedSectionText)
-        }
-        .pickerStyle(.segmented)
-        .padding(.horizontal)
-    }
-    
     private var sectionTitle: some View {
         Text(Const.postedSectionText)
             .frame(maxWidth: 150)
             .font(.ClimateCrisisRegular20)
     }
-    
-    // TODO: - Replace with an array of posts
-    private var postView: some View = ArtMediumCardView()
         
+    private var postsView: some View {
+        VStack {
+            ForEach(viewModel.posts) { post in
+                ArtMediumCardView(
+                    title: post.name,
+                    location: post.location,
+                    description: post.itemDescription,
+                    date: "01.01.25",
+                    postAuthorName: "PostAuthor",
+                    artworkAuthorName: post.author
+                )
+            }
+        }
+    }
+    
     // MARK: - Body
     var body: some View {
         ZStack {
@@ -70,9 +72,8 @@ struct UserProfileView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     bioView
-                    pickerView
                     sectionTitle
-                    postView
+                    postsView
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -80,6 +81,6 @@ struct UserProfileView: View {
     }
 }
 
-#Preview {
-    UserProfileView()
-}
+//#Preview {
+//    UserProfileView(viewModel: UserProfileViewModel())
+//}

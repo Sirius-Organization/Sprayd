@@ -19,8 +19,8 @@ final class MyProfileViewModel: ObservableObject {
     @Published var selectedOption: Option
     @Published var username: String
     @Published var bio: String
-    @Published var posts: [ArtItem]?
-    @Published var visited: [ArtItem]?
+    @Published var posts: [ArtItem]
+    @Published var visited: [ArtItem]
 
     var selectedOptionTitle: String {
         selectedOption.rawValue
@@ -39,8 +39,8 @@ final class MyProfileViewModel: ObservableObject {
         selectedOption: Option = .posted,
         username: String = "Username",
         bio: String = "Description",
-        posts: [ArtItem]? = nil,
-        visited: [ArtItem]? = nil,
+        posts: [ArtItem] = [ArtItem(name: "ArtWork1"), ArtItem(name: "ArtWork2")],
+        visited: [ArtItem] = [ArtItem(name: "ArtWork3")],
     ) {
         self.selectedOption = selectedOption
         self.username = username

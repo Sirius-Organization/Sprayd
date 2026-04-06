@@ -19,8 +19,7 @@ struct ArtistProfileView: View {
     }
     
     // MARK: - Fields
-    @State private var selectedOption = "Posted"
-    private var posts: [ArtItem]?
+    @ObservedObject var viewModel: ArtistProfileViewModel
     
     // MARK: - Subviews
     private var bioView: some View {
@@ -29,13 +28,13 @@ struct ArtistProfileView: View {
                 .frame(width: Const.profileImageSize, height: Const.profileImageSize)
             VStack(spacing: Metrics.oneAndHalfModule) {
                 HStack {
-                    Text("Username")
+                    Text(viewModel.username)
                         .font(.ClimateCrisisRegular22)
                 }
                 .frame(maxWidth: .infinity)
                 
                 HStack {
-                    Text("Description")
+                    Text(viewModel.bio)
                         .font(.InstrumentMedium13)
                 }
                 .frame(maxWidth: .infinity)
@@ -49,8 +48,20 @@ struct ArtistProfileView: View {
             .font(.ClimateCrisisRegular20)
     }
     
-    // TODO: - Replace with an array of works
-    private var worksView: some View = ArtMediumCardView()
+    private var worksView: some View {
+        VStack {
+            ForEach(viewModel.works) { work in
+                ArtMediumCardView(
+                    title: work.name,
+                    location: work.location,
+                    description: work.itemDescription,
+                    date: "01.01.25",
+                    postAuthorName: "PostAuthor",
+                    artworkAuthorName: work.author
+                )
+            }
+        }
+    }
     
     // MARK: - Body
     var body: some View {
@@ -72,6 +83,6 @@ struct ArtistProfileView: View {
     }
 }
 
-#Preview {
-    ArtistProfileView()
-}
+//#Preview {
+//    ArtistProfileView()
+//}
