@@ -31,7 +31,8 @@ final class ProfileCoordinator: ObservableObject {
         MyProfileView(
             onAddArt: { [weak self] in
                 self?.openAddArt()
-            }
+            },
+            viewModel: MyProfileViewModel()
         )
     }
     
