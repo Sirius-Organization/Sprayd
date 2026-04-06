@@ -64,11 +64,6 @@ final class ArtItem {
         set { createdBy = newValue }
     }
 
-    var imageUrls: [String] {
-        get { images.map(\.urlString) }
-        set { images = newValue.map { ArtImage(urlString: $0) } }
-    }
-
     var primaryImageURL: URL? {
         let candidates = imageUrls + images.map(\.urlString)
 
