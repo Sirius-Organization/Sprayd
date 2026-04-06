@@ -162,19 +162,26 @@ struct FeaturedView: View {
         VStack(alignment: .leading, spacing: Metrics.module) {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(Color.gray.opacity(0.16))
-                .frame(width: 74, height: 78)
+                .frame(maxWidth: .infinity)
+                .frame(height: 78)
 
-            Text(title)
-                .font(.InstrumentBold17)
-                .foregroundStyle(.black)
-                .lineLimit(2)
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, minHeight: 42, alignment: .topLeading)
+            HStack(alignment: .top, spacing: Metrics.module) {
+                Text(title)
+                    .font(.InstrumentBold17)
+                    .foregroundStyle(.black)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
 
-            Icons.chevronRight
-                .font(.system(size: 11, weight: .semibold))
+                Spacer(minLength: Metrics.halfModule)
+
+                Icons.chevronRight
+                    .font(.system(size: 11, weight: .semibold))
+                    .padding(.top, 2)
+            }
+            .frame(maxWidth: .infinity, minHeight: 42, alignment: .topLeading)
         }
-        .frame(width: 98, alignment: .leading)
+        .frame(width: 116, alignment: .leading)
     }
 
     private func discoverLargeCard(item: ArtItem) -> some View {
