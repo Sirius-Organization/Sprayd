@@ -7,12 +7,11 @@
 
 import SwiftUI
 import SwiftData
-import UIKit
 
 struct FeaturedView: View {
     @Query(
         sort: [
-            SortDescriptor(\ArtItem.uploadedAt, order: .reverse),
+            SortDescriptor(\ArtItem.createdAt, order: .reverse),
             SortDescriptor(\ArtItem.name)
         ]
     )
@@ -40,10 +39,6 @@ struct FeaturedView: View {
             guard seen.insert(city).inserted else { return nil }
             return city
         }
-    }
-
-    private var shouldShowLoadingErrorState: Bool {
-        items.isEmpty && ArtDataStore.sharedLoadState == .failed
     }
 
     var body: some View {
@@ -93,9 +88,7 @@ struct FeaturedView: View {
                         }
                     }
 
-                    if shouldShowLoadingErrorState {
-                        loadingErrorState
-                    } else if items.isEmpty {
+                    if items.isEmpty {
                         emptyState
                     }
 
@@ -145,9 +138,13 @@ struct FeaturedView: View {
                         .font(.InstrumentBold20)
                         .foregroundStyle(.black)
 
-                    personLine(label: "Creator", value: item.createdBy, size: 24, font: .InstrumentMedium13)
-                    personLine(label: "Uploaded by", value: item.resolvedUploadedBy, size: 20, font: .InstrumentMedium13)
-                    dateLine(uploadedAt: item.uploadedAt, font: .InstrumentMedium13)
+                    personLine(label: "Creator", value: item.author, size: 24, font: .InstrumentMedium13)
+
+                    if let uploadedBy = uploadedByText(for: item) {
+                        personLine(label: "Uploaded by", value: uploadedBy, size: 20, font: .InstrumentMedium13)
+                    }
+
+                    dateLine(createdAt: item.createdAt, font: .InstrumentMedium13)
                 }
 
                 Spacer()
@@ -196,9 +193,12 @@ struct FeaturedView: View {
                         .foregroundStyle(.black)
 
                     metadataLine(text: displayLocation(for: item), icon: Icons.location, font: .InstrumentMedium13)
-                    dateLine(uploadedAt: item.uploadedAt, font: .InstrumentMedium13)
-                    personText(label: "Creator", value: item.createdBy, font: .InstrumentMedium13)
-                    personText(label: "Uploaded by", value: item.resolvedUploadedBy, font: .InstrumentMedium13)
+                    dateLine(createdAt: item.createdAt, font: .InstrumentMedium13)
+                    personText(label: "Creator", value: item.author, font: .InstrumentMedium13)
+
+                    if let uploadedBy = uploadedByText(for: item) {
+                        personText(label: "Uploaded by", value: uploadedBy, font: .InstrumentMedium13)
+                    }
                 }
 
                 Spacer()
@@ -225,12 +225,16 @@ struct FeaturedView: View {
                         .foregroundStyle(.black)
                         .lineLimit(1)
 
-                    personLine(label: "Creator", value: item.createdBy, size: 16, font: .InstrumentMedium10)
-                    Text("Uploaded by: \(item.resolvedUploadedBy)")
-                        .font(.InstrumentMedium10)
-                        .foregroundStyle(.gray)
-                        .lineLimit(1)
-                    Text(uploadDateText(for: item.uploadedAt))
+                    personLine(label: "Creator", value: item.author, size: 16, font: .InstrumentMedium10)
+
+                    if let uploadedBy = uploadedByText(for: item) {
+                        Text("Uploaded by: \(uploadedBy)")
+                            .font(.InstrumentMedium10)
+                            .foregroundStyle(.gray)
+                            .lineLimit(1)
+                    }
+
+                    Text(uploadDateText(for: item.createdAt))
                         .font(.InstrumentMedium10)
                         .foregroundStyle(.gray)
                         .lineLimit(1)
@@ -258,13 +262,6 @@ struct FeaturedView: View {
         stateCard(
             title: "Nothing here yet",
             message: "Featured objects will appear here as soon as new works are added."
-        )
-    }
-
-    private var loadingErrorState: some View {
-        stateCard(
-            title: "Unable to load the selection",
-            message: "Please try again a little later."
         )
     }
 
@@ -320,8 +317,8 @@ struct FeaturedView: View {
         }
     }
 
-    private func dateLine(uploadedAt: Date, font: Font) -> some View {
-        Text("Uploaded: \(uploadDateText(for: uploadedAt))")
+    private func dateLine(createdAt: Date, font: Font) -> some View {
+        Text("Uploaded: \(uploadDateText(for: createdAt))")
             .font(font)
             .foregroundStyle(.gray)
             .lineLimit(1)
@@ -332,38 +329,46 @@ struct FeaturedView: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(Color.gray.opacity(0.16))
 
-            if let previewImage = previewImage(for: item) {
-                Image(uiImage: previewImage)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            if let imageURL = item.primaryImageURL {
+                AsyncImage(url: imageURL) { phase in
+                    if let image = phase.image {
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else {
+                        placeholderArtworkImage
+                    }
+                }
             } else {
-                Icons.photo
-                    .foregroundStyle(.gray.opacity(0.7))
-                    .font(.system(size: 34, weight: .medium))
+                placeholderArtworkImage
             }
         }
         .frame(height: height)
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 
-    private func previewImage(for item: ArtItem) -> UIImage? {
-        guard
-            let imageData = item.images
-                .sorted(by: { $0.timeStamp > $1.timeStamp })
-                .first?
-                .img,
-            !imageData.isEmpty
-        else {
-            return nil
-        }
-
-        return UIImage(data: imageData)
+    private var placeholderArtworkImage: some View {
+        Icons.photo
+            .foregroundStyle(.gray.opacity(0.7))
+            .font(.system(size: 34, weight: .medium))
     }
 
     private func displayLocation(for item: ArtItem) -> String {
-        let value = item.location.trimmingCharacters(in: .whitespacesAndNewlines)
-        return value.isEmpty ? "Location pending" : value
+        cleanedText(item.location) ?? "Location pending"
+    }
+
+    private func uploadedByText(for item: ArtItem) -> String? {
+        guard let uploadedBy = item.uploadedBy else {
+            return nil
+        }
+
+        return cleanedText(uploadedBy)
+    }
+
+    private func cleanedText(_ value: String) -> String? {
+        let trimmedValue = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmedValue.isEmpty ? nil : trimmedValue
     }
 
     private func uploadDateText(for date: Date) -> String {
@@ -373,5 +378,5 @@ struct FeaturedView: View {
 
 #Preview {
     FeaturedView()
-        .modelContainer(ArtDataStore.previewModelContainer)
+        .modelContainer(sharedModelContainer)
 }

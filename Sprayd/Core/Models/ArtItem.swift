@@ -13,11 +13,10 @@ final class ArtItem {
     var name: String
     var itemDescription: String
     @Relationship(deleteRule: .cascade) var images: [ArtImage]
-    var imageUrls: [String]
     var location: String
-    @Attribute(originalName: "author") var createdBy: String
+    var author: String
     var uploadedBy: String?
-    @Attribute(originalName: "createdAt") var uploadedAt: Date
+    var createdAt: Date
     var stateRawValue: String
     var category: String
     var likesCount: Int
@@ -32,7 +31,7 @@ final class ArtItem {
         location: String = "",
         author: String = "",
         uploadedBy: String? = nil,
-        uploadedAt: Date = .now,
+        createdAt: Date = .now,
         state: ArtState = .new,
         category: String = "",
         likesCount: Int = 0,
@@ -41,12 +40,11 @@ final class ArtItem {
     ) {
         self.name = name
         self.itemDescription = itemDescription
-        self.images = storedImages
-        self.imageUrls = images
+        self.images = storedImages + images.map { ArtImage(urlString: $0) }
         self.location = location
-        self.createdBy = author
+        self.author = author
         self.uploadedBy = uploadedBy
-        self.uploadedAt = uploadedAt
+        self.createdAt = createdAt
         self.stateRawValue = state.rawValue
         self.category = category
         self.likesCount = likesCount
@@ -59,16 +57,9 @@ final class ArtItem {
         set { stateRawValue = newValue.rawValue }
     }
 
-    var author: String {
-        get { createdBy }
-        set { createdBy = newValue }
-    }
-
     var primaryImageURL: URL? {
-        let candidates = imageUrls + images.map(\.urlString)
-
-        for candidate in candidates {
-            let value = candidate.trimmingCharacters(in: .whitespacesAndNewlines)
+        for image in images {
+            let value = image.urlString.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !value.isEmpty else { continue }
             if let url = URL(string: value) {
                 return url
@@ -76,10 +67,5 @@ final class ArtItem {
         }
 
         return nil
-    }
-
-    var resolvedUploadedBy: String {
-        let value = uploadedBy?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return value.isEmpty ? createdBy : value
     }
 }

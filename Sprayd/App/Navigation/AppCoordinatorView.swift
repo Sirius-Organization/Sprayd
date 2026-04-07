@@ -26,7 +26,7 @@ struct AppCoordinatorView: View {
             
             FeedCoordinatorView(coordinator: coordinator.feedCoordinator)
                 .tabItem {
-                    Icons.map
+                    Icons.home
                 }
                 .tag(AppTab.feed)
             
