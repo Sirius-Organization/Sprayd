@@ -9,15 +9,15 @@ import Foundation
 
 final class Sender {
     
-    private enum Keys {
+    private enum Constants {
         static let baseURL = "http://localhost:8080"
     }
     
     private let baseURL: String
     private let delays: [TimeInterval] = [1, 3, 10]
     
-    init(baseURL: String? = Bundle.main.object(forInfoDictionaryKey: Keys.baseURL) as? String) throws {
-        guard let baseURL, !baseURL.isEmpty else {
+    init(baseURL: String = Constants.baseURL) throws {
+        guard !baseURL.isEmpty else {
             throw APIError.invalidURL
         }
         self.baseURL = baseURL
@@ -70,7 +70,10 @@ final class Sender {
                 attempt: attempt
             )
         } catch {
-            // If we have network errors -> retry
+            // Retry only transport-level failures.
+            guard error is URLError else {
+                throw error
+            }
             if attempt < delays.count {
                 try await Task.sleep(nanoseconds: UInt64(delays[attempt] * 1_000_000_000))
                 return try await sendWithRetry(
@@ -123,12 +126,19 @@ final class Sender {
     }
     
     private func decodeResponse<T: Codable>(_ data: Data) throws -> SuccessResponse<T> {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         do {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            // Preferred backend format: { "data": ... }
             return try decoder.decode(SuccessResponse<T>.self, from: data)
         } catch {
-            throw APIError.decodingError(error)
+            // Fallback for endpoints that return raw payload, e.g. [ ... ].
+            do {
+                let raw = try decoder.decode(T.self, from: data)
+                return SuccessResponse(data: raw)
+            } catch {
+                throw APIError.decodingError(error)
+            }
         }
     }
     
