@@ -18,9 +18,13 @@ final class MyProfileViewModel: ObservableObject {
     // MARK: - Fields
     @Published var selectedOption: Option
     @Published var username: String
+    @Published var draftUsername: String = ""
     @Published var bio: String
+    @Published var draftBio: String = ""
     @Published var posts: [ArtItem]
     @Published var visited: [ArtItem]
+    @Published var isEditingUsername: Bool = false
+    @Published var isEditingBio: Bool = false
     @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
 
     var selectedOptionTitle: String {
@@ -53,5 +57,25 @@ final class MyProfileViewModel: ObservableObject {
     // MARK: - Logic
     func selectOption(_ option: Option) {
         selectedOption = option
+    }
+    
+    func enterUsernameEditingMode() {
+        draftUsername = username
+        isEditingUsername.toggle()
+    }
+    
+    func saveUsername() {
+        username = draftUsername
+        isEditingUsername.toggle()
+    }
+    
+    func enterBioEditingMode() {
+        isEditingBio.toggle()
+        draftBio = bio
+    }
+
+    func saveBio() {
+        bio = draftBio
+        isEditingBio.toggle()
     }
 }

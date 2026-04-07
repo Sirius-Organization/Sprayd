@@ -14,12 +14,14 @@ struct MyProfileView: View {
         static let postedButtonBottomText: String = "Add new seen art"
         static let postedSectionText: String = "Posted"
         static let visitedSectionText: String = "Visited"
-
+        
         // UI constraint properties
         static let profileImageSize: CGFloat = 160
         static let choosePhotoButtonSize: CGFloat = 40
         static let logoutButtonSize: CGFloat = 40
         static let logoutIconPointSize: CGFloat = 17
+        static let editableFieldMaxWidth: CGFloat = 220
+        static let profileInfoRowWidth: CGFloat = 260
     }
     
     // MARK: - Fields
@@ -37,7 +39,7 @@ struct MyProfileView: View {
     
     // MARK: - Subviews
     private var bioView: some View {
-        VStack {
+        VStack() {
             ZStack(alignment: .bottomTrailing) {
                 Icons.personCircle
                     .frame(width: Const.profileImageSize, height: Const.profileImageSize)
@@ -57,21 +59,75 @@ struct MyProfileView: View {
             .frame(maxWidth: .infinity)
             
             VStack(spacing: Metrics.oneAndHalfModule) {
-                HStack {
-                    Text(viewModel.username)
-                        .font(.ClimateCrisis22)
-                    Icons.pencil
+                ZStack {
+                    if (!viewModel.isEditingUsername) {
+                        Text(viewModel.username)
+                            .font(.ClimateCrisis22)
+                    } else {
+                        TextField("Username", text: $viewModel.draftUsername)
+                            .font(.ClimateCrisis22)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: Const.editableFieldMaxWidth)
+                    }
+                    
+                    HStack {
+                        Spacer()
+                        
+                        Button {
+                            if (viewModel.isEditingUsername) {
+                                viewModel.saveUsername()
+                            } else {
+                                viewModel.enterUsernameEditingMode()
+                            }
+                        } label: {
+                            if (viewModel.isEditingUsername) {
+                                Icons.checkmark
+                                    .renderingMode(.template)
+                                    .foregroundColor(Color.green)
+                            } else {
+                                Icons.pencil
+                            }
+                        }
+                    }
                 }
-                .frame(maxWidth: .infinity)
+                .frame(width: Const.profileInfoRowWidth)
                 
-                HStack {
-                    Text(viewModel.bio)
-                        .font(.InstrumentMedium13)
-                    Icons.pencil
+                ZStack {
+                    if (!viewModel.isEditingBio) {
+                        Text(viewModel.bio)
+                            .font(.InstrumentMedium13)
+                    } else {
+                        TextField("Bio", text: $viewModel.draftBio)
+                            .font(.InstrumentMedium13)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: Const.editableFieldMaxWidth)
+                    }
+                    
+                    HStack {
+                        Spacer()
+                        
+                        Button {
+                            if (viewModel.isEditingBio) {
+                                viewModel.saveBio()
+                            } else {
+                                viewModel.enterBioEditingMode()
+                            }
+                        } label: {
+                            if (viewModel.isEditingBio) {
+                                Icons.checkmark
+                                    .renderingMode(.template)
+                                    .foregroundColor(Color.green)
+                            } else {
+                                Icons.pencil
+                            }
+                        }
+                    }
                 }
-                .frame(maxWidth: .infinity)
+                .frame(width: Const.profileInfoRowWidth)
             }
+            .frame(maxWidth: .infinity)
         }
+        .frame(maxWidth: .infinity)
     }
     
     private var pickerView: some View {
@@ -169,6 +225,9 @@ struct MyProfileView: View {
     }
 }
 
-//#Preview {
-//    MyProfileView(posts: nil, onAddArt: {})
-//}
+#Preview {
+    MyProfileView(
+        onAddArt: {},
+        viewModel: MyProfileViewModel()
+    )
+}
