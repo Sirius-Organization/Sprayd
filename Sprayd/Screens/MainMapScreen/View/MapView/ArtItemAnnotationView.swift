@@ -31,7 +31,7 @@ final class ArtItemAnnotationView: MKAnnotationView {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        imageView.cancelCachedImageLoad()
+        imageView.cancelImageLoad()
         imageView.image = placeholderImage()
         countLabel.isHidden = true
         countLabel.text = nil
@@ -100,7 +100,7 @@ final class ArtItemAnnotationView: MKAnnotationView {
             imageURL = (annotation as? ArtItemAnnotation)?.imageURL
         }
 
-        imageView.setCachedImage(
+        imageView.setImage(
             from: imageURL,
             imageLoaderService: imageLoaderService,
             placeholder: placeholderImage()

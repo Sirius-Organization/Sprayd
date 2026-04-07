@@ -10,7 +10,6 @@ import UIKit
 
 private enum CachedImageAssociatedKeys {
     static var task: UInt8 = 0
-    static var representedURLString: UInt8 = 0
 }
 
 extension UIImageView {
@@ -28,31 +27,13 @@ extension UIImageView {
         }
     }
 
-    private var representedURLString: String? {
-        get {
-            objc_getAssociatedObject(
-                self,
-                &CachedImageAssociatedKeys.representedURLString
-            ) as? String
-        }
-        set {
-            objc_setAssociatedObject(
-                self,
-                &CachedImageAssociatedKeys.representedURLString,
-                newValue,
-                .OBJC_ASSOCIATION_COPY_NONATOMIC
-            )
-        }
-    }
-
-    func setCachedImage(
+    func setImage(
         from url: URL?,
         imageLoaderService: ImageLoaderService?,
         placeholder: UIImage?
     ) {
-        cancelCachedImageLoad()
+        cancelImageLoad()
         image = placeholder
-        representedURLString = url?.absoluteString
 
         guard
             let imageLoaderService,
@@ -70,17 +51,12 @@ extension UIImageView {
                 return
             }
 
-            guard self?.representedURLString == urlString else {
-                return
-            }
-
             self?.image = image
         }
     }
 
-    func cancelCachedImageLoad() {
+    func cancelImageLoad() {
         cachedImageTask?.cancel()
         cachedImageTask = nil
-        representedURLString = nil
     }
 }
