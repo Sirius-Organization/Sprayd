@@ -114,14 +114,9 @@ final class Sender {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         do {
-            let wrapped = try decoder.decode(SuccessResponse<T>.self, from: data)
-            return wrapped.data
+            return try decoder.decode(T.self, from: data)
         } catch {
-            do {
-                return try decoder.decode(T.self, from: data)
-            } catch {
-                throw APIError.decodingError(error)
-            }
+            throw APIError.decodingError(error)
         }
     }
     

@@ -7,11 +7,6 @@
 
 import Foundation
 
-// MARK: - Success Models
-struct SuccessResponse<T: Codable>: Codable {
-    let data: T
-}
-
 // MARK: - Error Models
 struct APIErrorResponse: Codable, Error {
     let errorType: String
