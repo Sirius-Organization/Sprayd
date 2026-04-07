@@ -60,7 +60,6 @@ struct MyProfileView: View {
                 HStack {
                     Text(viewModel.username)
                         .font(.ClimateCrisis22)
-
                     Icons.pencil
                 }
                 .frame(maxWidth: .infinity)
@@ -115,7 +114,7 @@ struct MyProfileView: View {
             }
         }
     }
-    
+
     private var logoutButton: some View {
         Button {
             withAnimation(.easeInOut(duration: 0.35)) {

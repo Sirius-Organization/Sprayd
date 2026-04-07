@@ -22,7 +22,7 @@ final class MyProfileViewModel: ObservableObject {
     @Published var posts: [ArtItem]
     @Published var visited: [ArtItem]
     @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
-    
+
     var selectedOptionTitle: String {
         selectedOption.rawValue
     }

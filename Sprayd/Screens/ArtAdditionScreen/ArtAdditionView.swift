@@ -41,34 +41,18 @@ struct ArtAdditionView: View {
     }
     
     // MARK: - Fields
-    private var addedPhotos: [ArtImage] = []
+    @ObservedObject private var viewModel: ArtAdditionViewModel
     
-    @State private var title: String = ""
-    @State private var description: String = ""
-    @State private var selectedCoordinate: CLLocationCoordinate2D?
-    @State private var selectedLocationName: String?
-    @State private var isLocationPickerPresented = false
-    @State private var selectedAuthor: Author? = Author(name: "Ana Markov")
-    @State private var selectedCategory: Category? = Category(name: "Sponsored by government")
-    
-    let onBackButtonTapped: () -> ()
+    let onBackButtonTapped: () -> Void
     
     // MARK: - Lifecycle
     init(
-        addedPhotos: [ArtImage] = [],
-        title: String = "",
-        description: String = "",
-        selectedAuthor: Author? = nil,
-        selectedCategory: Category? = nil,
-        onBackButtonTapped: @escaping () -> Void
+        onBackButtonTapped: @escaping () -> Void,
+        viewModel: ArtAdditionViewModel
     ) {
-            self.addedPhotos = addedPhotos
-            self.title = title
-            self.description = description
-            self.selectedAuthor = selectedAuthor
-            self.selectedCategory = selectedCategory
-            self.onBackButtonTapped = onBackButtonTapped
-        }
+        self.onBackButtonTapped = onBackButtonTapped
+        self.viewModel = viewModel
+    }
     
     // MARK: - Body
     var body: some View {
@@ -86,7 +70,7 @@ struct ArtAdditionView: View {
                         axis: .horizontal,
                         title: Const.titleFieldTitle,
                         placeholder: Const.titleFieldPlaceholder,
-                        text: $title
+                        text: $viewModel.title
                     )
                     
                     OutlinedInputField(
@@ -94,7 +78,7 @@ struct ArtAdditionView: View {
                         axis: .vertical,
                         title: Const.descriptionFieldTitle,
                         placeholder: Const.descriptionFieldPlaceholder,
-                        text: $description
+                        text: $viewModel.description
                     )
                     
                     authorSection
@@ -111,10 +95,10 @@ struct ArtAdditionView: View {
         }
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .tabBar)
-        .sheet(isPresented: $isLocationPickerPresented) {
+        .sheet(isPresented: $viewModel.isLocationPickerPresented) {
             LocationPickerView { picked in
-                selectedCoordinate = picked.coordinate
-                selectedLocationName = picked.displayName
+                viewModel.selectedCoordinate = picked.coordinate
+                viewModel.selectedLocationName = picked.displayName
             }
         }
     }
@@ -144,9 +128,9 @@ struct ArtAdditionView: View {
             HStack(spacing: Metrics.oneAndHalfModule) {
                 choosePhotoButton
                 
-                ForEach(addedPhotos) { photo in
-                    photoPreview(photo)
-                }
+                ForEach(viewModel.addedPhotos) { photo in
+                        photoPreview(photo)
+                    }
             }
             .padding(.vertical, Metrics.halfModule)
         }
@@ -177,7 +161,7 @@ struct ArtAdditionView: View {
                 .font(.InstrumentMedium18)
                 .foregroundStyle(Color.black)
             
-            if let selectedAuthor {
+            if let selectedAuthor = viewModel.selectedAuthor {
                 HStack(spacing: Metrics.oneAndHalfModule) {
                     Circle()
                         .fill(Color.gray.opacity(0.45))
@@ -208,19 +192,19 @@ struct ArtAdditionView: View {
                 .font(.InstrumentMedium18)
                 .foregroundStyle(Color.black)
             
-            if let selectedCoordinate {
+            if let selectedCoordinate = viewModel.selectedCoordinate {
                 HStack(alignment: .top, spacing: Metrics.halfModule) {
                     Icons.location
                         .foregroundStyle(Color.secondaryColor)
                     
                     VStack(alignment: .leading, spacing: Metrics.halfModule) {
                         let coordText = Self.formatCoordinate(selectedCoordinate)
-                        if let selectedLocationName {
+                        if let selectedLocationName = viewModel.selectedLocationName{
                             Text(selectedLocationName)
                                 .font(.InstrumentMedium16)
                                 .foregroundStyle(Color.black)
                         }
-                        if selectedLocationName != coordText {
+                        if viewModel.selectedLocationName != coordText {
                             Text(coordText)
                                 .font(.InstrumentRegular13)
                                 .foregroundStyle(Color.secondaryColor)
@@ -232,7 +216,7 @@ struct ArtAdditionView: View {
             BlackSelectCapsuleButton(
                 title: Const.addLocationButtonText
             ) {
-                isLocationPickerPresented = true
+                viewModel.isLocationPickerPresented = true
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -244,7 +228,7 @@ struct ArtAdditionView: View {
                 .font(.InstrumentMedium18)
                 .foregroundStyle(Color.black)
             
-            if let selectedCategory {
+            if let selectedCategory = viewModel.selectedCategory {
                 CategoryCapsule(title: selectedCategory.name)
             }
             
@@ -263,7 +247,7 @@ struct ArtAdditionView: View {
         } label: {
             HStack {
                 Spacer()
-
+                
                 Text(Const.createButtonText)
                     .font(.InstrumentMedium20)
                     .foregroundStyle(Color.white)
