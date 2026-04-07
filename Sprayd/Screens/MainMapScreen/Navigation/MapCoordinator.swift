@@ -13,15 +13,10 @@ final class MapCoordinator: ObservableObject {
     // MARK: - Fields
     @Published var path: [MapRoute] = []
     private let modelContext: ModelContext
-    private let imageLoader: ImageLoaderService
 
     // MARK: - Lifecycle
-    init(
-        modelContext: ModelContext,
-        imageLoader: ImageLoaderService
-    ) {
+    init(modelContext: ModelContext) {
         self.modelContext = modelContext
-        self.imageLoader = imageLoader
     }
     
     // MARK: - Navigation logic
@@ -37,8 +32,7 @@ final class MapCoordinator: ObservableObject {
     @ViewBuilder
     func makeRootView() -> some View {
         MainMapAssembly(
-            modelContext: modelContext,
-            imageLoader: imageLoader
+            modelContext: modelContext
         )
         .build()
     }

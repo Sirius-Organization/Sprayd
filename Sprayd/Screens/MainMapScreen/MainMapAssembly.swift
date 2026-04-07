@@ -11,7 +11,6 @@ import MapKit
 
 struct MainMapAssembly {
     let modelContext: ModelContext
-    let imageLoader: ImageLoaderService
 
     func build() -> some View {
         let coord = MKCoordinateRegion(
@@ -40,7 +39,6 @@ struct MainMapAssembly {
         
         let viewModel = MainMapViewModel(
             modelContext: modelContext,
-            imageLoader: imageLoader,
             region: coord,
             items: items
         )

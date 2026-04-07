@@ -19,8 +19,7 @@ final class AppCoordinator: ObservableObject {
     // MARK: - Lifecycle
     init(compositionRoot: CompositionRoot) {
         self.mapCoordinator = MapCoordinator(
-            modelContext: compositionRoot.modelContext,
-            imageLoader: compositionRoot.imageLoaderService
+            modelContext: compositionRoot.modelContext
         )
         self.feedCoordinator = FeedCoordinator()
         self.profileCoordinator = ProfileCoordinator()

@@ -8,6 +8,7 @@
 import MapKit
 
 final class ArtItemAnnotation: NSObject, MKAnnotation {
+    let item: ArtItem
     let itemIdentifier: ObjectIdentifier
 
     let coordinate: CLLocationCoordinate2D
@@ -19,6 +20,7 @@ final class ArtItemAnnotation: NSObject, MKAnnotation {
     let imageURL: URL?
 
     init(item: ArtItem) {
+        self.item = item
         self.itemIdentifier = ObjectIdentifier(item)
         self.coordinate = CLLocationCoordinate2D(
             latitude: item.latitude,
