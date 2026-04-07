@@ -22,38 +22,21 @@ struct ArtMediumCardView: View {
         
         // Text
         static let artworkAuthorSectionTitle = "Author"
-        static let artworkAuthorName = "Ana Markov"
         static let postAuthorSectionTitle = "Posted by"
+        static let defaultPostAuthorName = "PostAuthor"
+        static let defaultDate = "01.01.25"
     }
     
     // MARK: - Lifecycle
-    init(
-        title: String,
-        location: String,
-        description: String,
-        date: String,
-        postAuthorName: String,
-        artworkAuthorName: String,
-        likesCount: Int = 0
-    ) {
-        self.title = title
-        self.location = location
-        self.description = description
-        self.date = date
-        self.postAuthorName = postAuthorName
-        self.artworkAuthorName = artworkAuthorName
-        self.likesCount = likesCount
+    init(item: ArtItem) {
+        self.item = item
+        _likesCount = State(initialValue: 0)
     }
     
     // MARK: - Fields
     @State private var isLiked: Bool = false
     @State private var likesCount: Int
-    private var title: String
-    private var location: String
-    private var description: String
-    private var date: String
-    private var postAuthorName: String
-    private var artworkAuthorName: String
+    private let item: ArtItem
     
     // MARK: - Subviews
     private var artworkImage: some View {
@@ -70,7 +53,7 @@ struct ArtMediumCardView: View {
     
     private var titleRow: some View {
         HStack(alignment: .firstTextBaseline) {
-            Text(title)
+            Text(item.name)
                 .font(.InstrumentBold20)
                 .foregroundStyle(.black)
             
@@ -100,7 +83,7 @@ struct ArtMediumCardView: View {
     private var metaRow: some View {
         HStack(alignment: .center) {
             Label {
-                Text(location)
+                Text(item.location)
                     .font(.InstrumentRegular13)
             } icon: {
                 Icons.location
@@ -109,14 +92,14 @@ struct ArtMediumCardView: View {
             
             Spacer(minLength: Metrics.oneAndHalfModule)
             
-            Text(date)
+            Text(Const.defaultDate)
                 .font(.InstrumentRegular13)
                 .foregroundStyle(Color.secondaryColor)
         }
     }
     
     private var descriptionText: some View {
-        Text(description)
+        Text(item.itemDescription)
             .font(.InstrumentRegular13)
             .foregroundStyle(Color.secondaryColor)
             .multilineTextAlignment(.leading)
@@ -151,13 +134,13 @@ struct ArtMediumCardView: View {
                     personSection(
                         title: Const.artworkAuthorSectionTitle,
                         titleFont: .InstrumentBold13,
-                        name: artworkAuthorName
+                        name: item.author
                     )
                     
                     personSection(
                         title: Const.postAuthorSectionTitle,
                         titleFont: .InstrumentRegular13,
-                        name: postAuthorName
+                        name: Const.defaultPostAuthorName
                     )
                 }
             }

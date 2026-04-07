@@ -11,7 +11,9 @@ import MapKit
 struct UIKitMapView: UIViewRepresentable {
     let region: MKCoordinateRegion
     let items: [ArtItem]
+    let isItemSheetPresented: Bool
     let imageProvider: (String) async -> Data?
+    let onSelectItem: (ArtItem) -> Void
 
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView()
@@ -24,27 +26,23 @@ struct UIKitMapView: UIViewRepresentable {
             ArtItemAnnotationView.self,
             forAnnotationViewWithReuseIdentifier: ArtItemAnnotationView.clusterReuseIdentifier
         )
+        mapView.setRegion(region, animated: false)
         
         return mapView
     }
 
     func updateUIView(_ uiView: MKMapView, context: Context) {
         context.coordinator.imageProvider = imageProvider
-        updateRegion(for: uiView)
+        context.coordinator.onSelectItem = onSelectItem
         updateAnnotations(for: uiView)
+        updateSelection(for: uiView)
     }
 
     func makeCoordinator() -> UIKitMapCoordinator {
-        UIKitMapCoordinator(imageProvider: imageProvider)
-    }
-
-    private func updateRegion(for mapView: MKMapView) {
-        if mapView.region.center.latitude != region.center.latitude ||
-           mapView.region.center.longitude != region.center.longitude ||
-           mapView.region.span.latitudeDelta != region.span.latitudeDelta ||
-           mapView.region.span.longitudeDelta != region.span.longitudeDelta {
-            mapView.setRegion(region, animated: true)
-        }
+        UIKitMapCoordinator(
+            imageProvider: imageProvider,
+            onSelectItem: onSelectItem
+        )
     }
 
     private func updateAnnotations(for mapView: MKMapView) {
@@ -75,6 +73,21 @@ struct UIKitMapView: UIViewRepresentable {
             mapView.addAnnotations(annotationsToAdd)
         }
     }
+
+    private func updateSelection(for mapView: MKMapView) {
+        guard !isItemSheetPresented else {
+            return
+        }
+
+        let selectedAnnotations = mapView.selectedAnnotations
+        guard !selectedAnnotations.isEmpty else {
+            return
+        }
+
+        selectedAnnotations.forEach { annotation in
+            mapView.deselectAnnotation(annotation, animated: false)
+        }
+    }
 }
 
 // MARK: - Coordinator
@@ -82,9 +95,14 @@ struct UIKitMapView: UIViewRepresentable {
 // Так как используется только в MapView объявляем здесь
 final class UIKitMapCoordinator: NSObject, MKMapViewDelegate {
     var imageProvider: (String) async -> Data?
+    var onSelectItem: (ArtItem) -> Void
 
-    init(imageProvider: @escaping (String) async -> Data?) {
+    init(
+        imageProvider: @escaping (String) async -> Data?,
+        onSelectItem: @escaping (ArtItem) -> Void
+    ) {
         self.imageProvider = imageProvider
+        self.onSelectItem = onSelectItem
     }
 
     func mapView(_ mapView: MKMapView, viewFor annotation: any MKAnnotation) -> MKAnnotationView? {
@@ -121,5 +139,25 @@ final class UIKitMapCoordinator: NSObject, MKMapViewDelegate {
         }
 
         return nil
+    }
+
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        if let annotation = view.annotation as? ArtItemAnnotation {
+            mapView.setCenter(annotation.coordinate, animated: true)
+            onSelectItem(annotation.item)
+            return
+        }
+
+        guard
+            let clusterAnnotation = view.annotation as? MKClusterAnnotation,
+            let firstItem = clusterAnnotation.memberAnnotations
+                .compactMap({ ($0 as? ArtItemAnnotation)?.item })
+                .first
+        else {
+            return
+        }
+
+        mapView.setCenter(clusterAnnotation.coordinate, animated: true)
+        onSelectItem(firstItem)
     }
 }

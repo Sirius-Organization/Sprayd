@@ -143,7 +143,7 @@ final class ArtItemAnnotationView: MKAnnotationView {
         )
         clipsToBounds = false
         centerOffset = .zero
-        canShowCallout = true
+        canShowCallout = false
         collisionMode = .circle
 
         containerView.frame = bounds

@@ -103,13 +103,7 @@ struct MyProfileView: View {
         VStack {
             if let items = viewModel.displayedItems {
                 ForEach(items) { item in
-                    ArtMediumCardView(
-                        title: item.name,
-                        location: item.location,
-                        description: item.itemDescription,
-                        date: "01.01.25",
-                        postAuthorName: "PostAuthor",
-                        artworkAuthorName: item.author)
+                    ArtMediumCardView(item: item)
                 }
             }
         }

@@ -51,14 +51,7 @@ struct UserProfileView: View {
     private var postsView: some View {
         VStack {
             ForEach(viewModel.posts) { post in
-                ArtMediumCardView(
-                    title: post.name,
-                    location: post.location,
-                    description: post.itemDescription,
-                    date: "01.01.25",
-                    postAuthorName: "PostAuthor",
-                    artworkAuthorName: post.author
-                )
+                ArtMediumCardView(item: post)
             }
         }
     }
