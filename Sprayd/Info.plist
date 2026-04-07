@@ -15,8 +15,8 @@
 		<string>remote-notification</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>Sprayd needs camera access to add photos to art objects.</string>
+	<string>Sprayd needs camera access to let you take profile and art photos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Sprayd needs photo library access to add photos to art objects.</string>
+	<string>Sprayd needs photo library access to let you choose profile and art photos.</string>
 </dict>
 </plist>

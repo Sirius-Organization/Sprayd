@@ -6,9 +6,18 @@
 //
 
 import SwiftUI
+import AVFoundation
+import Photos
+import UIKit
 internal import Combine
 
 final class MyProfileViewModel: ObservableObject {
+    enum ProfileImageSource: String, Identifiable {
+        case photoLibrary
+        case camera
+        
+        var id: String { rawValue }
+    }
     
     enum Option: String {
         case posted = "Posted"
@@ -23,9 +32,16 @@ final class MyProfileViewModel: ObservableObject {
     @Published var draftBio: String = ""
     @Published var posts: [ArtItem]
     @Published var visited: [ArtItem]
+    @Published var profileImage: UIImage?
+    
+    @Published var isImageSourceDialogPresented: Bool = false
+    @Published var activeImagePickerSource: ProfileImageSource?
+    @Published var isPermissionAlertPresented: Bool = false
+    @Published var permissionAlertMessage: String = ""
+    @Published var shouldOfferSettingsRedirect: Bool = false
+    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
     @Published var isEditingUsername: Bool = false
     @Published var isEditingBio: Bool = false
-    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
     
     var selectedOptionTitle: String {
         selectedOption.rawValue
@@ -77,5 +93,111 @@ final class MyProfileViewModel: ObservableObject {
     func saveBio() {
         bio = draftBio
         isEditingBio.toggle()
+    }
+    
+    func presentProfileImageOptions() {
+        isImageSourceDialogPresented.toggle()
+    }
+    
+    func dismissProfileImageOptions() {
+        isImageSourceDialogPresented = false
+    }
+    
+    func choosePhotoLibrary() {
+        dismissProfileImageOptions()
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        
+        switch status {
+        case .authorized, .limited:
+            activeImagePickerSource = .photoLibrary
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization(for: .readWrite) { [weak self] status in
+                DispatchQueue.main.async {
+                    guard let self else { return }
+                    
+                    if status == .authorized || status == .limited {
+                        self.activeImagePickerSource = .photoLibrary
+                    } else {
+                        self.presentPermissionAlert(
+                            message: "Allow access to your photo library to choose a profile picture.",
+                            offerSettingsRedirect: true
+                        )
+                    }
+                }
+            }
+        case .denied, .restricted:
+            presentPermissionAlert(
+                message: "Photo library access is disabled. You can enable it in Settings.",
+                offerSettingsRedirect: true
+            )
+        default:
+            presentPermissionAlert(
+                message: "Photo library access is unavailable right now.",
+                offerSettingsRedirect: false
+            )
+        }
+    }
+    
+    func chooseCamera() {
+        dismissProfileImageOptions()
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            presentPermissionAlert(
+                message: "Camera is not available on this device.",
+                offerSettingsRedirect: false
+            )
+            return
+        }
+        
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
+        
+        switch status {
+        case .authorized:
+            activeImagePickerSource = .camera
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
+                DispatchQueue.main.async {
+                    guard let self else { return }
+                    
+                    if granted {
+                        self.activeImagePickerSource = .camera
+                    } else {
+                        self.presentPermissionAlert(
+                            message: "Allow camera access to take a profile picture.",
+                            offerSettingsRedirect: true
+                        )
+                    }
+                }
+            }
+        case .denied, .restricted:
+            presentPermissionAlert(
+                message: "Camera access is disabled. You can enable it in Settings.",
+                offerSettingsRedirect: true
+            )
+        default:
+            presentPermissionAlert(
+                message: "Camera access is unavailable right now.",
+                offerSettingsRedirect: false
+            )
+        }
+    }
+    
+    func updateProfileImage(_ image: UIImage) {
+        profileImage = image
+    }
+    
+    func dismissImagePicker() {
+        activeImagePickerSource = nil
+    }
+    
+    func dismissPermissionAlert() {
+        isPermissionAlertPresented = false
+        permissionAlertMessage = ""
+        shouldOfferSettingsRedirect = false
+    }
+    
+    private func presentPermissionAlert(message: String, offerSettingsRedirect: Bool) {
+        permissionAlertMessage = message
+        shouldOfferSettingsRedirect = offerSettingsRedirect
+        isPermissionAlertPresented = true
     }
 }
