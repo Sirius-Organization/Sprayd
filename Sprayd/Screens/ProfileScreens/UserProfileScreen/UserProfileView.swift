@@ -10,10 +10,6 @@ import SwiftUI
 struct UserProfileView: View {
     // MARK: - Constants
     private enum Const {
-        // Strings
-        static let postedSectionText: String = "Posted"
-        static let visitedSectionText: String = "Visited"
-        
         // UI constraint properties
         static let profileImageSize: CGFloat = 160
     }
@@ -43,7 +39,7 @@ struct UserProfileView: View {
     }
     
     private var sectionTitle: some View {
-        Text(Const.postedSectionText)
+        Text("Posted")
             .frame(maxWidth: 150)
             .font(.ClimateCrisis20)
     }

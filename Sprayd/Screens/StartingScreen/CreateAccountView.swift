@@ -13,16 +13,6 @@ struct CreateAccountView: View {
         static let buttonHeight: CGFloat = 56
         static let buttonCornerRadius: CGFloat = 28
 
-        static let titleText = "Create\naccount"
-        static let usernameTitle = "Username"
-        static let emailTitle = "Email"
-        static let passwordTitle = "Password"
-        static let repeatPasswordTitle = "Password"
-        static let usernamePlaceholder = "Enter username*"
-        static let emailPlaceholder = "Enter email*"
-        static let passwordPlaceholder = "Enter password*"
-        static let repeatPasswordPlaceholder = "Repeat password*"
-        static let continueText = "Continue"
     }
 
     // MARK: - Fields
@@ -40,35 +30,35 @@ struct CreateAccountView: View {
                 .ignoresSafeArea()
             
             VStack(alignment: .leading, spacing: Metrics.doubleModule) {
-                Text(Const.titleText)
+                Text("Create\naccount")
                     .font(.ClimateCrisis52)
                     .foregroundStyle(Color.black)
 
                 AuthInputField(
-                    title: Const.usernameTitle,
-                    placeholder: Const.usernamePlaceholder,
+                    title: "Username",
+                    placeholder: "Enter username*",
                     text: $username,
                     textContentType: .username
                 )
 
                 AuthInputField(
-                    title: Const.emailTitle,
-                    placeholder: Const.emailPlaceholder,
+                    title: "Email",
+                    placeholder: "Enter email*",
                     text: $email,
                     textContentType: .emailAddress
                 )
 
                 AuthInputField(
-                    title: Const.passwordTitle,
-                    placeholder: Const.passwordPlaceholder,
+                    title: "Password",
+                    placeholder: "Enter password*",
                     text: $password,
                     isSecure: true,
                     textContentType: .oneTimeCode
                 )
 
                 AuthInputField(
-                    title: Const.repeatPasswordTitle,
-                    placeholder: Const.repeatPasswordPlaceholder,
+                    title: "Password",
+                    placeholder: "Repeat password*",
                     text: $repeatedPassword,
                     isSecure: true,
                     textContentType: .oneTimeCode
@@ -88,7 +78,7 @@ struct CreateAccountView: View {
     private var continueButton: some View {
         Button(action: onContinueTapped) {
             HStack {
-                Text(Const.continueText)
+                Text("Continue")
                     .font(.InstrumentMedium20)
                     .foregroundStyle(Color.white)
 

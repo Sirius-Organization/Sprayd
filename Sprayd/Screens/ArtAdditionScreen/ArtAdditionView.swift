@@ -21,21 +21,6 @@ struct ArtAdditionView: View {
         static let narrowInputFieldHeight: CGFloat = 44
         static let wideInputFieldHeight: CGFloat = 120
         
-        // Strings
-        static let authorSectionTitleText: String = "Author"
-        static let selectAuthButtonText: String = "Select an author"
-        static let selectCategoryButtonText: String = "Select category"
-        static let headerText: String = "Add new art"
-        static let createButtonText: String = "Create"
-        static let categoryText: String = "Category"
-        static let titleFieldTitle: String = "Title"
-        static let titleFieldPlaceholder: String = "Add a title*"
-        static let descriptionFieldTitle: String = "Description"
-        static let descriptionFieldPlaceholder: String = "Add a description*"
-        static let locationSectionTitle: String = "Location"
-        static let addLocationButtonText: String = "Add location"
-        static let addPictureText: String = "Add a picture*"
-        
         // Fonts
         static let iconFont: Font = .system(size: 16, weight: .medium)
     }
@@ -68,16 +53,16 @@ struct ArtAdditionView: View {
                     OutlinedInputField(
                         minHeight: Const.narrowInputFieldHeight,
                         axis: .horizontal,
-                        title: Const.titleFieldTitle,
-                        placeholder: Const.titleFieldPlaceholder,
+                        title: "Title",
+                        placeholder: "Add a title*",
                         text: $viewModel.title
                     )
                     
                     OutlinedInputField(
                         minHeight: Const.wideInputFieldHeight,
                         axis: .vertical,
-                        title: Const.descriptionFieldTitle,
-                        placeholder: Const.descriptionFieldPlaceholder,
+                        title: "Description",
+                        placeholder: "Add a description*",
                         text: $viewModel.description
                     )
                     
@@ -116,7 +101,7 @@ struct ArtAdditionView: View {
                 Spacer()
             }
             
-            Text(Const.headerText)
+            Text("Add new art")
                 .font(.InstrumentBold20)
                 .foregroundStyle(Color.black)
         }
@@ -145,7 +130,7 @@ struct ArtAdditionView: View {
                     .font(.system(size: 28, weight: .medium))
                     .foregroundStyle(Color.white)
                 
-                Text(Const.addPictureText)
+                Text("Add a picture*")
                     .font(.InstrumentRegular13)
                     .foregroundStyle(Color.white)
             }
@@ -157,7 +142,7 @@ struct ArtAdditionView: View {
     
     var authorSection: some View {
         VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
-            Text(Const.authorSectionTitleText)
+            Text("Author")
                 .font(.InstrumentMedium18)
                 .foregroundStyle(Color.black)
             
@@ -178,7 +163,7 @@ struct ArtAdditionView: View {
             }
             
             BlackSelectCapsuleButton(
-                title: Const.selectAuthButtonText
+                title: "Select an author"
             ) {
                 // TODO: open author picker
             }
@@ -188,7 +173,7 @@ struct ArtAdditionView: View {
     
     private var locationSection: some View {
         VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
-            Text(Const.locationSectionTitle)
+            Text("Location")
                 .font(.InstrumentMedium18)
                 .foregroundStyle(Color.black)
             
@@ -214,7 +199,7 @@ struct ArtAdditionView: View {
             }
             
             BlackSelectCapsuleButton(
-                title: Const.addLocationButtonText
+                title: "Add location"
             ) {
                 viewModel.isLocationPickerPresented = true
             }
@@ -224,7 +209,7 @@ struct ArtAdditionView: View {
     
     var categorySection: some View {
         VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
-            Text(Const.categoryText)
+            Text("Category")
                 .font(.InstrumentMedium18)
                 .foregroundStyle(Color.black)
             
@@ -233,7 +218,7 @@ struct ArtAdditionView: View {
             }
             
             BlackSelectCapsuleButton(
-                title: Const.selectCategoryButtonText
+                title: "Select category"
             ) {
                 // TODO: open category picker
             }
@@ -248,7 +233,7 @@ struct ArtAdditionView: View {
             HStack {
                 Spacer()
                 
-                Text(Const.createButtonText)
+                Text("Create")
                     .font(.InstrumentMedium20)
                     .foregroundStyle(Color.white)
                 
