@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 struct ArtItemResponse: Codable {
     let id: UUID?
     let name: String
