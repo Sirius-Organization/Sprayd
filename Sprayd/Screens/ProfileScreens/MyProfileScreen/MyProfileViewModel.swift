@@ -64,8 +64,8 @@ final class MyProfileViewModel: ObservableObject {
         selectedOption: Option = .posted,
         username: String = "Username",
         bio: String = "Description",
-        posts: [ArtItem] = [ArtItem(name: "ArtWork1", author: "Author"), ArtItem(name: "ArtWork2", author: "Author")],
-        visited: [ArtItem] = [ArtItem(name: "ArtWork3", author: "Author")]
+        posts: [ArtItem] = [ArtItem(remoteID: UUID(), name: "ArtWork1", author: "Author"), ArtItem(remoteID: UUID(), name: "ArtWork2", author: "Author")],
+        visited: [ArtItem] = [ArtItem(remoteID: UUID(), name: "ArtWork3", author: "Author")],
     ) {
         self.authorizationService = authorizationService
         self.tokenStore = tokenStore
