@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreLocation
+import UIKit
 
 struct ArtAdditionView: View {
     // MARK: - Constants
@@ -59,6 +60,16 @@ struct ArtAdditionView: View {
             Color(Color.appBackground)
                 .ignoresSafeArea()
             
+            if viewModel.isImageSourceDialogPresented {
+                Color.black.opacity(0.001)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            viewModel.dismissImageOptions()
+                        }
+                    }
+            }
+            
             ScrollView {
                 VStack(alignment: .leading, spacing: Metrics.tripleModule) {
                     headerView
@@ -94,6 +105,19 @@ struct ArtAdditionView: View {
         }
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .tabBar)
+        .sheet(item: $viewModel.activeImagePickerSource) { source in
+            ImagePickerView(
+                source: source,
+                selectionLimit: 0,
+                onImagesPicked: { images in
+                    viewModel.addPickedImages(images)
+                    viewModel.dismissImagePicker()
+                },
+                onCancel: {
+                    viewModel.dismissImagePicker()
+                }
+            )
+        }
         .sheet(isPresented: $viewModel.isLocationPickerPresented) {
             LocationPickerView { picked in
                 viewModel.selectedCoordinate = picked.coordinate
@@ -113,6 +137,21 @@ struct ArtAdditionView: View {
             ) { category in
                 viewModel.selectedCategory = category
             }
+        }
+        .alert("Access Needed", isPresented: $viewModel.isPermissionAlertPresented) {
+            if viewModel.shouldOfferSettingsRedirect {
+                Button("Settings") {
+                    guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+                    UIApplication.shared.open(settingsURL)
+                    viewModel.dismissPermissionAlert()
+                }
+            }
+            
+            Button("OK", role: .cancel) {
+                viewModel.dismissPermissionAlert()
+            }
+        } message: {
+            Text(viewModel.permissionAlertMessage)
         }
     }
     
@@ -137,21 +176,45 @@ struct ArtAdditionView: View {
     }
     
     private var photoSection: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: Metrics.oneAndHalfModule) {
-                choosePhotoButton
-                
-                ForEach(viewModel.addedPhotos) { photo in
-                    photoPreview(photo)
+        ZStack(alignment: .topTrailing) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: Metrics.oneAndHalfModule) {
+                    choosePhotoButton
+                    
+                    ForEach(viewModel.addedPhotos) { photo in
+                        photoPreview(photo)
+                    }
                 }
+                .padding(.vertical, Metrics.halfModule)
             }
-            .padding(.vertical, Metrics.halfModule)
+            
+            if viewModel.isImageSourceDialogPresented {
+                ImageOptionsMenu(
+                    choosePhotoLibrary: {
+                        viewModel.choosePhotoLibrary()
+                    },
+                    chooseCamera: {
+                        viewModel.chooseCamera()
+                    }
+                )
+                .padding(.trailing, Metrics.module)
+                .offset(y: Metrics.doubleModule)
+                .transition(
+                    .asymmetric(
+                        insertion: .move(edge: .top).combined(with: .opacity),
+                        removal: .opacity
+                    )
+                )
+                .zIndex(1)
+            }
         }
     }
     
     private var choosePhotoButton: some View {
         Button {
-            // TODO: - Open photo choice screen
+            withAnimation(.spring(response: 0.28, dampingFraction: 0.82)) {
+                viewModel.toggleImageOptions()
+            }
         } label: {
             VStack(spacing: Metrics.oneAndHalfModule) {
                 Icons.photo
@@ -266,10 +329,12 @@ struct ArtAdditionView: View {
     }
     
     // MARK: - Utility
-    func photoPreview(_ photo: ArtImage) -> some View {
-        RoundedRectangle(cornerRadius: Const.photoItemCornerRadius)
-            .fill(Color.placeholderGrey)
+    func photoPreview(_ photo: ArtAdditionViewModel.SelectedPhoto) -> some View {
+        Image(uiImage: photo.image)
+            .resizable()
+            .scaledToFill()
             .frame(width: Const.photoItemWidth, height: Const.photoItemHeight)
+            .clipShape(RoundedRectangle(cornerRadius: Const.photoItemCornerRadius))
     }
     
     private static func formatCoordinate(_ coordinate: CLLocationCoordinate2D) -> String {

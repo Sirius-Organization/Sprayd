@@ -142,7 +142,7 @@ struct MyProfileView: View {
                 }
                 
                 if viewModel.isImageSourceDialogPresented {
-                    ProfileImageOptionsMenu(
+                    ImageOptionsMenu(
                         choosePhotoLibrary: {
                             viewModel.choosePhotoLibrary()
                         }, chooseCamera: {
