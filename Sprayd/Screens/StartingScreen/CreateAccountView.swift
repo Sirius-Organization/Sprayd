@@ -12,7 +12,6 @@ struct CreateAccountView: View {
     private enum Const {
         static let buttonHeight: CGFloat = 56
         static let buttonCornerRadius: CGFloat = 28
-        static let errorBannerDuration: TimeInterval = 3
 
         static let titleText = "Create\naccount"
         static let usernameTitle = "Username"
@@ -27,59 +26,7 @@ struct CreateAccountView: View {
     }
 
     // MARK: - Fields
-    @State private var username: String = ""
-    @State private var email: String = ""
-    @State private var password: String = ""
-    @State private var repeatedPassword: String = ""
-    @State private var isLoading: Bool = false
-    @State private var errorMessage: String?
-
-    @AppStorage("isLoggedIn") private var isLoggedIn = false
-    @AppStorage("userId") private var userId: String = ""
-    @AppStorage("userEmail") private var userEmail: String = ""
-
-    let authorizationService: AuthorizationService
-    let onRegistrationSuccess: () -> Void
-
-    // MARK: - Validation
-
-    private static let usernameRegex = /^[A-Za-z0-9_]{3,20}$/
-    private static let emailRegex = /^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/
-
-    private var isUsernameValid: Bool {
-        (try? Self.usernameRegex.wholeMatch(in: username)) != nil
-    }
-
-    private var isEmailValid: Bool {
-        (try? Self.emailRegex.wholeMatch(in: email)) != nil
-    }
-
-    private var isPasswordValid: Bool {
-        guard password.count >= 8 else { return false }
-        var classes = 0
-        if password.contains(where: { $0.isUppercase }) { classes += 1 }
-        if password.contains(where: { $0.isLowercase }) { classes += 1 }
-        if password.contains(where: { $0.isNumber }) { classes += 1 }
-        if password.contains(where: { !$0.isLetter && !$0.isNumber }) { classes += 1 }
-        return classes >= 2
-    }
-
-    private var isRepeatPasswordMatching: Bool {
-        repeatedPassword == password
-    }
-
-    private var isRepeatPasswordValid: Bool {
-        !repeatedPassword.isEmpty && isRepeatPasswordMatching
-    }
-
-    private var isFormValid: Bool {
-        isUsernameValid && isEmailValid && !password.isEmpty && isRepeatPasswordValid
-    }
-
-    private func validationState(for text: String, isValid: Bool) -> ValidationState {
-        guard !text.isEmpty else { return .none }
-        return isValid ? .valid : .invalid
-    }
+    @Bindable var viewModel: CreateAccountViewModel
 
     // MARK: - Body
     var body: some View {
@@ -95,23 +42,29 @@ struct CreateAccountView: View {
                 AuthInputField(
                     title: Const.usernameTitle,
                     placeholder: Const.usernamePlaceholder,
-                    text: $username,
-                    validationState: validationState(for: username, isValid: isUsernameValid),
+                    text: $viewModel.username,
+                    validationState: viewModel.validationState(
+                        for: viewModel.username,
+                        isValid: viewModel.isUsernameValid
+                    ),
                     textContentType: .username
                 )
 
                 AuthInputField(
                     title: Const.emailTitle,
                     placeholder: Const.emailPlaceholder,
-                    text: $email,
-                    validationState: validationState(for: email, isValid: isEmailValid),
+                    text: $viewModel.email,
+                    validationState: viewModel.validationState(
+                        for: viewModel.email,
+                        isValid: viewModel.isEmailValid
+                    ),
                     textContentType: .emailAddress
                 )
 
                 AuthInputField(
                     title: Const.passwordTitle,
                     placeholder: Const.passwordPlaceholder,
-                    text: $password,
+                    text: $viewModel.password,
                     isSecure: true,
                     isPasswordToggleable: true,
                     validationState: .none,
@@ -121,10 +74,13 @@ struct CreateAccountView: View {
                 AuthInputField(
                     title: Const.repeatPasswordTitle,
                     placeholder: Const.repeatPasswordPlaceholder,
-                    text: $repeatedPassword,
+                    text: $viewModel.repeatedPassword,
                     isSecure: true,
                     isPasswordToggleable: true,
-                    validationState: validationState(for: repeatedPassword, isValid: isRepeatPasswordMatching),
+                    validationState: viewModel.validationState(
+                        for: viewModel.repeatedPassword,
+                        isValid: viewModel.isRepeatPasswordMatching
+                    ),
                     textContentType: .oneTimeCode
                 )
 
@@ -136,7 +92,7 @@ struct CreateAccountView: View {
             .padding(.horizontal, Metrics.tripleModule)
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            if let errorMessage {
+            if let errorMessage = viewModel.errorMessage {
                 VStack {
                     errorBanner(message: errorMessage)
                         .padding(.horizontal, Metrics.tripleModule)
@@ -146,13 +102,14 @@ struct CreateAccountView: View {
                 }
             }
         }
+        .animation(.easeInOut(duration: 0.3), value: viewModel.errorMessage)
     }
 
     // MARK: - Subviews
     private var continueButton: some View {
-        Button(action: performRegistration) {
+        Button(action: viewModel.register) {
             HStack {
-                if isLoading {
+                if viewModel.isLoading {
                     ProgressView()
                         .tint(.white)
                 } else {
@@ -163,7 +120,7 @@ struct CreateAccountView: View {
 
                 Spacer()
 
-                if !isLoading {
+                if !viewModel.isLoading {
                     Icons.chevronRight
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(Color.white)
@@ -171,12 +128,12 @@ struct CreateAccountView: View {
             }
             .padding(.horizontal, Metrics.tripleModule)
             .frame(height: Const.buttonHeight)
-            .background(isFormValid ? Color.black : Color.black.opacity(0.3))
+            .background(viewModel.isFormValid ? Color.black : Color.black.opacity(0.3))
             .clipShape(RoundedRectangle(cornerRadius: Const.buttonCornerRadius))
         }
         .buttonStyle(.plain)
         .padding(.horizontal, Metrics.tripleModule)
-        .disabled(!isFormValid || isLoading)
+        .disabled(!viewModel.isFormValid || viewModel.isLoading)
     }
 
     private func errorBanner(message: String) -> some View {
@@ -188,48 +145,13 @@ struct CreateAccountView: View {
             .background(Color.accentRed)
             .clipShape(RoundedRectangle(cornerRadius: 12))
     }
-
-    // MARK: - Actions
-    private func performRegistration() {
-        guard isFormValid, !isLoading else { return }
-        isLoading = true
-
-        Task {
-            do {
-                let response = try await authorizationService.register(
-                    email: email,
-                    password: password
-                )
-                userId = response.id?.uuidString ?? ""
-                userEmail = response.email
-                isLoggedIn = true
-                onRegistrationSuccess()
-            } catch let error as APIErrorResponse {
-                showError(error.reason)
-            } catch {
-                showError("Something went wrong. Please try again.")
-            }
-            isLoading = false
-        }
-    }
-
-    private func showError(_ message: String) {
-        withAnimation(.easeInOut(duration: 0.3)) {
-            errorMessage = message
-        }
-        Task {
-            try? await Task.sleep(for: .seconds(Const.errorBannerDuration))
-            withAnimation(.easeInOut(duration: 0.3)) {
-                errorMessage = nil
-            }
-        }
-    }
 }
 
 // MARK: - Preview
 #Preview {
     CreateAccountView(
-        authorizationService: try! AuthorizationService(sender: Sender()),
-        onRegistrationSuccess: {}
+        viewModel: CreateAccountViewModel(
+            authorizationService: try! AuthorizationService(sender: Sender())
+        )
     )
 }

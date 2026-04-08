@@ -68,14 +68,17 @@ struct OnboardingView: View {
                                     // TODO: sign in action
                                 })
                             case .createAccount:
-                                CreateAccountView(
-                                    authorizationService: authorizationService,
-                                    onRegistrationSuccess: {
-                                        withAnimation {
-                                            onFinished()
+                                let vm = CreateAccountViewModel(
+                                    authorizationService: authorizationService
+                                )
+                                CreateAccountView(viewModel: vm)
+                                    .onAppear {
+                                        vm.onRegistrationSuccess = {
+                                            withAnimation {
+                                                onFinished()
+                                            }
                                         }
                                     }
-                                )
                             }
                         }
                     }
