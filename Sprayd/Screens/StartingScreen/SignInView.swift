@@ -13,12 +13,6 @@ struct SignInView: View {
         static let buttonHeight: CGFloat = 56
         static let buttonCornerRadius: CGFloat = 28
 
-        static let titleText = "Sign in"
-        static let emailTitle = "Email"
-        static let passwordTitle = "Password"
-        static let emailPlaceholder = "Enter email*"
-        static let passwordPlaceholder = "Enter password*"
-        static let continueText = "Continue"
     }
 
     // MARK: - Fields
@@ -37,20 +31,20 @@ struct SignInView: View {
                 Spacer()
                     .frame(height: Metrics.tenTimesModule)
 
-                Text(Const.titleText)
+                Text("Sign in")
                     .font(.ClimateCrisis52)
                     .foregroundStyle(Color.black)
 
                 AuthInputField(
-                    title: Const.emailTitle,
-                    placeholder: Const.emailPlaceholder,
+                    title: "Email",
+                    placeholder: "Enter email*",
                     text: $email,
                     textContentType: .emailAddress
                 )
 
                 AuthInputField(
-                    title: Const.passwordTitle,
-                    placeholder: Const.passwordPlaceholder,
+                    title: "Password",
+                    placeholder: "Enter password*",
                     text: $password,
                     isSecure: true,
                     textContentType: .oneTimeCode
@@ -72,7 +66,7 @@ struct SignInView: View {
             HStack {
                 Spacer()
 
-                Text(Const.continueText)
+                Text("Continue")
                     .font(.InstrumentMedium20)
                     .foregroundStyle(Color.white)
 

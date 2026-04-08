@@ -99,6 +99,9 @@ struct FeaturedView: View {
             .safeAreaPadding(.horizontal, Metrics.tripleModule)
             .safeAreaPadding(.top, Metrics.oneAndHalfModule)
             .safeAreaPadding(.bottom, Metrics.oneAndHalfModule)
+            .refreshable {
+                try? await Task.sleep(for: .seconds(1))
+            }
         }
     }
 

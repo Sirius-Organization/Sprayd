@@ -16,21 +16,14 @@ final class MainMapViewModel {
     var items: [ArtItem]
     
     private let modelContext: ModelContext
-    private let imageLoader: ImageLoaderService
 
     init(
         modelContext: ModelContext,
-        imageLoader: ImageLoaderService,
         region: MKCoordinateRegion,
         items: [ArtItem]
     ) {
         self.modelContext = modelContext
-        self.imageLoader = imageLoader
         self.region = region
         self.items = items
-    }
-    
-    func imageData(for urlString: String) async -> Data? {
-        await imageLoader.loadImageData(from: urlString)
     }
 }

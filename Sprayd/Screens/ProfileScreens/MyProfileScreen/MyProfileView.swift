@@ -6,20 +6,18 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct MyProfileView: View {
     // MARK: - Constants
     private enum Const {
-        // Strings
-        static let postedButtonBottomText: String = "Add new seen art"
-        static let postedSectionText: String = "Posted"
-        static let visitedSectionText: String = "Visited"
-
         // UI constraint properties
         static let profileImageSize: CGFloat = 160
         static let choosePhotoButtonSize: CGFloat = 40
         static let logoutButtonSize: CGFloat = 40
         static let logoutIconPointSize: CGFloat = 17
+        static let editableFieldMaxWidth: CGFloat = 220
+        static let profileInfoRowWidth: CGFloat = 260
     }
     
     // MARK: - Fields
@@ -37,47 +35,131 @@ struct MyProfileView: View {
     
     // MARK: - Subviews
     private var bioView: some View {
-        VStack {
-            ZStack(alignment: .bottomTrailing) {
-                Icons.personCircle
+        VStack() {
+            VStack(spacing: Metrics.module) {
+                ZStack(alignment: .bottomTrailing) {
+                    Group {
+                        if let profileImage = viewModel.profileImage {
+                            Image(uiImage: profileImage)
+                                .resizable()
+                                .scaledToFill()
+                        } else {
+                            Icons.personCircle
+                        }
+                    }
                     .frame(width: Const.profileImageSize, height: Const.profileImageSize)
-                
-                Button {
-                    // TODO: - Open photo choice screen
-                } label: {
-                    Icons.photo
-                        .foregroundStyle(Color.accentRed)
-                        .frame(width: Const.choosePhotoButtonSize, height: Const.choosePhotoButtonSize)
-                        .background(Color.black)
-                        .clipShape(Circle())
+                    .clipShape(Circle())
+                    
+                    Button {
+                        withAnimation(.spring(response: 0.28, dampingFraction: 0.82)) {
+                            viewModel.presentProfileImageOptions()
+                        }
+                    } label: {
+                        Icons.photo
+                            .foregroundStyle(Color.accentRed)
+                            .frame(width: Const.choosePhotoButtonSize, height: Const.choosePhotoButtonSize)
+                            .background(Color.black)
+                            .clipShape(Circle())
+                    }
+                    .buttonStyle(.plain)
+                    .offset(x: -Metrics.halfModule, y: -Metrics.halfModule)
                 }
-                .buttonStyle(.plain)
-                .offset(x: -Metrics.halfModule, y: -Metrics.halfModule)
+                
+                if viewModel.isImageSourceDialogPresented {
+                    ProfileImageOptionsMenu(
+                        choosePhotoLibrary: {
+                            viewModel.choosePhotoLibrary()
+                        }, chooseCamera: {
+                            viewModel.chooseCamera()
+                        }
+                        
+                    )
+                        .transition(
+                            .asymmetric(
+                                insertion: .move(edge: .top).combined(with: .opacity),
+                                removal: .opacity
+                            )
+                        )
+                }
             }
             .frame(maxWidth: .infinity)
             
             VStack(spacing: Metrics.oneAndHalfModule) {
-                HStack {
-                    Text(viewModel.username)
-                        .font(.ClimateCrisis22)
-                    Icons.pencil
+                ZStack {
+                    if (!viewModel.isEditingUsername) {
+                        Text(viewModel.username)
+                            .font(.ClimateCrisis22)
+                    } else {
+                        TextField("Username", text: $viewModel.draftUsername)
+                            .font(.ClimateCrisis22)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: Const.editableFieldMaxWidth)
+                    }
+                    
+                    HStack {
+                        Spacer()
+                        
+                        Button {
+                            if (viewModel.isEditingUsername) {
+                                viewModel.saveUsername()
+                            } else {
+                                viewModel.enterUsernameEditingMode()
+                            }
+                        } label: {
+                            if (viewModel.isEditingUsername) {
+                                Icons.checkmark
+                                    .renderingMode(.template)
+                                    .foregroundColor(Color.green)
+                            } else {
+                                Icons.pencil
+                            }
+                        }
+                    }
                 }
-                .frame(maxWidth: .infinity)
+                .frame(width: Const.profileInfoRowWidth)
                 
-                HStack {
-                    Text(viewModel.bio)
-                        .font(.InstrumentMedium13)
-                    Icons.pencil
+                ZStack {
+                    if (!viewModel.isEditingBio) {
+                        Text(viewModel.bio)
+                            .font(.InstrumentMedium13)
+                    } else {
+                        TextField("Bio", text: $viewModel.draftBio)
+                            .font(.InstrumentMedium13)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: Const.editableFieldMaxWidth)
+                    }
+                    
+                    HStack {
+                        Spacer()
+                        
+                        Button {
+                            if (viewModel.isEditingBio) {
+                                viewModel.saveBio()
+                            } else {
+                                viewModel.enterBioEditingMode()
+                            }
+                        } label: {
+                            if (viewModel.isEditingBio) {
+                                Icons.checkmark
+                                    .renderingMode(.template)
+                                    .foregroundColor(Color.green)
+                            } else {
+                                Icons.pencil
+                            }
+                        }
+                    }
                 }
-                .frame(maxWidth: .infinity)
+                .frame(width: Const.profileInfoRowWidth)
             }
+            .frame(maxWidth: .infinity)
         }
+        .frame(maxWidth: .infinity)
     }
     
     private var pickerView: some View {
         Picker("", selection: $viewModel.selectedOption) {
-            Text(Const.postedSectionText).tag(MyProfileViewModel.Option.posted)
-            Text(Const.visitedSectionText).tag(MyProfileViewModel.Option.visited)
+            Text("Posted").tag(MyProfileViewModel.Option.posted)
+            Text("Visited").tag(MyProfileViewModel.Option.visited)
         }
         .pickerStyle(.segmented)
         .padding(.horizontal)
@@ -93,7 +175,7 @@ struct MyProfileView: View {
         VStack(alignment: .center) {
             AddButton(onTap: onAddArt)
             
-            Text(Const.postedButtonBottomText)
+            Text("Add new seen art")
                 .font(.InstrumentMedium13)
         }
         .frame(maxWidth: .infinity)
@@ -103,13 +185,7 @@ struct MyProfileView: View {
         VStack {
             if let items = viewModel.displayedItems {
                 ForEach(items) { item in
-                    ArtMediumCardView(
-                        title: item.name,
-                        location: item.location,
-                        description: item.itemDescription,
-                        date: "01.01.25",
-                        postAuthorName: "PostAuthor",
-                        artworkAuthorName: item.author)
+                    ArtMediumCardView(item: item)
                 }
             }
         }
@@ -140,6 +216,16 @@ struct MyProfileView: View {
             Color(Color.appBackground)
                 .ignoresSafeArea()
             
+            if viewModel.isImageSourceDialogPresented {
+                Color.black.opacity(0.001)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            viewModel.dismissProfileImageOptions()
+                        }
+                    }
+            }
+            
             ScrollView {
                 VStack(alignment: .leading, spacing: Metrics.doubleModule) {
                     bioView
@@ -156,6 +242,33 @@ struct MyProfileView: View {
             }
         }
         .toolbar(.hidden, for: .navigationBar)
+        .sheet(item: $viewModel.activeImagePickerSource) { source in
+            ProfileImagePicker(
+                source: source,
+                onImagePicked: { image in
+                    viewModel.updateProfileImage(image)
+                    viewModel.dismissImagePicker()
+                },
+                onCancel: {
+                    viewModel.dismissImagePicker()
+                }
+            )
+        }
+        .alert("Access Needed", isPresented: $viewModel.isPermissionAlertPresented) {
+            if viewModel.shouldOfferSettingsRedirect {
+                Button("Settings") {
+                    guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+                    UIApplication.shared.open(settingsURL)
+                    viewModel.dismissPermissionAlert()
+                }
+            }
+            
+            Button("OK", role: .cancel) {
+                viewModel.dismissPermissionAlert()
+            }
+        } message: {
+            Text(viewModel.permissionAlertMessage)
+        }
         .safeAreaInset(edge: .top, spacing: 0) {
             HStack {
                 Spacer()
@@ -169,6 +282,9 @@ struct MyProfileView: View {
     }
 }
 
-//#Preview {
-//    MyProfileView(posts: nil, onAddArt: {})
-//}
+#Preview {
+    MyProfileView(
+        onAddArt: {},
+        viewModel: MyProfileViewModel()
+    )
+}

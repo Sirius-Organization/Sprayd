@@ -17,8 +17,6 @@ final class ArtItemAnnotationView: MKAnnotationView {
     private let containerView = UIView()
     private let imageView = UIImageView()
     private let countLabel = UILabel()
-    private var imageTask: Task<Void, Never>?
-    private var representedImageURLString: String?
     
     // MARK: Lifecycle
 
@@ -33,9 +31,7 @@ final class ArtItemAnnotationView: MKAnnotationView {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        imageTask?.cancel()
-        imageTask = nil
-        representedImageURLString = nil
+        imageView.cancelImageLoad()
         imageView.image = placeholderImage()
         countLabel.isHidden = true
         countLabel.text = nil
@@ -83,11 +79,8 @@ final class ArtItemAnnotationView: MKAnnotationView {
 
     func configure(
         annotation: any MKAnnotation,
-        imageProvider: ((String) async -> Data?)?
+        imageLoaderService: ImageLoaderService?
     ) {
-        imageTask?.cancel()
-        imageView.image = placeholderImage()
-
         if let clusterAnnotation = annotation as? MKClusterAnnotation {
             countLabel.isHidden = false
             countLabel.text = "\(clusterAnnotation.memberAnnotations.count)"
@@ -107,30 +100,11 @@ final class ArtItemAnnotationView: MKAnnotationView {
             imageURL = (annotation as? ArtItemAnnotation)?.imageURL
         }
 
-        representedImageURLString = imageURL?.absoluteString
-
-        guard
-            let imageProvider,
-            let urlString = imageURL?.absoluteString
-        else {
-            return
-        }
-
-        imageTask = Task { @MainActor [weak self] in
-            guard
-                let data = await imageProvider(urlString),
-                let image = UIImage(data: data),
-                !Task.isCancelled
-            else {
-                return
-            }
-
-            guard self?.representedImageURLString == urlString else {
-                return
-            }
-
-            self?.imageView.image = image
-        }
+        imageView.setImage(
+            from: imageURL,
+            imageLoaderService: imageLoaderService,
+            placeholder: placeholderImage()
+        )
     }
 
     private func setupView() {
@@ -143,7 +117,7 @@ final class ArtItemAnnotationView: MKAnnotationView {
         )
         clipsToBounds = false
         centerOffset = .zero
-        canShowCallout = true
+        canShowCallout = false
         collisionMode = .circle
 
         containerView.frame = bounds

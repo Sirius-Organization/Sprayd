@@ -2,6 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSAppTransportSecurity</key>
+	<dict/>
+	<key>Exception Domains</key>
+	<dict>
+		<key>localhost:8080</key>
+		<dict>
+			<key>NSExceptionAllowsInsecureHTTPLoads</key>
+			<true/>
+			<key>NSIncludesSubdomains</key>
+			<true/>
+		</dict>
+	</dict>
 	<key>UIAppFonts</key>
 	<array>
 		<string>InstrumentSans-Bold.ttf</string>
@@ -15,8 +27,8 @@
 		<string>remote-notification</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>Sprayd needs camera access to add photos to art objects.</string>
+	<string>Sprayd needs camera access to let you take profile and art photos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Sprayd needs photo library access to add photos to art objects.</string>
+	<string>Sprayd needs photo library access to let you choose profile and art photos.</string>
 </dict>
 </plist>
