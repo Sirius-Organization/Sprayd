@@ -18,4 +18,23 @@ final class CompositionRoot {
     lazy var imageLoaderService: ImageLoaderService = {
         ImageLoaderService(modelContext: modelContext)
     }()
+
+    lazy var sender: Sender = {
+        do {
+            return try Sender()
+        } catch {
+            fatalError("Failed to create Sender: \(error)")
+        }
+    }()
+
+    lazy var artAdditionService: ArtAdditionService = {
+        ArtAdditionService(sender: sender)
+    }()
+
+    lazy var artAdditionRepository: ArtAdditionRepository = {
+        ArtAdditionRepository(
+            service: artAdditionService,
+            modelContext: modelContext
+        )
+    }()
 }

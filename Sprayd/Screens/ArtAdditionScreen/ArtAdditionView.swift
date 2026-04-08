@@ -80,11 +80,25 @@ struct ArtAdditionView: View {
         }
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .tabBar)
+        .task {
+            await viewModel.loadInitialDataIfNeeded()
+        }
+        .onChange(of: viewModel.didCreateArtItem) { _, didCreateArtItem in
+            guard didCreateArtItem else { return }
+            onBackButtonTapped()
+        }
         .sheet(isPresented: $viewModel.isLocationPickerPresented) {
             LocationPickerView { picked in
                 viewModel.selectedCoordinate = picked.coordinate
                 viewModel.selectedLocationName = picked.displayName
             }
+        }
+        .alert("Error", isPresented: $viewModel.isErrorAlertPresented) {
+            Button("OK", role: .cancel) {
+                viewModel.dismissError()
+            }
+        } message: {
+            Text(viewModel.errorMessage ?? "Something went wrong")
         }
     }
     
@@ -160,6 +174,20 @@ struct ArtAdditionView: View {
                         .font(.InstrumentMedium18)
                         .foregroundStyle(Color.black)
                 }
+            } else if let firstAuthor = viewModel.availableAuthors.first {
+                HStack(spacing: Metrics.oneAndHalfModule) {
+                    Circle()
+                        .fill(Color.gray.opacity(0.45))
+                        .frame(width: Const.authorAvatarSize, height: Const.authorAvatarSize)
+                        .overlay {
+                            Icons.person
+                                .foregroundStyle(Color.white.opacity(0.9))
+                        }
+
+                    Text(firstAuthor.name)
+                        .font(.InstrumentMedium18)
+                        .foregroundStyle(Color.black)
+                }
             }
             
             BlackSelectCapsuleButton(
@@ -228,7 +256,9 @@ struct ArtAdditionView: View {
     
     var createButton: some View {
         Button {
-            // TODO: create object action
+            Task {
+                await viewModel.createArtItem()
+            }
         } label: {
             HStack {
                 Spacer()
@@ -243,9 +273,10 @@ struct ArtAdditionView: View {
             }
             .padding(.horizontal, Metrics.tripleModule)
             .frame(height: Const.createButtonHeight)
-            .background(Color.accentRed)
+            .background(viewModel.canCreate ? Color.accentRed : Color.placeholderGrey)
             .clipShape(RoundedRectangle(cornerRadius: Const.createButtonCornerRadius))
         }
+        .disabled(!viewModel.canCreate)
         .padding(.horizontal, Metrics.quadrupleModule)
     }
     

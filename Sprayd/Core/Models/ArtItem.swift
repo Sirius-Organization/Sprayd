@@ -10,6 +10,7 @@ import SwiftData
 
 @Model
 final class ArtItem {
+    @Attribute(.unique) var id: UUID
     var name: String
     var itemDescription: String
     @Relationship(deleteRule: .cascade) var images: [ArtImage]
@@ -24,6 +25,7 @@ final class ArtItem {
     var longitude: Double
 
     init(
+        id: UUID = UUID(),
         name: String = "",
         itemDescription: String = "",
         images: [String] = [],
@@ -38,6 +40,7 @@ final class ArtItem {
         latitude: Double = 0,
         longitude: Double = 0
     ) {
+        self.id = id
         self.name = name
         self.itemDescription = itemDescription
         self.images = storedImages + images.map { ArtImage(urlString: $0) }
