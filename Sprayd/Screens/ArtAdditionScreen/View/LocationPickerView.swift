@@ -8,13 +8,6 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
-// MARK: - Model
-
-struct PickedLocation {
-    let coordinate: CLLocationCoordinate2D
-    let displayName: String
-}
-
 // MARK: - View
 
 struct LocationPickerView: View {

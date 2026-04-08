@@ -1,5 +1,5 @@
 //
-//  AuthorPickerView.swift
+//  CategoryPickerView.swift
 //  Sprayd
 //
 //  Created by loxxy on 08.04.2026.
@@ -7,35 +7,36 @@
 
 import SwiftUI
 
-struct AuthorPickerView: View {
+struct CategoryPickerView: View {
     // MARK: - Constants
     private enum Const {
-        static let title = "Pick author"
+        static let title = "Pick category"
         static let closeButtonTitle = "Close"
-        static let searchPlaceholder = "Search author"
-        static let emptyStateText = "No authors found"
-        
+        static let searchPlaceholder = "Search category"
+        static let emptyStateText = "No categories found"
+
         static let rowCornerRadius: CGFloat = 20
     }
-    
+
     // MARK: - Fields
     let viewModel: ArtAdditionViewModel
-    
+
     @Environment(\.dismiss) private var dismiss
 
     @State private var searchQuery = ""
 
-    let onSelect: (Author) -> Void
+    let onSelect: (Category) -> Void
 
-    private var filteredAuthors: [Author] {
+    private var filteredCategories: [Category] {
         let trimmedQuery = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedQuery.isEmpty else { return viewModel.availableAuthors }
+        guard !trimmedQuery.isEmpty else { return viewModel.availableCategories }
 
-        return viewModel.availableAuthors.filter {
+        return viewModel.availableCategories.filter {
             $0.name.localizedCaseInsensitiveContains(trimmedQuery)
         }
     }
 
+    // MARK: - Body
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
@@ -45,12 +46,12 @@ struct AuthorPickerView: View {
                         text: $searchQuery
                     )
 
-                    if filteredAuthors.isEmpty {
+                    if filteredCategories.isEmpty {
                         emptyState
                     } else {
                         LazyVStack(spacing: Metrics.module) {
-                            ForEach(filteredAuthors) { author in
-                                authorRow(author)
+                            ForEach(filteredCategories) { category in
+                                categoryRow(category)
                             }
                         }
                     }
@@ -71,6 +72,7 @@ struct AuthorPickerView: View {
         }
     }
 
+    // MARK: - Subviews
     private var emptyState: some View {
         Text(Const.emptyStateText)
             .font(.InstrumentRegular13)
@@ -79,30 +81,33 @@ struct AuthorPickerView: View {
             .padding(.vertical, Metrics.quadrupleModule)
     }
 
-    private func authorRow(_ author: Author) -> some View {
+    private func categoryRow(_ category: Category) -> some View {
         Button {
-            onSelect(author)
+            onSelect(category)
             dismiss()
         } label: {
-            MiniProfileView(name: author.name)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, Metrics.doubleModule)
-                .padding(.vertical, Metrics.oneAndHalfModule)
-                .background(
-                    RoundedRectangle(cornerRadius: Const.rowCornerRadius, style: .continuous)
-                        .fill(Color.white.opacity(0.6))
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: Const.rowCornerRadius, style: .continuous)
-                        .stroke(Color.black.opacity(0.08), lineWidth: 1)
-                )
+            HStack {
+                CategoryCapsule(title: category.name)
+                Spacer()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, Metrics.doubleModule)
+            .padding(.vertical, Metrics.oneAndHalfModule)
+            .background(
+                RoundedRectangle(cornerRadius: Const.rowCornerRadius, style: .continuous)
+                    .fill(Color.white.opacity(0.6))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: Const.rowCornerRadius, style: .continuous)
+                    .stroke(Color.black.opacity(0.08), lineWidth: 1)
+            )
         }
         .buttonStyle(.plain)
     }
 }
 
 #Preview {
-    AuthorPickerView(
+    CategoryPickerView(
         viewModel: ArtAdditionViewModel(),
         onSelect: { _ in }
     )

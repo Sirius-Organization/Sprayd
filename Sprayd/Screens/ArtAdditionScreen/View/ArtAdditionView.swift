@@ -101,8 +101,17 @@ struct ArtAdditionView: View {
             }
         }
         .sheet(isPresented: $viewModel.isAuthorPickerPresented) {
-            AuthorPickerView(authors: viewModel.availableAuthors) { author in
+            AuthorPickerView(
+                viewModel: viewModel
+            ) { author in
                 viewModel.selectedAuthor = author
+            }
+        }
+        .sheet(isPresented: $viewModel.isCategoryPickerPresented) {
+            CategoryPickerView(
+                viewModel: viewModel
+            ) { category in
+                viewModel.selectedCategory = category
             }
         }
     }
@@ -133,8 +142,8 @@ struct ArtAdditionView: View {
                 choosePhotoButton
                 
                 ForEach(viewModel.addedPhotos) { photo in
-                        photoPreview(photo)
-                    }
+                    photoPreview(photo)
+                }
             }
             .padding(.vertical, Metrics.halfModule)
         }
@@ -227,7 +236,7 @@ struct ArtAdditionView: View {
             BlackSelectCapsuleButton(
                 title: Const.selectCategoryButtonText
             ) {
-                // TODO: open category picker
+                viewModel.isCategoryPickerPresented = true
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
