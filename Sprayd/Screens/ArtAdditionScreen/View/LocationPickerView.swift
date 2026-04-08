@@ -2,18 +2,13 @@
 //  LocationPickerView.swift
 //  Sprayd
 //
+//  Created by loxxy on 08.04.2026.
+//
 
 internal import Combine
 import SwiftUI
 import MapKit
 import CoreLocation
-
-// MARK: - Model
-
-struct PickedLocation {
-    let coordinate: CLLocationCoordinate2D
-    let displayName: String
-}
 
 // MARK: - View
 
@@ -52,8 +47,6 @@ struct LocationPickerView: View {
     @State private var showResults = false
 
     @State private var isGeocoding = false
-    @FocusState private var isSearchFieldFocused: Bool
-
     var onConfirm: (PickedLocation) -> Void
 
     // MARK: - Body
@@ -81,28 +74,22 @@ struct LocationPickerView: View {
 private extension LocationPickerView {
     var searchBar: some View {
         VStack(alignment: .leading, spacing: Metrics.halfModule) {
-            HStack(spacing: Metrics.module) {
-                TextField("Search address", text: $searchQuery)
-                    .textFieldStyle(.roundedBorder)
-                    .cornerRadius(16)
-                    .textInputAutocapitalization(.words)
-                    .focused($isSearchFieldFocused)
-                    .onSubmit {
-                        hideSuggestions()
-                        search()
-                    }
-                    .onChange(of: searchQuery) { _, newValue in
-                        scheduleAutocomplete(for: newValue)
-                    }
-
-                Button("Search") {
+            SearchBarView(
+                placeholder: "Search for a place",
+                text: $searchQuery,
+                actionTitle: "search",
+                isActionDisabled: searchQuery.trimmingCharacters(in: .whitespaces).isEmpty || searchTask != nil,
+                textInputAutocapitalization: .words,
+                onSubmit: {
                     hideSuggestions()
                     search()
+                },
+                onTextChange: { newValue in
+                    scheduleAutocomplete(for: newValue)
                 }
-                .disabled(searchQuery.trimmingCharacters(in: .whitespaces).isEmpty || searchTask != nil)
-            }
+            )
 
-            if isSearchFieldFocused, !addressCompleter.completions.isEmpty {
+            if !addressCompleter.completions.isEmpty {
                 autocompleteSuggestions
             }
 
@@ -177,7 +164,6 @@ private extension LocationPickerView {
             }
             .onTapGesture { point in
                 hideSuggestions()
-                isSearchFieldFocused = false
                 guard let coordinate = proxy.convert(point, from: .local) else { return }
                 withAnimation(.easeInOut(duration: Const.pinDuration)) {
                     selectedCoordinate = coordinate
@@ -267,7 +253,6 @@ private extension LocationPickerView {
     }
 
     func selectAutocompleteCompletion(_ completion: MKLocalSearchCompletion) {
-        isSearchFieldFocused = false
         hideSuggestions()
 
         let display = [completion.title, completion.subtitle]
