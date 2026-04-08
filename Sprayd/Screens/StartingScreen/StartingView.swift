@@ -64,6 +64,6 @@ struct StartingView: View {
 }
 
 // MARK: - Preview
-#Preview {
-    OnboardingView()
-}
+//#Preview {
+//    OnboardingView()
+//}

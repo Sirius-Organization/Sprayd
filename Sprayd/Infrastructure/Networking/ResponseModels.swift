@@ -9,8 +9,8 @@ import Foundation
 
 // MARK: - Error Models
 struct APIErrorResponse: Codable, Error {
-    let errorType: String
-    let errorMessage: String
+    let error: Bool
+    let reason: String
 }
 
 struct ErrorDetail: Codable {

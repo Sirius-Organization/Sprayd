@@ -27,6 +27,7 @@ struct OnboardingView: View {
     @State private var step: Step = .welcome
     @State private var path: [Route] = []
 
+    let authorizationService: AuthorizationService
     var onFinished: () -> Void = {}
 
     // MARK: - Body
@@ -67,9 +68,14 @@ struct OnboardingView: View {
                                     // TODO: sign in action
                                 })
                             case .createAccount:
-                                CreateAccountView(onContinueTapped: {
-                                    // TODO: create account action
-                                })
+                                CreateAccountView(
+                                    authorizationService: authorizationService,
+                                    onRegistrationSuccess: {
+                                        withAnimation {
+                                            onFinished()
+                                        }
+                                    }
+                                )
                             }
                         }
                     }
@@ -83,5 +89,5 @@ struct OnboardingView: View {
 
 // MARK: - Preview
 #Preview {
-    OnboardingView()
+    OnboardingView(authorizationService: try! AuthorizationService(sender: Sender()))
 }

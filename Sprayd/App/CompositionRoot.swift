@@ -10,12 +10,20 @@ import SwiftData
 @MainActor
 final class CompositionRoot {
     let modelContext: ModelContext
-    
+
     init(context: ModelContext) {
         self.modelContext = context
     }
-    
+
     lazy var imageLoaderService: ImageLoaderService = {
         ImageLoaderService(modelContext: modelContext)
+    }()
+
+    lazy var sender: Sender = {
+        try! Sender()
+    }()
+
+    lazy var authorizationService: AuthorizationService = {
+        AuthorizationService(sender: sender)
     }()
 }

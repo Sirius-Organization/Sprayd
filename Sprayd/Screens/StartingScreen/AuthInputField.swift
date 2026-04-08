@@ -8,6 +8,12 @@
 import SwiftUI
 import UIKit
 
+enum ValidationState {
+    case none
+    case valid
+    case invalid
+}
+
 struct AuthInputField: View {
     // MARK: - Constants
     private enum Const {
@@ -24,7 +30,11 @@ struct AuthInputField: View {
     let placeholder: String
     @Binding var text: String
     var isSecure: Bool = false
+    var isPasswordToggleable: Bool = false
+    var validationState: ValidationState = .none
     var textContentType: UITextContentType? = nil
+
+    @State private var isRevealed: Bool = false
 
     // MARK: - Body
     var body: some View {
@@ -37,9 +47,12 @@ struct AuthInputField: View {
                 .stroke(Color.black.opacity(0.45), lineWidth: Const.borderWidth)
                 .frame(height: Const.fieldHeight)
 
-            field
-                .padding(.horizontal, Metrics.doubleModule)
-                .frame(height: Const.fieldHeight, alignment: .center)
+            HStack(spacing: Metrics.module) {
+                field
+                trailingIcons
+            }
+            .padding(.horizontal, Metrics.doubleModule)
+            .frame(height: Const.fieldHeight, alignment: .center)
 
             Text(title)
                 .font(.InstrumentMedium16)
@@ -53,7 +66,7 @@ struct AuthInputField: View {
     // MARK: - Subviews
     @ViewBuilder
     private var field: some View {
-        if isSecure {
+        if isSecure && !isRevealed {
             SecureField(
                 "",
                 text: $text,
@@ -77,6 +90,38 @@ struct AuthInputField: View {
             .autocorrectionDisabled()
             .font(.InstrumentRegular18)
             .foregroundStyle(Color.black)
+        }
+    }
+
+    @ViewBuilder
+    private var trailingIcons: some View {
+        HStack(spacing: Metrics.halfModule) {
+            if validationState != .none {
+                validationIndicator
+            }
+
+            if isPasswordToggleable {
+                Button {
+                    isRevealed.toggle()
+                } label: {
+                    Image(systemName: isRevealed ? "eye.slash" : "eye")
+                        .font(.system(size: 16))
+                        .foregroundStyle(Color.black.opacity(0.6))
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var validationIndicator: some View {
+        switch validationState {
+        case .valid:
+            Icons.validationCheckmark
+        case .invalid:
+            Icons.validationXmark
+        case .none:
+            EmptyView()
         }
     }
 
