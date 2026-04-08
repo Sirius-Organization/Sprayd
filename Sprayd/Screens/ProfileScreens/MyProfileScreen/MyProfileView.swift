@@ -33,6 +33,77 @@ struct MyProfileView: View {
         self.viewModel = viewModel
     }
     
+    // MARK: - Body
+    var body: some View {
+        ZStack {
+            Color(Color.appBackground)
+                .ignoresSafeArea()
+            
+            if viewModel.isImageSourceDialogPresented {
+                Color.black.opacity(0.001)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            viewModel.dismissProfileImageOptions()
+                        }
+                    }
+            }
+            
+            ScrollView {
+                VStack(alignment: .leading, spacing: Metrics.doubleModule) {
+                    bioView
+                    pickerView
+                    sectionTitle
+                    
+                    if viewModel.shouldDisplayAddButton {
+                        addButtonView
+                    }
+                    
+                    itemsView
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .toolbar(.hidden, for: .navigationBar)
+        .sheet(item: $viewModel.activeImagePickerSource) { source in
+            ProfileImagePicker(
+                source: source,
+                onImagePicked: { image in
+                    viewModel.updateProfileImage(image)
+                    viewModel.dismissImagePicker()
+                },
+                onCancel: {
+                    viewModel.dismissImagePicker()
+                }
+            )
+        }
+        .alert("Access Needed", isPresented: $viewModel.isPermissionAlertPresented) {
+            if viewModel.shouldOfferSettingsRedirect {
+                Button("Settings") {
+                    guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+                    UIApplication.shared.open(settingsURL)
+                    viewModel.dismissPermissionAlert()
+                }
+            }
+            
+            Button("OK", role: .cancel) {
+                viewModel.dismissPermissionAlert()
+            }
+        } message: {
+            Text(viewModel.permissionAlertMessage)
+        }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            HStack {
+                Spacer()
+                logoutButton
+            }
+            .padding(.leading, Metrics.tripleModule)
+            .padding(.trailing, Metrics.tripleModule)
+            .padding(.bottom, Metrics.module)
+            .background(Color.appBackground)
+        }
+    }
+    
     // MARK: - Subviews
     private var bioView: some View {
         VStack() {
@@ -66,7 +137,7 @@ struct MyProfileView: View {
                 }
                 
                 if viewModel.isImageSourceDialogPresented {
-                    ProfileImageOptionsMenu(
+                    ImageOptionsMenu(
                         choosePhotoLibrary: {
                             viewModel.choosePhotoLibrary()
                         }, chooseCamera: {
@@ -208,77 +279,6 @@ struct MyProfileView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Log out")
-    }
-    
-    // MARK: - Body
-    var body: some View {
-        ZStack {
-            Color(Color.appBackground)
-                .ignoresSafeArea()
-            
-            if viewModel.isImageSourceDialogPresented {
-                Color.black.opacity(0.001)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        withAnimation(.easeOut(duration: 0.2)) {
-                            viewModel.dismissProfileImageOptions()
-                        }
-                    }
-            }
-            
-            ScrollView {
-                VStack(alignment: .leading, spacing: Metrics.doubleModule) {
-                    bioView
-                    pickerView
-                    sectionTitle
-                    
-                    if viewModel.shouldDisplayAddButton {
-                        addButtonView
-                    }
-                    
-                    itemsView
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-        }
-        .toolbar(.hidden, for: .navigationBar)
-        .sheet(item: $viewModel.activeImagePickerSource) { source in
-            ProfileImagePicker(
-                source: source,
-                onImagePicked: { image in
-                    viewModel.updateProfileImage(image)
-                    viewModel.dismissImagePicker()
-                },
-                onCancel: {
-                    viewModel.dismissImagePicker()
-                }
-            )
-        }
-        .alert("Access Needed", isPresented: $viewModel.isPermissionAlertPresented) {
-            if viewModel.shouldOfferSettingsRedirect {
-                Button("Settings") {
-                    guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
-                    UIApplication.shared.open(settingsURL)
-                    viewModel.dismissPermissionAlert()
-                }
-            }
-            
-            Button("OK", role: .cancel) {
-                viewModel.dismissPermissionAlert()
-            }
-        } message: {
-            Text(viewModel.permissionAlertMessage)
-        }
-        .safeAreaInset(edge: .top, spacing: 0) {
-            HStack {
-                Spacer()
-                logoutButton
-            }
-            .padding(.leading, Metrics.tripleModule)
-            .padding(.trailing, Metrics.tripleModule)
-            .padding(.bottom, Metrics.module)
-            .background(Color.appBackground)
-        }
     }
 }
 

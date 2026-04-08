@@ -106,23 +106,7 @@ struct FeaturedView: View {
     }
 
     private var searchBar: some View {
-        HStack(spacing: Metrics.module) {
-            Icons.magnifyingGlass
-                .font(.system(size: 14, weight: .medium))
-
-            Text("Search for an art object")
-                .font(.InstrumentRegular13)
-                .foregroundStyle(.gray)
-
-            Spacer()
-        }
-        .padding(.horizontal, Metrics.oneAndHalfModule)
-        .frame(height: 42)
-        .background(
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .fill(Color.white.opacity(0.5))
-                .stroke(Color.black.opacity(0.3), lineWidth: 1)
-        )
+        SearchBarView(placeholder: "Search for an art object")
     }
 
     private func sectionTitle(_ title: String) -> some View {

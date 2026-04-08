@@ -1,5 +1,5 @@
 //
-//  ProfileImageOptionsMenu.swift
+//  ImageOptionsMenu.swift
 //  Sprayd
 //
 //  Created by loxxy on 07.04.2026.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ProfileImageOptionsMenu: View {
+struct ImageOptionsMenu: View {
     // MARK: - Fields
     private var choosePhotoLibrary: () -> Void
     private var chooseCamera: () -> Void
@@ -24,7 +24,7 @@ struct ProfileImageOptionsMenu: View {
     // MARK: - Body
     var body: some View {
         VStack(spacing: 0) {
-            ProfileImageOptionButton(
+            ImageOptionButton(
                 title: "Choose from Library",
                 icon: Icons.photo
             ) {
@@ -34,7 +34,7 @@ struct ProfileImageOptionsMenu: View {
             Divider()
                 .padding(.horizontal, Metrics.oneAndHalfModule)
             
-            ProfileImageOptionButton(
+            ImageOptionButton(
                 title: "Take Photo",
                 icon: Icons.camera
             ) {
