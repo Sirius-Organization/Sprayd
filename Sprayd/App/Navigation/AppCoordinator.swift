@@ -22,7 +22,9 @@ final class AppCoordinator: ObservableObject {
             modelContext: compositionRoot.modelContext
         )
         self.feedCoordinator = FeedCoordinator()
-        self.profileCoordinator = ProfileCoordinator()
+        self.profileCoordinator = ProfileCoordinator(
+            authorizationService: compositionRoot.authorizationService
+        )
     }
     
     // MARK: - Navigation logic

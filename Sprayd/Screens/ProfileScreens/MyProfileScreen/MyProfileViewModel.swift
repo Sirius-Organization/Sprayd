@@ -1,10 +1,3 @@
-//
-//  MyProfileViewModel.swift
-//  Sprayd
-//
-//  Created by loxxy on 04.04.2026.
-//
-
 import SwiftUI
 import AVFoundation
 import Photos
@@ -15,15 +8,15 @@ final class MyProfileViewModel: ObservableObject {
     enum ProfileImageSource: String, Identifiable {
         case photoLibrary
         case camera
-        
+
         var id: String { rawValue }
     }
-    
+
     enum Option: String {
         case posted = "Posted"
         case visited = "Visited"
     }
-    
+
     // MARK: - Fields
     @Published var selectedOption: Option
     @Published var username: String
@@ -32,58 +25,99 @@ final class MyProfileViewModel: ObservableObject {
     @Published var draftBio: String = ""
     @Published var posts: [ArtItem]
     @Published var visited: [ArtItem]
+
+    // logout state (feature/authotization-service)
+    @Published var showLogoutError: Bool = false
+    @Published var isLoggingOut: Bool = false
+    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
+    @AppStorage("isLoggedIn") var isLoggedIn = false
+
+    // profile image + permissions state (main)
     @Published var profileImage: UIImage?
     @Published var isImageSourceDialogPresented: Bool = false
     @Published var activeImagePickerSource: ProfileImageSource?
     @Published var isPermissionAlertPresented: Bool = false
     @Published var permissionAlertMessage: String = ""
     @Published var shouldOfferSettingsRedirect: Bool = false
-    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
     @Published var isEditingUsername: Bool = false
     @Published var isEditingBio: Bool = false
+
+    private let authorizationService: AuthorizationService
 
     var selectedOptionTitle: String {
         selectedOption.rawValue
     }
-    
+
     var shouldDisplayAddButton: Bool {
         selectedOption == .posted
     }
-    
+
     var displayedItems: [ArtItem]? {
         selectedOption == .posted ? posts : visited
     }
-    
+
     // MARK: - Lifecycle
     init(
+        authorizationService: AuthorizationService,
         selectedOption: Option = .posted,
         username: String = "Username",
         bio: String = "Description",
         posts: [ArtItem] = [ArtItem(name: "ArtWork1", author: "Author"), ArtItem(name: "ArtWork2", author: "Author")],
-        visited: [ArtItem] = [ArtItem(name: "ArtWork3", author: "Author")],
+        visited: [ArtItem] = [ArtItem(name: "ArtWork3", author: "Author")]
     ) {
+        self.authorizationService = authorizationService
         self.selectedOption = selectedOption
         self.username = username
         self.bio = bio
         self.posts = posts
         self.visited = visited
     }
-    
+
     // MARK: - Logic
     func selectOption(_ option: Option) {
         selectedOption = option
     }
-    
+
+    // MARK: - Logout
+    @MainActor
+    func logout() {
+        guard !isLoggingOut else { return }
+        isLoggingOut = true
+
+        Task {
+            do {
+                let token = UserDefaults.standard.string(forKey: "userToken") ?? ""
+                try await authorizationService.logout(token: token)
+                clearSession()
+            } catch {
+                showLogoutError = true
+            }
+            isLoggingOut = false
+        }
+    }
+
+    @MainActor
+    private func clearSession() {
+        UserDefaults.standard.removeObject(forKey: "userId")
+        UserDefaults.standard.removeObject(forKey: "userEmail")
+        UserDefaults.standard.removeObject(forKey: "userToken")
+        withAnimation(.easeInOut(duration: 0.35)) {
+            isLoggedIn = false
+            hasCompletedOnboarding = false
+        }
+    }
+
+    // MARK: - Profile text editing
     func enterUsernameEditingMode() {
         draftUsername = username
         isEditingUsername.toggle()
     }
-    
+
     func saveUsername() {
         username = draftUsername
         isEditingUsername.toggle()
     }
-    
+
     func enterBioEditingMode() {
         isEditingBio.toggle()
         draftBio = bio
@@ -93,19 +127,20 @@ final class MyProfileViewModel: ObservableObject {
         bio = draftBio
         isEditingBio.toggle()
     }
-    
+
+    // MARK: - Profile image flow
     func presentProfileImageOptions() {
         isImageSourceDialogPresented.toggle()
     }
-    
+
     func dismissProfileImageOptions() {
         isImageSourceDialogPresented = false
     }
-    
+
     func choosePhotoLibrary() {
         dismissProfileImageOptions()
         let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-        
+
         switch status {
         case .authorized, .limited:
             activeImagePickerSource = .photoLibrary
@@ -113,7 +148,7 @@ final class MyProfileViewModel: ObservableObject {
             PHPhotoLibrary.requestAuthorization(for: .readWrite) { [weak self] status in
                 DispatchQueue.main.async {
                     guard let self else { return }
-                    
+
                     if status == .authorized || status == .limited {
                         self.activeImagePickerSource = .photoLibrary
                     } else {
@@ -136,7 +171,7 @@ final class MyProfileViewModel: ObservableObject {
             )
         }
     }
-    
+
     func chooseCamera() {
         dismissProfileImageOptions()
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
@@ -146,9 +181,9 @@ final class MyProfileViewModel: ObservableObject {
             )
             return
         }
-        
+
         let status = AVCaptureDevice.authorizationStatus(for: .video)
-        
+
         switch status {
         case .authorized:
             activeImagePickerSource = .camera
@@ -156,7 +191,7 @@ final class MyProfileViewModel: ObservableObject {
             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
                 DispatchQueue.main.async {
                     guard let self else { return }
-                    
+
                     if granted {
                         self.activeImagePickerSource = .camera
                     } else {
@@ -179,21 +214,21 @@ final class MyProfileViewModel: ObservableObject {
             )
         }
     }
-    
+
     func updateProfileImage(_ image: UIImage) {
         profileImage = image
     }
-    
+
     func dismissImagePicker() {
         activeImagePickerSource = nil
     }
-    
+
     func dismissPermissionAlert() {
         isPermissionAlertPresented = false
         permissionAlertMessage = ""
         shouldOfferSettingsRedirect = false
     }
-    
+
     private func presentPermissionAlert(message: String, offerSettingsRedirect: Bool) {
         permissionAlertMessage = message
         shouldOfferSettingsRedirect = offerSettingsRedirect
