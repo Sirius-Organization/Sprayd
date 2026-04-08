@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct ArtCardView: View {
     // MARK: - Constants
@@ -19,16 +20,40 @@ struct ArtCardView: View {
     // MARK: - Subviews
     @ViewBuilder
     private func photoPage(index: Int, side: CGFloat) -> some View {
-        Image(viewModel.photoImageNames[index])
-            .resizable()
-            .scaledToFill()
-            .frame(width: side, height: side)
-            .clipped()
-            .contentShape(Rectangle())
-            .onTapGesture {
-                viewModel.openPhotoPreview(at: index)
+        let source = viewModel.photoImageNames[index]
+
+        Group {
+            if let url = URL(string: source), let scheme = url.scheme, scheme.hasPrefix("http") {
+                CachedAsyncImage(url: url) { phase in
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                            .frame(width: side, height: side)
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    case .failure:
+                        Image(systemName: "photo")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundStyle(.gray)
+                            .padding(Metrics.tripleModule)
+                    }
+                }
+            } else {
+                Image(source)
+                    .resizable()
+                    .scaledToFill()
             }
-            .tag(index)
+        }
+        .frame(width: side, height: side)
+        .clipped()
+        .contentShape(Rectangle())
+        .onTapGesture {
+            viewModel.openPhotoPreview(at: index)
+        }
+        .tag(index)
     }
 
     private func photoPager(selection: Binding<Int>) -> some View {
@@ -39,7 +64,7 @@ struct ArtCardView: View {
                     photoPage(index: index, side: side)
                 }
             }
-            .tabViewStyle(.page(indexDisplayMode: .always))
+            .tabViewStyle(.page(indexDisplayMode: viewModel.photoImageNames.count > 1 ? .automatic : .never))
             .frame(width: side, height: side)
         }
         .aspectRatio(1, contentMode: .fit)

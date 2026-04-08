@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct FeaturedView: View {
+    @Environment(\.modelContext) private var modelContext
     @Query(
         sort: [
             SortDescriptor(\ArtItem.createdAt, order: .reverse),
@@ -53,7 +54,12 @@ struct FeaturedView: View {
                     if let featuredItem {
                         VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
                             sectionTitle("Featured")
-                            featuredCard(item: featuredItem)
+                            NavigationLink {
+                                ArtObjectView(item: featuredItem)
+                            } label: {
+                                featuredCard(item: featuredItem)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
 
@@ -76,13 +82,23 @@ struct FeaturedView: View {
                             sectionTitle("Discover")
 
                             if let first = discoverItems.first {
-                                discoverLargeCard(item: first)
-                                    .padding(.bottom, Metrics.module)
+                                NavigationLink {
+                                    ArtObjectView(item: first)
+                                } label: {
+                                    discoverLargeCard(item: first)
+                                }
+                                .buttonStyle(.plain)
+                                .padding(.bottom, Metrics.module)
                             }
 
                             LazyVGrid(columns: gridColumns, spacing: Metrics.doubleModule) {
                                 ForEach(Array(discoverItems.dropFirst().enumerated()), id: \.offset) { _, item in
-                                    discoverSmallCard(item: item)
+                                    NavigationLink {
+                                        ArtObjectView(item: item)
+                                    } label: {
+                                        discoverSmallCard(item: item)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
                             }
                         }
@@ -100,10 +116,21 @@ struct FeaturedView: View {
             .safeAreaPadding(.top, Metrics.oneAndHalfModule)
             .safeAreaPadding(.bottom, Metrics.oneAndHalfModule)
             .refreshable {
-                try? await Task.sleep(for: .seconds(1))
+                await refresh()
             }
         }
     }
+    
+    @MainActor
+        private func refresh() async {
+            do {
+                let service = ArtSyncService(modelContext: modelContext)
+                try await service.syncArtItems()
+            } catch {
+                print("Refresh sync error:", error)
+            }
+        }
+
 
     private var searchBar: some View {
         SearchBarView(placeholder: "Search for an art object")
