@@ -24,6 +24,13 @@ final class ArtAdditionService {
         )
     }
 
+    func fetchCategories() async throws -> [CategoryResponse] {
+        try await sender.send(
+            endpoint: "/categories",
+            method: .get
+        )
+    }
+
     func createArtItem(request: CreateArtItemRequest) async throws -> ArtItemResponse {
         let body = try JSONEncoder().encode(request)
         return try await sender.send(
@@ -40,6 +47,12 @@ struct ArtistResponse: Codable {
     let name: String
     let bio: String
     let imagePath: String?
+}
+
+struct CategoryResponse: Codable {
+    let id: UUID?
+    let name: String
+    let slug: String
 }
 
 struct CreateArtItemRequest: Codable {

@@ -33,4 +33,12 @@ enum ArtAdditionMapper {
             longitude: response.longitude
         )
     }
+
+    static func mapCategory(_ response: CategoryResponse) -> Category {
+        Category(
+            id: response.id ?? UUID(),
+            name: response.name,
+            slug: response.slug
+        )
+    }
 }

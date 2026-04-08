@@ -68,10 +68,10 @@ final class ArtAdditionViewModel: ObservableObject {
     func loadInitialDataIfNeeded() async {
         guard !didLoadInitialData else { return }
         didLoadInitialData = true
-        await loadAuthors()
+        await loadInitialData()
     }
 
-    func loadAuthors() async {
+    func loadInitialData() async {
         isLoading = true
         defer { isLoading = false }
 
@@ -83,6 +83,12 @@ final class ArtAdditionViewModel: ObservableObject {
             } catch {
                 presentError(error)
             }
+        }
+
+        do {
+            availableCategories = try await repository.fetchCategories()
+        } catch {
+            // Keep the local fallback categories for now if backend loading fails.
         }
     }
 

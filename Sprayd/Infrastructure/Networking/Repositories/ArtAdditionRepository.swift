@@ -44,6 +44,11 @@ final class ArtAdditionRepository {
         return try modelContext.fetch(descriptor)
     }
 
+    func fetchCategories() async throws -> [Category] {
+        let responses = try await service.fetchCategories()
+        return responses.map(ArtAdditionMapper.mapCategory)
+    }
+
     func createArtItem(
         title: String,
         description: String,
@@ -62,7 +67,7 @@ final class ArtAdditionRepository {
                 longitude: longitude,
                 author: author?.name ?? "",
                 state: ArtState.new.rawValue,
-                category: category?.name ?? ""
+                category: category?.slug ?? ""
             )
         )
 
