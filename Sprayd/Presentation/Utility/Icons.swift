@@ -41,7 +41,7 @@ struct Icons {
     }
     
     static var pencil: some View {
-        Image(systemName: "pencil")
+        Image("pencilIcon")
     }
     
     static var plus: some View {

@@ -19,12 +19,6 @@ struct ArtMediumCardView: View {
             green: 224 / 255,
             blue: 224 / 255
         )
-        
-        // Text
-        static let artworkAuthorSectionTitle = "Author"
-        static let postAuthorSectionTitle = "Posted by"
-        static let defaultPostAuthorName = "PostAuthor"
-        static let defaultDate = "01.01.25"
     }
     
     // MARK: - Lifecycle
@@ -102,7 +96,7 @@ struct ArtMediumCardView: View {
             
             Spacer(minLength: Metrics.oneAndHalfModule)
             
-            Text(Const.defaultDate)
+            Text("01.01.25")
                 .font(.InstrumentRegular13)
                 .foregroundStyle(Color.secondaryColor)
         }
@@ -142,15 +136,15 @@ struct ArtMediumCardView: View {
                 
                 VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
                     personSection(
-                        title: Const.artworkAuthorSectionTitle,
+                        title: "Author",
                         titleFont: .InstrumentBold13,
                         name: item.author
                     )
                     
                     personSection(
-                        title: Const.postAuthorSectionTitle,
+                        title: "Posted by",
                         titleFont: .InstrumentRegular13,
-                        name: Const.defaultPostAuthorName
+                        name: "PostAuthor"
                     )
                 }
             }

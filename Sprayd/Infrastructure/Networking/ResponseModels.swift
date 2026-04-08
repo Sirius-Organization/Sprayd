@@ -11,6 +11,7 @@ import Foundation
 struct APIErrorResponse: Codable, Error {
     let error: Bool
     let reason: String
+
 }
 
 struct ErrorDetail: Codable {

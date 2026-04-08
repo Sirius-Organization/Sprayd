@@ -14,9 +14,6 @@ struct StartingView: View {
         static let buttonCornerRadius: CGFloat = 28
         static let titleTopInset: CGFloat = 48
 
-        static let titleText = "Sprayd"
-        static let subtitleText = "Discover new street art and\npost your own!"
-        static let buttonText = "Get started"
     }
 
     // MARK: - Fields
@@ -37,11 +34,11 @@ struct StartingView: View {
     // MARK: - Subviews
     private var titleSection: some View {
         VStack(spacing: Metrics.doubleModule) {
-            Text(Const.titleText)
+            Text("Sprayd")
                 .font(.ClimateCrisis52)
                 .foregroundStyle(.black)
 
-            Text(Const.subtitleText)
+            Text("Discover new street art and\npost your own!")
                 .font(.InstrumentMedium16)
                 .foregroundStyle(.black)
                 .multilineTextAlignment(.center)
@@ -51,7 +48,7 @@ struct StartingView: View {
 
     private var getStartedButton: some View {
         Button(action: onGetStartedTapped) {
-            Text(Const.buttonText)
+            Text("Get started")
                 .font(.InstrumentMedium18)
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
