@@ -7,12 +7,19 @@
 
 import SwiftUI
 import SwiftData
+import TipKit
 
 @main
 struct SpraydApp: App {
     private let compositionRoot: CompositionRoot
 
     init() {
+        do {
+            try Tips.configure()
+        }
+        catch {
+            print("Error initializing TipKit \(error.localizedDescription)")
+        }
         self.compositionRoot = CompositionRoot(context: sharedModelContainer.mainContext)
     }
 
