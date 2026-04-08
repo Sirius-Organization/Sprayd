@@ -10,9 +10,11 @@ import SwiftData
 
 @Model
 final class ArtImage {
+    @Attribute(.unique) var remoteID: UUID
     var urlString: String
 
-    init(urlString: String = "") {
+    init(remoteID: UUID, urlString: String = "") {
+        self.remoteID = remoteID
         self.urlString = urlString
     }
 }
