@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
+import TipKit
 
 struct MainMapView: View {
     @State private var viewModel: MainMapViewModel
     @State private var selectedItem: ArtItem?
     @State private var selectedDetent: PresentationDetent = .fraction(0.5)
+    private let mapTip = MapTip()
 
     init(viewModel: MainMapViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -45,6 +47,15 @@ struct MainMapView: View {
                     )
                     .presentationDragIndicator(.visible)
                     .scrollDisabled(true)
+            }
+        }
+        .safeAreaInset(edge: .top) {
+            TipView(MapTip(), arrowEdge: .top)
+                .padding(.horizontal)
+        }
+        .onTapGesture {
+            Task {
+                await TipEvents.firstClosed.donate()
             }
         }
     }
