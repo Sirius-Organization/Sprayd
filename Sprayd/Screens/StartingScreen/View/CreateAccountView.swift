@@ -1,5 +1,5 @@
 //
-//  SignInView.swift
+//  CreateAccountView.swift
 //  Sprayd
 //
 //  Created by loxxy on 06.04.2026.
@@ -7,22 +7,37 @@
 
 import SwiftUI
 
-struct SignInView: View {
+struct CreateAccountView: View {
     // MARK: - Constants
     private enum Const {
         static let buttonHeight: CGFloat = 56
         static let buttonCornerRadius: CGFloat = 28
 
-        static let titleText = "Sign in"
+        static let titleText = "Create\naccount"
+        static let usernameTitle = "Username"
         static let emailTitle = "Email"
         static let passwordTitle = "Password"
+        static let repeatPasswordTitle = "Password"
+        static let usernamePlaceholder = "Enter username*"
         static let emailPlaceholder = "Enter email*"
         static let passwordPlaceholder = "Enter password*"
+        static let repeatPasswordPlaceholder = "Repeat password*"
         static let continueText = "Continue"
     }
 
     // MARK: - Fields
-    @Bindable var viewModel: SignInViewModel
+    @Binding var username: String
+    @Binding var email: String
+    @Binding var password: String
+    @Binding var repeatedPassword: String
+
+    let usernameValidationState: ValidationState
+    let emailValidationState: ValidationState
+    let repeatPasswordValidationState: ValidationState
+    let isLoading: Bool
+    let errorMessage: String?
+    let isFormValid: Bool
+    let onContinueTapped: () -> Void
 
     // MARK: - Body
     var body: some View {
@@ -31,26 +46,43 @@ struct SignInView: View {
                 .ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: Metrics.doubleModule) {
-                Spacer()
-                    .frame(height: Metrics.tenTimesModule)
-
                 Text(Const.titleText)
                     .font(.ClimateCrisis52)
                     .foregroundStyle(Color.black)
 
                 AuthInputField(
+                    title: Const.usernameTitle,
+                    placeholder: Const.usernamePlaceholder,
+                    text: $username,
+                    validationState: usernameValidationState,
+                    textContentType: .username
+                )
+
+                AuthInputField(
                     title: Const.emailTitle,
                     placeholder: Const.emailPlaceholder,
-                    text: $viewModel.email,
+                    text: $email,
+                    validationState: emailValidationState,
                     textContentType: .emailAddress
                 )
 
                 AuthInputField(
                     title: Const.passwordTitle,
                     placeholder: Const.passwordPlaceholder,
-                    text: $viewModel.password,
+                    text: $password,
                     isSecure: true,
                     isPasswordToggleable: true,
+                    validationState: .none,
+                    textContentType: .oneTimeCode
+                )
+
+                AuthInputField(
+                    title: Const.repeatPasswordTitle,
+                    placeholder: Const.repeatPasswordPlaceholder,
+                    text: $repeatedPassword,
+                    isSecure: true,
+                    isPasswordToggleable: true,
+                    validationState: repeatPasswordValidationState,
                     textContentType: .oneTimeCode
                 )
 
@@ -62,7 +94,7 @@ struct SignInView: View {
             .padding(.horizontal, Metrics.tripleModule)
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            if let errorMessage = viewModel.errorMessage {
+            if let errorMessage {
                 VStack {
                     errorBanner(message: errorMessage)
                         .padding(.horizontal, Metrics.tripleModule)
@@ -72,14 +104,14 @@ struct SignInView: View {
                 }
             }
         }
-        .animation(.easeInOut(duration: 0.3), value: viewModel.errorMessage)
+        .animation(.easeInOut(duration: 0.3), value: errorMessage)
     }
 
     // MARK: - Subviews
     private var continueButton: some View {
-        Button(action: viewModel.login) {
+        Button(action: onContinueTapped) {
             HStack {
-                if viewModel.isLoading {
+                if isLoading {
                     ProgressView()
                         .tint(.white)
                 } else {
@@ -90,7 +122,7 @@ struct SignInView: View {
 
                 Spacer()
 
-                if !viewModel.isLoading {
+                if !isLoading {
                     Icons.chevronRight
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(Color.white)
@@ -98,12 +130,12 @@ struct SignInView: View {
             }
             .padding(.horizontal, Metrics.tripleModule)
             .frame(height: Const.buttonHeight)
-            .background(viewModel.isFormValid ? Color.black : Color.black.opacity(0.3))
+            .background(isFormValid ? Color.black : Color.black.opacity(0.3))
             .clipShape(RoundedRectangle(cornerRadius: Const.buttonCornerRadius))
         }
         .buttonStyle(.plain)
         .padding(.horizontal, Metrics.tripleModule)
-        .disabled(!viewModel.isFormValid || viewModel.isLoading)
+        .disabled(!isFormValid || isLoading)
     }
 
     private func errorBanner(message: String) -> some View {
@@ -114,5 +146,33 @@ struct SignInView: View {
             .frame(maxWidth: .infinity)
             .background(Color.accentRed)
             .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+// MARK: - Preview
+#Preview {
+    CreateAccountPreview()
+}
+
+private struct CreateAccountPreview: View {
+    @State private var username = ""
+    @State private var email = ""
+    @State private var password = ""
+    @State private var repeatedPassword = ""
+
+    var body: some View {
+        CreateAccountView(
+            username: $username,
+            email: $email,
+            password: $password,
+            repeatedPassword: $repeatedPassword,
+            usernameValidationState: .none,
+            emailValidationState: .none,
+            repeatPasswordValidationState: .none,
+            isLoading: false,
+            errorMessage: nil,
+            isFormValid: false,
+            onContinueTapped: {}
+        )
     }
 }

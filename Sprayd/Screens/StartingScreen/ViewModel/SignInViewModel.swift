@@ -16,14 +16,17 @@ final class SignInViewModel {
     var isLoading: Bool = false
     var errorMessage: String?
 
-    var onLoginSuccess: () -> Void = {}
-
     private let authorizationService: AuthorizationService
+    private let onLoginSuccess: () -> Void
     private static let errorBannerDuration: TimeInterval = 3
 
     // MARK: - Init
-    init(authorizationService: AuthorizationService) {
+    init(
+        authorizationService: AuthorizationService,
+        onLoginSuccess: @escaping () -> Void = {}
+    ) {
         self.authorizationService = authorizationService
+        self.onLoginSuccess = onLoginSuccess
     }
 
     // MARK: - Validation

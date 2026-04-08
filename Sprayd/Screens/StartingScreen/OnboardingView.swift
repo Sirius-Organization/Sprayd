@@ -8,93 +8,22 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    // MARK: - Constants
-    private enum Const {
-        static let animationDuration: CGFloat = 0.45
+    @StateObject private var coordinator: OnboardingCoordinator
+
+    init(
+        authorizationService: AuthorizationService,
+        onFinished: @escaping () -> Void = {}
+    ) {
+        _coordinator = StateObject(
+            wrappedValue: OnboardingCoordinator(
+                authorizationService: authorizationService,
+                onFinished: onFinished
+            )
+        )
     }
 
-    enum Step {
-        case welcome
-        case chooseAccount
-    }
-
-    enum Route: Hashable {
-        case signIn
-        case createAccount
-    }
-
-    // MARK: - Fields
-    @State private var step: Step = .welcome
-    @State private var path: [Route] = []
-
-    let authorizationService: AuthorizationService
-    var onFinished: () -> Void = {}
-
-    // MARK: - Body
     var body: some View {
-        ZStack {
-            RadialGradient.onboardingBackground
-                .ignoresSafeArea()
-
-            Group {
-                switch step {
-                case .welcome:
-                    StartingView {
-                        withAnimation(.easeInOut(duration: Const.animationDuration)) {
-                            step = .chooseAccount
-                        }
-                    }
-                    .transition(.opacity)
-
-                case .chooseAccount:
-                    NavigationStack(path: $path) {
-                        ChooseAccountView(
-                            onSignInTapped: {
-                                path.append(.signIn)
-                            },
-                            onCreateAccountTapped: {
-                                path.append(.createAccount)
-                            },
-                            onProceedWithoutAccountTapped: {
-                                withAnimation {
-                                    onFinished()
-                                }
-                            }
-                        )
-                        .navigationDestination(for: Route.self) { route in
-                            switch route {
-                            case .signIn:
-                                let vm = SignInViewModel(
-                                    authorizationService: authorizationService
-                                )
-                                SignInView(viewModel: vm)
-                                    .onAppear {
-                                        vm.onLoginSuccess = {
-                                            withAnimation {
-                                                onFinished()
-                                            }
-                                        }
-                                    }
-                            case .createAccount:
-                                let vm = CreateAccountViewModel(
-                                    authorizationService: authorizationService
-                                )
-                                CreateAccountView(viewModel: vm)
-                                    .onAppear {
-                                        vm.onRegistrationSuccess = {
-                                            withAnimation {
-                                                onFinished()
-                                            }
-                                        }
-                                    }
-                            }
-                        }
-                    }
-                    .toolbar(.hidden, for: .navigationBar)
-                    .transition(.opacity)
-                }
-            }
-        }
+        OnboardingCoordinatorView(coordinator: coordinator)
     }
 }
 

@@ -165,6 +165,7 @@
       }
     },
     "Continue" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ru" : {
           "stringUnit" : {
@@ -195,6 +196,7 @@
       }
     },
     "Create\naccount" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ru" : {
           "stringUnit" : {

@@ -18,14 +18,17 @@ final class CreateAccountViewModel {
     var isLoading: Bool = false
     var errorMessage: String?
 
-    var onRegistrationSuccess: () -> Void = {}
-
     private let authorizationService: AuthorizationService
+    private let onRegistrationSuccess: () -> Void
     private static let errorBannerDuration: TimeInterval = 3
 
     // MARK: - Init
-    init(authorizationService: AuthorizationService) {
+    init(
+        authorizationService: AuthorizationService,
+        onRegistrationSuccess: @escaping () -> Void = {}
+    ) {
         self.authorizationService = authorizationService
+        self.onRegistrationSuccess = onRegistrationSuccess
     }
 
     // MARK: - Validation
