@@ -21,17 +21,6 @@ struct LocationPickerView: View {
     // MARK: - Constants
 
     private enum Const {
-        static let title = "Pick location"
-        static let searchPlaceholder = "Search address"
-        static let searchButtonText = "Search"
-        static let cancelButtonText = "Cancel"
-        static let doneButtonText = "Done"
-        static let resultsTitle = "Results"
-        static let closeButtonText = "Close"
-        static let noResultsText = "No results found"
-        static let markerTitle = "Selected"
-        static let fallbackTitle = "Location"
-
         static let detailSpan = MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02)
         static let defaultRegion = MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: 55.7558, longitude: 37.6176),
@@ -75,7 +64,7 @@ struct LocationPickerView: View {
                 searchBar
                 mapLayer
             }
-            .navigationTitle(Const.title)
+            .navigationTitle("Pick location")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { toolbarContent }
             .sheet(isPresented: $showResults) { resultsSheet }
@@ -93,7 +82,7 @@ private extension LocationPickerView {
     var searchBar: some View {
         VStack(alignment: .leading, spacing: Metrics.halfModule) {
             HStack(spacing: Metrics.module) {
-                TextField(Const.searchPlaceholder, text: $searchQuery)
+                TextField("Search address", text: $searchQuery)
                     .textFieldStyle(.roundedBorder)
                     .cornerRadius(16)
                     .textInputAutocapitalization(.words)
@@ -106,7 +95,7 @@ private extension LocationPickerView {
                         scheduleAutocomplete(for: newValue)
                     }
 
-                Button(Const.searchButtonText) {
+                Button("Search") {
                     hideSuggestions()
                     search()
                 }
@@ -178,7 +167,7 @@ private extension LocationPickerView {
         MapReader { proxy in
             Map(position: $position) {
                 if let selectedCoordinate {
-                    Marker(Const.markerTitle, coordinate: selectedCoordinate)
+                    Marker("Selected", coordinate: selectedCoordinate)
                         .tint(Color.accentRed)
                 }
             }
@@ -201,7 +190,7 @@ private extension LocationPickerView {
     @ToolbarContentBuilder
     var toolbarContent: some ToolbarContent {
         ToolbarItem(placement: .cancellationAction) {
-            Button(Const.cancelButtonText) {
+            Button("Cancel") {
                 autocompleteDebounceTask?.cancel()
                 searchTask?.cancel()
                 addressCompleter.cancel()
@@ -212,7 +201,7 @@ private extension LocationPickerView {
             if isGeocoding {
                 ProgressView()
             } else {
-                Button(Const.doneButtonText) { confirmSelection() }
+                Button("Done") { confirmSelection() }
                     .disabled(selectedCoordinate == nil)
             }
         }
@@ -225,11 +214,11 @@ private extension LocationPickerView {
                     resultRow(item)
                 }
             }
-            .navigationTitle(Const.resultsTitle)
+            .navigationTitle("Results")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(Const.closeButtonText) { showResults = false }
+                    Button("Close") { showResults = false }
                 }
             }
         }
@@ -238,7 +227,7 @@ private extension LocationPickerView {
 
     func resultRow(_ item: MKMapItem) -> some View {
         VStack(alignment: .leading, spacing: Metrics.halfModule) {
-            Text(item.name ?? item.placemark.title ?? Const.fallbackTitle)
+            Text(item.name ?? item.placemark.title ?? "Location")
                 .font(.InstrumentMedium16)
                 .foregroundStyle(Color.primary)
 
@@ -301,7 +290,7 @@ private extension LocationPickerView {
 
                 let items = response.mapItems
                 if items.isEmpty {
-                    searchError = Const.noResultsText
+                    searchError = "No results found"
                 } else if items.count == 1 {
                     applyResult(items[0])
                 } else {
@@ -337,7 +326,7 @@ private extension LocationPickerView {
 
                 let items = response.mapItems
                 if items.isEmpty {
-                    searchError = Const.noResultsText
+                    searchError = "No results found"
                 } else if items.count == 1 {
                     applyResult(items[0])
                 } else {
@@ -427,7 +416,7 @@ private extension LocationPickerView {
     func message(for error: Error) -> String {
         let nsError = error as NSError
         if nsError.domain == MKError.errorDomain, nsError.code == MKError.placemarkNotFound.rawValue {
-            return Const.noResultsText
+            return "No results found"
         }
         return error.localizedDescription
     }

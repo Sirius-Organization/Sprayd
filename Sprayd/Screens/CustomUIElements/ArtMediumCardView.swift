@@ -19,11 +19,6 @@ struct ArtMediumCardView: View {
             green: 224 / 255,
             blue: 224 / 255
         )
-        
-        // Text
-        static let artworkAuthorSectionTitle = "Author"
-        static let artworkAuthorName = "Ana Markov"
-        static let postAuthorSectionTitle = "Posted by"
     }
     
     // MARK: - Lifecycle
@@ -149,13 +144,13 @@ struct ArtMediumCardView: View {
                 
                 VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
                     personSection(
-                        title: Const.artworkAuthorSectionTitle,
+                        title: "Author",
                         titleFont: .InstrumentBold13,
                         name: artworkAuthorName
                     )
                     
                     personSection(
-                        title: Const.postAuthorSectionTitle,
+                        title: "Posted by",
                         titleFont: .InstrumentRegular13,
                         name: postAuthorName
                     )

@@ -10,9 +10,6 @@ import SwiftUI
 struct ArtistProfileView: View {
     // MARK: - Constants
     private enum Const {
-        // Strings
-        static let worksSectionText: String = "Works"
-        
         // UI constraint properties
         static let profileImageSize: CGFloat = 160
         static let profileImageCornerRadius: CGFloat = profileImageSize / 2
@@ -43,7 +40,7 @@ struct ArtistProfileView: View {
     }
     
     private var sectionTitle: some View {
-        Text(Const.worksSectionText)
+        Text("Works")
             .frame(maxWidth: 150)
             .font(.ClimateCrisis20)
     }

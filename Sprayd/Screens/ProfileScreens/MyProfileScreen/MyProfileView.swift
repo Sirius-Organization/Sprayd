@@ -10,11 +10,6 @@ import SwiftUI
 struct MyProfileView: View {
     // MARK: - Constants
     private enum Const {
-        // Strings
-        static let postedButtonBottomText: String = "Add new seen art"
-        static let postedSectionText: String = "Posted"
-        static let visitedSectionText: String = "Visited"
-
         // UI constraint properties
         static let profileImageSize: CGFloat = 160
         static let choosePhotoButtonSize: CGFloat = 40
@@ -76,8 +71,8 @@ struct MyProfileView: View {
     
     private var pickerView: some View {
         Picker("", selection: $viewModel.selectedOption) {
-            Text(Const.postedSectionText).tag(MyProfileViewModel.Option.posted)
-            Text(Const.visitedSectionText).tag(MyProfileViewModel.Option.visited)
+            Text("Posted").tag(MyProfileViewModel.Option.posted)
+            Text("Visited").tag(MyProfileViewModel.Option.visited)
         }
         .pickerStyle(.segmented)
         .padding(.horizontal)
@@ -93,7 +88,7 @@ struct MyProfileView: View {
         VStack(alignment: .center) {
             AddButton(onTap: onAddArt)
             
-            Text(Const.postedButtonBottomText)
+            Text("Add new seen art")
                 .font(.InstrumentMedium13)
         }
         .frame(maxWidth: .infinity)

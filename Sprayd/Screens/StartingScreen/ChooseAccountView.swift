@@ -15,12 +15,6 @@ struct ChooseAccountView: View {
         static let personIconSize: CGFloat = 20
         static let titleTopInset: CGFloat = 200
 
-        static let titleText = "Sprayd"
-        static let signInText = "Sign in"
-        static let noAccountText = "Don't have an account?"
-        static let createAccountText = "Create an account"
-        static let orText = "or"
-        static let proceedText = "Proceed without an account"
     }
 
     // MARK: - Fields
@@ -37,7 +31,7 @@ struct ChooseAccountView: View {
             VStack(spacing: 0) {
                 Spacer()
 
-                Text(Const.titleText)
+                Text("Sprayd")
                     .font(.ClimateCrisis52)
                     .foregroundStyle(.black)
                     .padding(.top, Const.titleTopInset)
@@ -49,7 +43,7 @@ struct ChooseAccountView: View {
 
                 VStack(spacing: 0) {
                     Spacer(minLength: 0)
-                    Text(Const.orText)
+                    Text("or")
                         .font(.InstrumentRegular16)
                         .foregroundStyle(.black.opacity(0.5))
                     Spacer(minLength: 0)
@@ -69,12 +63,12 @@ struct ChooseAccountView: View {
             signInButton
 
             VStack(spacing: Metrics.halfModule) {
-                Text(Const.noAccountText)
+                Text("Don't have an account?")
                     .font(.InstrumentRegular16)
                     .foregroundStyle(.black)
 
                 Button(action: onCreateAccountTapped) {
-                    Text(Const.createAccountText)
+                    Text("Create an account")
                         .font(.InstrumentBold17)
                         .foregroundStyle(.black)
                 }
@@ -87,7 +81,7 @@ struct ChooseAccountView: View {
             HStack {
                 Spacer()
 
-                Text(Const.signInText)
+                Text("Sign in")
                     .font(.InstrumentMedium18)
                     .foregroundStyle(.white)
 
@@ -110,7 +104,7 @@ struct ChooseAccountView: View {
             HStack {
                 Spacer()
 
-                Text(Const.proceedText)
+                Text("Proceed without an account")
                     .font(.InstrumentMedium18)
                     .foregroundStyle(.white)
 
