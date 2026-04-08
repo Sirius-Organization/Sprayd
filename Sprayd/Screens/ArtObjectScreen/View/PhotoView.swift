@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct PhotoView: View {
     @Binding var selectedPhotoIndex: Int
@@ -13,12 +14,36 @@ struct PhotoView: View {
 
     @ViewBuilder
     private func photoPage(index: Int, width: CGFloat, height: CGFloat) -> some View {
-        Image(photoImageNames[index])
-            .resizable()
-            .scaledToFit()
-            .cornerRadius(20)
-            .frame(width: width, height: height)
-            .tag(index)
+        let source = photoImageNames[index]
+
+        Group {
+            if let url = URL(string: source), let scheme = url.scheme, scheme.hasPrefix("http") {
+                CachedAsyncImage(url: url) { phase in
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                            .frame(width: width, height: height)
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFit()
+                    case .failure:
+                        Image(systemName: "photo")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundStyle(.gray)
+                    }
+                }
+            } else {
+                Image(source)
+                    .resizable()
+                    .scaledToFit()
+            }
+        }
+        .cornerRadius(20)
+        .frame(width: width, height: height)
+        .clipped()
+        .tag(index)
     }
 
     var body: some View {
