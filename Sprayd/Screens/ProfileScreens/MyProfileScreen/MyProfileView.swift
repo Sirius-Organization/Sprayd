@@ -285,16 +285,3 @@ struct MyProfileView: View {
         .accessibilityLabel("Log out")
     }
 }
-
-#Preview {
-    if let sender = try? Sender() {
-        MyProfileView(
-            onAddArt: {},
-            viewModel: MyProfileViewModel(
-                authorizationService: AuthorizationService(sender: sender)
-            )
-        )
-    } else {
-        Text("Failed to initialize preview")
-    }
-}

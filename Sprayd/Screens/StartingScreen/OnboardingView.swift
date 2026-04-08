@@ -28,15 +28,3 @@ struct OnboardingView: View {
         OnboardingCoordinatorView(coordinator: coordinator)
     }
 }
-
-// MARK: - Preview
-#Preview {
-    if let sender = try? Sender() {
-        OnboardingView(
-            authorizationService: AuthorizationService(sender: sender),
-            tokenStore: SessionTokenStore()
-        )
-    } else {
-        Text("Failed to initialize preview")
-    }
-}
