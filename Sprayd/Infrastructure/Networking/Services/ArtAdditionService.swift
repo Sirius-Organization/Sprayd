@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 final class ArtAdditionService {
     // MARK: - Fields
@@ -39,6 +40,37 @@ final class ArtAdditionService {
             headers: ["Content-Type": "application/json"],
             body: body
         )
+    }
+
+    func uploadImage(itemID: UUID, imageData: Data) async throws -> ArtImageResponse {
+        let boundary = "Boundary-\(UUID().uuidString)"
+        let body = makeMultipartImageBody(
+            imageData: imageData,
+            boundary: boundary
+        )
+
+        return try await sender.send(
+            endpoint: "/art-items/\(itemID.uuidString)/images",
+            method: .post,
+            headers: [
+                "Content-Type": "multipart/form-data; boundary=\(boundary)"
+            ],
+            body: body
+        )
+    }
+
+    private func makeMultipartImageBody(imageData: Data, boundary: String) -> Data {
+        var body = Data()
+        let lineBreak = "\r\n"
+
+        body.append("--\(boundary)\(lineBreak)".data(using: .utf8) ?? Data())
+        body.append("Content-Disposition: form-data; name=\"img\"; filename=\"image.jpg\"\(lineBreak)".data(using: .utf8) ?? Data())
+        body.append("Content-Type: image/jpeg\(lineBreak)\(lineBreak)".data(using: .utf8) ?? Data())
+        body.append(imageData)
+        body.append(lineBreak.data(using: .utf8) ?? Data())
+        body.append("--\(boundary)--\(lineBreak)".data(using: .utf8) ?? Data())
+
+        return body
     }
 }
 
@@ -77,4 +109,13 @@ struct ArtItemResponse: Codable {
     let state: String
     let category: String
     let firstImageUrl: String?
+}
+
+struct ArtImageResponse: Codable {
+    let id: UUID?
+    let artItemId: UUID
+    let url: String
+    let date: Date
+    let timeStamp: TimeInterval
+    let userId: UUID
 }

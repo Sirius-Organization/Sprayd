@@ -7,6 +7,7 @@
 
 import SwiftData
 import Foundation
+import UIKit
 
 @MainActor
 final class ArtAdditionRepository {
@@ -56,7 +57,8 @@ final class ArtAdditionRepository {
         latitude: Double,
         longitude: Double,
         author: Author?,
-        category: Category?
+        category: Category?,
+        photos: [UIImage]
     ) async throws -> ArtItem {
         let response = try await service.createArtItem(
             request: CreateArtItemRequest(
@@ -73,6 +75,10 @@ final class ArtAdditionRepository {
 
         let mappedItem = ArtAdditionMapper.mapArtItem(response)
         let existingItems = try modelContext.fetch(FetchDescriptor<ArtItem>())
+        let uploadedImages = try await uploadImages(
+            for: mappedItem,
+            photos: photos
+        )
 
         if let existingItem = existingItems.first(where: { $0.id == mappedItem.id }) {
             existingItem.name = mappedItem.name
@@ -83,13 +89,39 @@ final class ArtAdditionRepository {
             existingItem.category = mappedItem.category
             existingItem.latitude = mappedItem.latitude
             existingItem.longitude = mappedItem.longitude
-            existingItem.images = mappedItem.images
+            existingItem.images = uploadedImages.isEmpty ? mappedItem.images : uploadedImages
             try modelContext.save()
             return existingItem
         }
 
+        if !uploadedImages.isEmpty {
+            mappedItem.images = uploadedImages
+        }
         modelContext.insert(mappedItem)
         try modelContext.save()
         return mappedItem
+    }
+
+    private func uploadImages(
+        for item: ArtItem,
+        photos: [UIImage]
+    ) async throws -> [ArtImage] {
+        guard !photos.isEmpty else { return item.images }
+
+        var uploadedImages: [ArtImage] = []
+
+        for photo in photos {
+            guard let imageData = photo.jpegData(compressionQuality: 0.85) else {
+                continue
+            }
+
+            let response = try await service.uploadImage(
+                itemID: item.id,
+                imageData: imageData
+            )
+            uploadedImages.append(ArtAdditionMapper.mapArtImage(response))
+        }
+
+        return uploadedImages
     }
 }

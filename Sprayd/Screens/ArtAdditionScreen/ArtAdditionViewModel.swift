@@ -111,7 +111,8 @@ final class ArtAdditionViewModel: ObservableObject {
                 latitude: coordinate.latitude,
                 longitude: coordinate.longitude,
                 author: selectedAuthor,
-                category: selectedCategory
+                category: selectedCategory,
+                photos: addedPhotos.map(\.image)
             )
             didCreateArtItem = true
         } catch {

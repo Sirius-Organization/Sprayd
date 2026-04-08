@@ -41,4 +41,14 @@ enum ArtAdditionMapper {
             slug: response.slug
         )
     }
+
+    static func mapArtImage(_ response: ArtImageResponse) -> ArtImage {
+        ArtImage(
+            id: response.id ?? UUID(),
+            urlString: response.url,
+            createdAt: response.date,
+            timeStamp: response.timeStamp,
+            userID: response.userId
+        )
+    }
 }
