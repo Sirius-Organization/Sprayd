@@ -264,20 +264,24 @@ struct MyProfileView: View {
 
     private var logoutButton: some View {
         Button {
-            withAnimation(.easeInOut(duration: 0.35)) {
-                viewModel.hasCompletedOnboarding = false
-            }
+            viewModel.logout()
         } label: {
             Circle()
                 .fill(Color.accentRed)
                 .frame(width: Const.logoutButtonSize, height: Const.logoutButtonSize)
                 .overlay {
-                    Icons.logOut
-                        .font(.system(size: Const.logoutIconPointSize, weight: .semibold))
+                    if viewModel.isLoggingOut {
+                        ProgressView()
+                            .tint(.white)
+                    } else {
+                        Icons.logOut
+                            .font(.system(size: Const.logoutIconPointSize, weight: .semibold))
+                    }
                 }
                 .shadow(radius: 3)
         }
         .buttonStyle(.plain)
+        .disabled(viewModel.isLoggingOut)
         .accessibilityLabel("Log out")
     }
 }
@@ -285,6 +289,8 @@ struct MyProfileView: View {
 #Preview {
     MyProfileView(
         onAddArt: {},
-        viewModel: MyProfileViewModel()
+        viewModel: MyProfileViewModel(
+            authorizationService: AuthorizationService(sender: Sender())
+        )
     )
 }

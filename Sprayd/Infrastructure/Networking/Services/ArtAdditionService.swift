@@ -42,7 +42,11 @@ final class ArtAdditionService {
         )
     }
 
-    func uploadImage(itemID: UUID, imageData: Data) async throws -> ArtImageResponse {
+    func uploadImage(
+        itemID: UUID,
+        imageData: Data,
+        token: String
+    ) async throws -> ArtImageResponse {
         let boundary = "Boundary-\(UUID().uuidString)"
         let body = makeMultipartImageBody(
             imageData: imageData,
@@ -53,7 +57,8 @@ final class ArtAdditionService {
             endpoint: "/art-items/\(itemID.uuidString)/images",
             method: .post,
             headers: [
-                "Content-Type": "multipart/form-data; boundary=\(boundary)"
+                "Content-Type": "multipart/form-data; boundary=\(boundary)",
+                "Authorization": "Bearer \(token)"
             ],
             body: body
         )

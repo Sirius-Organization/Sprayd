@@ -32,7 +32,8 @@ final class ArtItemAnnotationView: MKAnnotationView {
     override func prepareForReuse() {
         super.prepareForReuse()
         imageView.cancelImageLoad()
-        imageView.image = placeholderImage()
+        imageView.image = nil
+        imageView.alpha = 1
         countLabel.isHidden = true
         countLabel.text = nil
         setNeedsLayout()
@@ -103,7 +104,7 @@ final class ArtItemAnnotationView: MKAnnotationView {
         imageView.setImage(
             from: imageURL,
             imageLoaderService: imageLoaderService,
-            placeholder: placeholderImage()
+            animated: true
         )
     }
 
@@ -129,8 +130,7 @@ final class ArtItemAnnotationView: MKAnnotationView {
 
         imageView.frame = containerView.bounds
         imageView.contentMode = .scaleAspectFill
-        imageView.tintColor = UIColor(Color.placeholderGrey)
-        imageView.image = placeholderImage()
+        imageView.image = nil
 
         countLabel.font = .InstrumentBold13
         countLabel.textColor = UIColor(Color.appBackground)
@@ -143,14 +143,5 @@ final class ArtItemAnnotationView: MKAnnotationView {
         addSubview(containerView)
         containerView.addSubview(imageView)
         addSubview(countLabel)
-    }
-
-    private func placeholderImage() -> UIImage? {
-        let configuration = UIImage.SymbolConfiguration(
-            pointSize: Metrics.doubleModule,
-            weight: .medium
-        )
-        return UIImage(systemName: "photo", withConfiguration: configuration)?
-            .withTintColor(UIColor(Color.placeholderGrey), renderingMode: .alwaysOriginal)
     }
 }

@@ -106,4 +106,22 @@ struct Icons {
         Image(systemName: "rectangle.portrait.and.arrow.right")
             .foregroundStyle(Color.white)
     }
+    
+    static var validationCheckmark: some View {
+        Image(systemName: "checkmark")
+            .font(.system(size: 11, weight: .bold))
+            .foregroundStyle(.white)
+            .frame(width: 22, height: 22)
+            .background(Color.green)
+            .clipShape(Circle())
+    }
+    
+    static var validationXmark: some View {
+        Image(systemName: "xmark")
+            .font(.system(size: 11, weight: .bold))
+            .foregroundStyle(.white)
+            .frame(width: 22, height: 22)
+            .background(Color.red)
+            .clipShape(Circle())
+    }
 }

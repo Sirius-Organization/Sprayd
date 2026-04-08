@@ -10,21 +10,23 @@ import SwiftData
 @MainActor
 final class CompositionRoot {
     let modelContext: ModelContext
-    
+
     init(context: ModelContext) {
         self.modelContext = context
     }
-    
+  
+    lazy var imageCacheService: ImageCacheService = {
+        ImageCacheService()
+    }()
+   
     lazy var imageLoaderService: ImageLoaderService = {
-        ImageLoaderService(modelContext: modelContext)
+        ImageLoaderService(imageCacheService: imageCacheService)
     }()
 
-    lazy var sender: Sender = {
-        do {
-            return try Sender()
-        } catch {
-            fatalError("Failed to create Sender: \(error)")
-        }
+    lazy var sender: Sender = Sender()
+
+    lazy var authorizationService: AuthorizationService = {
+        AuthorizationService(sender: sender)
     }()
 
     lazy var artAdditionService: ArtAdditionService = {

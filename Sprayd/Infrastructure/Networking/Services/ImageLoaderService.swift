@@ -6,27 +6,27 @@
 //
 
 import Foundation
-import SwiftData
 
 @MainActor
 final class ImageLoaderService {
     private let urlSession: URLSession
-    private var memoryCache: [String: Data] = [:]
+    private let imageCacheService: ImageCacheService
 
     init(
-        modelContext _: ModelContext,
+        imageCacheService: ImageCacheService,
         urlSession: URLSession = .shared
     ) {
+        self.imageCacheService = imageCacheService
         self.urlSession = urlSession
     }
 
     func loadImageData(from urlString: String) async -> Data? {
-        if let memoryCachedData = memoryCache[urlString] {
-            return memoryCachedData
-        }
-
         guard let url = URL(string: urlString) else {
             return nil
+        }
+
+        if let cachedData = await imageCacheService.data(for: url) {
+            return cachedData
         }
 
         do {
@@ -37,7 +37,7 @@ final class ImageLoaderService {
                 return nil
             }
 
-            memoryCache[urlString] = data
+            await imageCacheService.store(data, for: url)
             return data
         } catch {
             return nil

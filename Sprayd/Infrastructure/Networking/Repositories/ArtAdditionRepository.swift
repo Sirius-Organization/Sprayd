@@ -75,7 +75,7 @@ final class ArtAdditionRepository {
 
         let mappedItem = ArtAdditionMapper.mapArtItem(response)
         let existingItems = try modelContext.fetch(FetchDescriptor<ArtItem>())
-        let uploadedImages = try await uploadImages(
+        let uploadedImages = await uploadImages(
             for: mappedItem,
             photos: photos
         )
@@ -105,8 +105,12 @@ final class ArtAdditionRepository {
     private func uploadImages(
         for item: ArtItem,
         photos: [UIImage]
-    ) async throws -> [ArtImage] {
+    ) async -> [ArtImage] {
         guard !photos.isEmpty else { return item.images }
+        guard let token = UserDefaults.standard.string(forKey: "userToken"),
+              !token.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return item.images
+        }
 
         var uploadedImages: [ArtImage] = []
 
@@ -115,11 +119,16 @@ final class ArtAdditionRepository {
                 continue
             }
 
-            let response = try await service.uploadImage(
-                itemID: item.id,
-                imageData: imageData
-            )
-            uploadedImages.append(ArtAdditionMapper.mapArtImage(response))
+            do {
+                let response = try await service.uploadImage(
+                    itemID: item.id,
+                    imageData: imageData,
+                    token: token
+                )
+                uploadedImages.append(ArtAdditionMapper.mapArtImage(response))
+            } catch {
+                continue
+            }
         }
 
         return uploadedImages

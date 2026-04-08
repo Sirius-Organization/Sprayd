@@ -12,11 +12,16 @@ final class ProfileCoordinator: ObservableObject {
     // MARK: - Fields
     @Published var path: [ProfileRoute] = []
     private let artAdditionRepository: ArtAdditionRepository
+    private let authorizationService: AuthorizationService
 
-    init(artAdditionRepository: ArtAdditionRepository) {
+    // MARK: - Lifecycle
+    init(
+        authorizationService: AuthorizationService,
+        artAdditionRepository: ArtAdditionRepository
+    ) {
+        self.authorizationService = authorizationService
         self.artAdditionRepository = artAdditionRepository
     }
-    
     // MARK: - Navigation logic
     func openAddArt() {
         path.append(.addArt)
@@ -37,7 +42,7 @@ final class ProfileCoordinator: ObservableObject {
             onAddArt: { [weak self] in
                 self?.openAddArt()
             },
-            viewModel: MyProfileViewModel()
+            viewModel: MyProfileViewModel(authorizationService: authorizationService)
         )
     }
     

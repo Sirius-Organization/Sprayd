@@ -25,7 +25,7 @@ struct MainMapAssembly {
                     name: "Москва\(i)",
                     itemDescription: "Большой мурал в центре города",
                     images: [
-                        "https://picsum.photos/id/\(i)/200/300"
+                        "https://picsum.photos/id/\(i)/500/500"
                     ],
                     location: "Moscow",
                     author: "aboba", // UUID(),

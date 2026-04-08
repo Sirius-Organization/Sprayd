@@ -30,20 +30,22 @@ extension UIImageView {
     func setImage(
         from url: URL?,
         imageLoaderService: ImageLoaderService?,
-        placeholder: UIImage?
+        animated: Bool = true
     ) {
         cancelImageLoad()
-        image = placeholder
 
         guard
             let imageLoaderService,
             let urlString = url?.absoluteString
         else {
+            image = nil
+            alpha = 1
             return
         }
 
         cachedImageTask = Task { @MainActor [weak self] in
             guard
+                let self,
                 let data = await imageLoaderService.loadImageData(from: urlString),
                 !Task.isCancelled,
                 let image = UIImage(data: data)
@@ -51,7 +53,17 @@ extension UIImageView {
                 return
             }
 
-            self?.image = image
+            self.image = image
+
+            guard animated else {
+                self.alpha = 1
+                return
+            }
+
+            self.alpha = 0
+            UIView.animate(withDuration: 0.2) {
+                self.alpha = 1
+            }
         }
     }
 
