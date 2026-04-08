@@ -21,14 +21,19 @@ struct StartingView: View {
 
     // MARK: - Body
     var body: some View {
-        VStack {
-            Spacer()
-            titleSection
-            Spacer()
-            getStartedButton
-                .padding(.bottom, Metrics.quadrupleModule)
+        ZStack {
+            RadialGradient.onboardingBackground
+                .ignoresSafeArea()
+
+            VStack {
+                Spacer()
+                titleSection
+                Spacer()
+                getStartedButton
+                    .padding(.bottom, Metrics.quadrupleModule)
+            }
+            .padding(.horizontal, Metrics.tripleModule)
         }
-        .padding(.horizontal, Metrics.tripleModule)
     }
 
     // MARK: - Subviews
@@ -61,6 +66,6 @@ struct StartingView: View {
 }
 
 // MARK: - Preview
-#Preview {
-    OnboardingView()
-}
+//#Preview {
+//    OnboardingView()
+//}

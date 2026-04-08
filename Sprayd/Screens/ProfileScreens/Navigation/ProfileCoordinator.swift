@@ -11,7 +11,14 @@ internal import Combine
 final class ProfileCoordinator: ObservableObject {
     // MARK: - Fields
     @Published var path: [ProfileRoute] = []
-    
+
+    private let authorizationService: AuthorizationService
+
+    // MARK: - Lifecycle
+    init(authorizationService: AuthorizationService) {
+        self.authorizationService = authorizationService
+    }
+
     // MARK: - Navigation logic
     func openAddArt() {
         path.append(.addArt)
@@ -32,7 +39,7 @@ final class ProfileCoordinator: ObservableObject {
             onAddArt: { [weak self] in
                 self?.openAddArt()
             },
-            viewModel: MyProfileViewModel()
+            viewModel: MyProfileViewModel(authorizationService: authorizationService)
         )
     }
     

@@ -10,16 +10,21 @@ import SwiftData
 @MainActor
 final class CompositionRoot {
     let modelContext: ModelContext
-    
+
     init(context: ModelContext) {
         self.modelContext = context
     }
-
+  
     lazy var imageCacheService: ImageCacheService = {
         ImageCacheService()
     }()
-    
+   
     lazy var imageLoaderService: ImageLoaderService = {
         ImageLoaderService(imageCacheService: imageCacheService)
+    }()
+
+    lazy var sender: Sender = Sender()
+    lazy var authorizationService: AuthorizationService = {
+        AuthorizationService(sender: sender)
     }()
 }
