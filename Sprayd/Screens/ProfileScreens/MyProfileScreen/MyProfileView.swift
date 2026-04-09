@@ -193,6 +193,8 @@ struct MyProfileView: View {
                         TextField("Username", text: $viewModel.draftUsername)
                             .font(.ClimateCrisis22)
                             .multilineTextAlignment(.center)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled(true)
                             .frame(maxWidth: Const.editableFieldMaxWidth)
                             .focused($focusedField, equals: .username)
                     }
@@ -229,6 +231,8 @@ struct MyProfileView: View {
                         TextField("Bio", text: $viewModel.draftBio)
                             .font(.InstrumentMedium13)
                             .multilineTextAlignment(.center)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled(true)
                             .frame(maxWidth: Const.editableFieldMaxWidth)
                             .focused($focusedField, equals: .bio)
                     }
