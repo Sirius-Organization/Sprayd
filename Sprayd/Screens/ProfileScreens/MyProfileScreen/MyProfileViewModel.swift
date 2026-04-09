@@ -99,14 +99,27 @@ final class MyProfileViewModel: ObservableObject {
         isLoggingOut = true
 
         Task {
-            do {
-                let token = tokenStore.token() ?? ""
-                try await authorizationService.logout(token: token)
-                clearSession()
-            } catch {
-                showLogoutError = true
+            defer {
+                Task { await MainActor.run {
+                    self.isLoggingOut = false
+                } }
             }
-            isLoggingOut = false
+
+            let token = tokenStore.token()?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+            guard !token.isEmpty else {
+                await clearSession()
+                return
+            }
+
+            do {
+                try await authorizationService.logout(token: token)
+            } catch {
+                // Server-side logout can fail if the token is already invalidated.
+                // Local session cleanup should still complete.
+            }
+
+            await clearSession()
         }
     }
 

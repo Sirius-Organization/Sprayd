@@ -13,10 +13,16 @@ import UIKit
 final class ArtAdditionRepository {
     private let service: ArtAdditionService
     private let modelContext: ModelContext
+    private let tokenStore: SessionTokenStoring
 
-    init(service: ArtAdditionService, modelContext: ModelContext) {
+    init(
+        service: ArtAdditionService,
+        modelContext: ModelContext,
+        tokenStore: SessionTokenStoring
+    ) {
         self.service = service
         self.modelContext = modelContext
+        self.tokenStore = tokenStore
     }
 
     func syncArtists() async throws -> [Author] {
@@ -107,7 +113,7 @@ final class ArtAdditionRepository {
         photos: [UIImage]
     ) async -> [ArtImage] {
         guard !photos.isEmpty else { return item.images }
-        guard let token = UserDefaults.standard.string(forKey: "userToken"),
+        guard let token = tokenStore.token(),
               !token.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             return item.images
         }

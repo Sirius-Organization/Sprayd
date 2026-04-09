@@ -41,7 +41,8 @@ final class CompositionRoot {
     lazy var artAdditionRepository: ArtAdditionRepository = {
         ArtAdditionRepository(
             service: artAdditionService,
-            modelContext: modelContext
+            modelContext: modelContext,
+            tokenStore: sessionTokenStore
         )
     }()
 

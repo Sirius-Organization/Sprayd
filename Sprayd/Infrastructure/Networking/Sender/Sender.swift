@@ -10,7 +10,7 @@ import Foundation
 final class Sender {
     
     private enum Constants {
-        static let baseURL = "https://sprayd.ru/api/v1"
+        static let baseURL = "http://localhost:8080/api/v1/"
     }
     
     private let baseURL: String
