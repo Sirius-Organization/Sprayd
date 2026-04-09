@@ -7,6 +7,7 @@
 
 import Foundation
 import MapKit
+import Combine
 
 @MainActor
 @Observable
@@ -14,11 +15,22 @@ final class MainMapViewModel {
     private enum Constants {
         static let regionChangeDebounceNanoseconds: UInt64 = 400_000_000
         static let minimumReloadInterval: TimeInterval = 1
+        static let delayMultiplier: Double = 1_000_000_000
+        
+        static let standardInitialCoordinate = CLLocationCoordinate2D(
+            latitude: 55.7558,
+            longitude: 37.6176
+        )
+        static let delta = 0.01
     }
 
-    var region: MKCoordinateRegion
-    var items: [ArtItem]
+    var startRegion: MKCoordinateRegion
+    var items: [ArtItem] = []
+    
     private let artItemsInBoxService: ArtItemsInBoxService
+    private let locationProvider: LocationProvider
+    
+    private var locationSub: AnyCancellable?
     private var lastLoadedBoundingBox: MapBoundingBox?
     private var lastLoadDate: Date?
     private var regionChangeTask: Task<Void, Never>?
@@ -27,25 +39,26 @@ final class MainMapViewModel {
     private var isLoading = false
 
     init(
-        region: MKCoordinateRegion,
-        items: [ArtItem],
-        artItemsInBoxService: ArtItemsInBoxService
+        artItemsInBoxService: ArtItemsInBoxService,
+        locationProvider: LocationProvider
     ) {
-        self.region = region
-        self.items = items
+        startRegion = MKCoordinateRegion(
+            center: Constants.standardInitialCoordinate,
+            span: MKCoordinateSpan(latitudeDelta: Constants.delta, longitudeDelta: Constants.delta)
+        )
         self.artItemsInBoxService = artItemsInBoxService
+        self.locationProvider = locationProvider
+        listenInitialRegion()
     }
 
     func loadInitialItemsIfNeeded() async {
         guard !hasLoadedInitially else { return }
 
         hasLoadedInitially = true
-        await loadItems(for: region, force: true)
+        await loadItems(for: startRegion, force: true)
     }
 
     func updateRegion(_ newRegion: MKCoordinateRegion) {
-        region = newRegion
-
         regionChangeTask?.cancel()
         regionChangeTask = Task { @MainActor [weak self] in
             do {
@@ -74,7 +87,7 @@ final class MainMapViewModel {
                 let delay = Constants.minimumReloadInterval - elapsed
 
                 do {
-                    try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                    try await Task.sleep(nanoseconds: UInt64(delay * Constants.delayMultiplier))
                 } catch {
                     return
                 }
@@ -102,5 +115,20 @@ final class MainMapViewModel {
             return true
         }
         return !lastLoadedBoundingBox.contains(boundingBox)
+    }
+    
+    private func listenInitialRegion() {
+        locationSub = locationProvider.$currentLocation.sink { [weak self] location in
+            guard let location else { return }
+            
+            self?.startRegion = MKCoordinateRegion(
+                center: location.coordinate,
+                span: MKCoordinateSpan(latitudeDelta: Constants.delta, longitudeDelta: Constants.delta)
+            )
+            
+            // После первого получения локации отменяем подписку за ненадобностью
+            self?.locationSub?.cancel()
+            self?.locationSub = nil
+        }
     }
 }

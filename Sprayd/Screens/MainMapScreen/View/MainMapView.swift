@@ -25,7 +25,7 @@ struct MainMapView: View {
 
     var body: some View {
         UIKitMapView(
-            region: viewModel.region,
+            startRegion: viewModel.startRegion,
             items: viewModel.items,
             isItemSheetPresented: selectedItem != nil,
             onRegionDidChange: { region in
@@ -64,7 +64,7 @@ struct MainMapView: View {
                         selection: $selectedDetent
                     )
                     .presentationDragIndicator(.visible)
-                    .scrollDisabled(true)
+                    .scrollIndicators(.hidden)
             }
         }
         .safeAreaInset(edge: .top) {
