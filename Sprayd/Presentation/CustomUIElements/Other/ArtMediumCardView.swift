@@ -99,9 +99,11 @@ struct ArtMediumCardView: View {
             
             Spacer(minLength: Metrics.oneAndHalfModule)
             
-            Text("01.04.20")
-                .font(.InstrumentRegular13)
-                .foregroundStyle(Color.secondaryColor)
+            if let createdDate = item.createdDate {
+                Text(createdDate.formatted(date: .numeric, time: .omitted))
+                    .font(.InstrumentRegular13)
+                    .foregroundStyle(Color.secondaryColor)
+            }
         }
     }
     

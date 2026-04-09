@@ -85,6 +85,7 @@ final class ArtAdditionRepository {
             existingItem.itemDescription = mappedItem.itemDescription
             existingItem.location = mappedItem.location
             existingItem.author = mappedItem.author
+            existingItem.createdDate = mappedItem.createdDate
             existingItem.stateRawValue = mappedItem.stateRawValue
             existingItem.category = mappedItem.category
             existingItem.latitude = mappedItem.latitude

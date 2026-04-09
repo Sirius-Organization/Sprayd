@@ -122,9 +122,11 @@ struct ArtCardView: View {
 
             Spacer(minLength: Metrics.oneAndHalfModule)
 
-            Text(viewModel.dateText)
-                .font(Font.InstrumentRegular13)
-                .foregroundStyle(Color.secondaryColor)
+            if let dateText = viewModel.dateText {
+                Text(dateText)
+                    .font(Font.InstrumentRegular13)
+                    .foregroundStyle(Color.secondaryColor)
+            }
         }
     }
 

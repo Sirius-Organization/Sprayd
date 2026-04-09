@@ -18,6 +18,7 @@ final class ArtItem {
     var author: String
     var uploadedBy: String?
     var createdAt: Date
+    var createdDate: Date?
     var stateRawValue: String
     var category: String
     var isFavorite: Bool
@@ -33,6 +34,7 @@ final class ArtItem {
         author: String = "",
         uploadedBy: String? = nil,
         createdAt: Date = .now,
+        createdDate: Date? = nil,
         state: ArtState = .new,
         category: String = "",
         isFavorite: Bool = false,
@@ -47,6 +49,7 @@ final class ArtItem {
         self.author = author
         self.uploadedBy = uploadedBy
         self.createdAt = createdAt
+        self.createdDate = createdDate
         self.stateRawValue = state.rawValue
         self.category = category
         self.isFavorite = isFavorite

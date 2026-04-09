@@ -84,6 +84,7 @@ final class ArtSyncService {
             author: remote.author,
             uploadedBy: nil,
             createdAt: .now,
+            createdDate: remote.createdAt,
             state: remote.state,
             category: remote.category,
             latitude: remote.latitude,
@@ -103,6 +104,7 @@ final class ArtSyncService {
             author: remote.author,
             uploadedBy: nil,
             createdAt: .now,
+            createdDate: remote.createdAt,
             state: remote.state,
             category: remote.category,
             latitude: remote.latitude,
@@ -117,6 +119,7 @@ final class ArtSyncService {
         localItem.itemDescription = remote.itemDescription
         localItem.location = remote.location
         localItem.author = remote.author
+        localItem.createdDate = remote.createdAt
         localItem.state = remote.state
         localItem.category = remote.category
         localItem.latitude = remote.latitude
@@ -128,6 +131,7 @@ final class ArtSyncService {
         localItem.itemDescription = remote.itemDescription
         localItem.location = remote.location
         localItem.author = remote.author
+        localItem.createdDate = remote.createdAt
         localItem.state = remote.state
         localItem.category = remote.category
         localItem.latitude = remote.latitude
@@ -186,6 +190,7 @@ private struct RemoteArtItemResponse: Codable {
     let latitude: Double
     let longitude: Double
     let firstImageUrl: String?
+    let createdAt: Date?
 
     private enum CodingKeys: String, CodingKey {
         case id
@@ -200,6 +205,8 @@ private struct RemoteArtItemResponse: Codable {
         case latitude
         case longitude
         case firstImageUrl
+        case createdAt
+        case createdDate
     }
 
     init(from decoder: Decoder) throws {
@@ -213,6 +220,11 @@ private struct RemoteArtItemResponse: Codable {
         latitude = try container.decodeIfPresent(Double.self, forKey: .latitude) ?? 0
         longitude = try container.decodeIfPresent(Double.self, forKey: .longitude) ?? 0
         firstImageUrl = try container.decodeIfPresent(String.self, forKey: .firstImageUrl)
+        if let createdAtValue = try container.decodeIfPresent(Date.self, forKey: .createdAt) {
+            createdAt = createdAtValue
+        } else {
+            createdAt = try container.decodeIfPresent(Date.self, forKey: .createdDate)
+        }
 
         if let descriptionValue = try container.decodeIfPresent(String.self, forKey: .itemDescription) {
             itemDescription = descriptionValue
@@ -246,6 +258,7 @@ private struct RemoteArtItemResponse: Codable {
         try container.encode(latitude, forKey: .latitude)
         try container.encode(longitude, forKey: .longitude)
         try container.encodeIfPresent(firstImageUrl, forKey: .firstImageUrl)
+        try container.encodeIfPresent(createdAt, forKey: .createdAt)
     }
 
     var imageURLs: [String] {

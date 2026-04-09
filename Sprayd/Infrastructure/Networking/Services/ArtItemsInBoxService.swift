@@ -168,6 +168,7 @@ final class ArtItemsInBoxService {
         item.itemDescription = mappedItem.itemDescription
         item.location = mappedItem.location
         item.author = mappedItem.author
+        item.createdDate = mappedItem.createdDate
         item.state = mappedItem.state
         item.category = mappedItem.category
         item.latitude = mappedItem.latitude

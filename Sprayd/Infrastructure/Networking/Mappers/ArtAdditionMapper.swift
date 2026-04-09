@@ -36,6 +36,7 @@ enum ArtAdditionMapper {
             images: images,
             location: response.location,
             author: response.author,
+            createdDate: response.createdAt,
             state: ArtState(rawValue: response.state) ?? .new,
             category: response.category,
             latitude: response.latitude,
