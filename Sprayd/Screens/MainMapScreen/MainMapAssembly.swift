@@ -22,11 +22,9 @@ struct MainMapAssembly {
         for i in 1...50 {
             items.append(
                 ArtItem(
-                    name: "Москва\(i)",
+                    id: UUID(), name: "Москва\(i)",
                     itemDescription: "Большой мурал в центре города",
-                    images: [
-                        "https://picsum.photos/id/\(i)/500/500"
-                    ],
+                    images: [ArtImage(id: UUID(), urlString: "https://picsum.photos/id/\(i)/500/500")],
                     location: "Moscow",
                     author: "aboba", // UUID(),
                     state: .new,

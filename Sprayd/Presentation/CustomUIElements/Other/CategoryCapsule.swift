@@ -14,7 +14,7 @@ struct CategoryCapsule: View {
     // MARK: - Body
     var body: some View {
         Text(title)
-            .foregroundStyle(Color.white)
+            .foregroundStyle(Color.appContrastForeground)
             .font(Font.InstrumentMedium13)
             .padding(Metrics.oneAndHalfModule)
             .frame(height: 40)

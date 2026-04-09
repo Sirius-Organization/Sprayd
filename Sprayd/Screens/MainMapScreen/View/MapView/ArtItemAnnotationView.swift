@@ -122,20 +122,20 @@ final class ArtItemAnnotationView: MKAnnotationView {
         collisionMode = .circle
 
         containerView.frame = bounds
-        containerView.backgroundColor = UIColor(Color.appBackground)
+        containerView.backgroundColor = .appBackground
         containerView.clipsToBounds = true
         containerView.layer.cornerRadius = Metrics.tripleModule
         containerView.layer.borderWidth = Metrics.halfModule
-        containerView.layer.borderColor = UIColor(Color.appBackground).cgColor
+        containerView.layer.borderColor = UIColor.appBackground.cgColor
 
         imageView.frame = containerView.bounds
         imageView.contentMode = .scaleAspectFill
         imageView.image = nil
 
         countLabel.font = .InstrumentBold13
-        countLabel.textColor = UIColor(Color.appBackground)
+        countLabel.textColor = .appContrastForeground
         countLabel.textAlignment = .center
-        countLabel.backgroundColor = UIColor(Color.accentRed)
+        countLabel.backgroundColor = .accentRed
         countLabel.layer.cornerRadius = Metrics.threeQuartersModule
         countLabel.clipsToBounds = true
         countLabel.isHidden = true

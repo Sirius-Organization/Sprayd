@@ -42,7 +42,7 @@ struct ImageOptionsMenu: View {
             }
         }
         .frame(width: 220)
-        .background(Color.white)
+        .background(Color.appSurface)
         .clipShape(RoundedRectangle(cornerRadius: 18))
     }
 }

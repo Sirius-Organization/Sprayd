@@ -41,11 +41,11 @@ struct StartingView: View {
         VStack(spacing: Metrics.doubleModule) {
             Text("Sprayd")
                 .font(.ClimateCrisis52)
-                .foregroundStyle(.black)
+                .foregroundStyle(Color.appPrimaryText)
 
             Text("Discover new street art and\npost your own!")
                 .font(.InstrumentMedium16)
-                .foregroundStyle(.black)
+                .foregroundStyle(Color.appPrimaryText)
                 .multilineTextAlignment(.center)
         }
         .padding(.top, Const.titleTopInset)
@@ -55,10 +55,10 @@ struct StartingView: View {
         Button(action: onGetStartedTapped) {
             Text("Get started")
                 .font(.InstrumentMedium18)
-                .foregroundStyle(.white)
+                .foregroundStyle(Color.appContrastForeground)
                 .frame(maxWidth: .infinity)
                 .frame(height: Const.buttonHeight)
-                .background(.black)
+                .background(Color.appContrastBackground)
                 .clipShape(RoundedRectangle(cornerRadius: Const.buttonCornerRadius))
         }
         .padding(.horizontal, Metrics.tripleModule)

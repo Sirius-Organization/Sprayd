@@ -28,7 +28,7 @@ struct AddButton: View {
         } label: {
             Icons.plus
                 .font(Const.textFont)
-                .foregroundColor(.white)
+                .foregroundColor(Color.appContrastForeground)
                 .frame(width: Const.buttonSize, height: Const.buttonSize)
                 .background(Color.accentRed)
                 .clipShape(Circle())

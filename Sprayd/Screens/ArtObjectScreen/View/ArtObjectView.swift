@@ -9,54 +9,94 @@ import SwiftUI
 import UIKit
 
 struct ArtObjectView: View {
-    @State private var viewModel = ArtObjectViewModel.sample
+    @State private var viewModel: ArtObjectViewModel
     @State private var showContributeSourceDialog = false
     @State private var contributePickerSource: ContributePickerSource?
+    @State private var imageLoaderService: ImageLoaderService?
+    private let onAuthorTap: (String) -> Void
+    private let onPostedByTap: (String) -> Void
+
+    init(
+        item: ArtItem,
+        onAuthorTap: @escaping (String) -> Void = { _ in },
+        onPostedByTap: @escaping (String) -> Void = { _ in }
+    ) {
+        _viewModel = State(initialValue: ArtObjectViewModel(item: item))
+        self.onAuthorTap = onAuthorTap
+        self.onPostedByTap = onPostedByTap
+    }
 
     var body: some View {
         @Bindable var viewModel = viewModel
 
-        NavigationStack {
-            ZStack {
-                Color.appBackground
-                    .ignoresSafeArea(edges: .all)
-                ScrollView {
-                    Spacer(minLength: Metrics.twoAndHalfModule)
-                    ArtCardView(viewModel: self.viewModel)
+        ZStack {
+            Color.appBackground
+                .ignoresSafeArea(edges: .all)
+            ScrollView {
+                VStack(spacing: Metrics.doubleModule) {
+
+                    ArtCardView(
+                        viewModel: self.viewModel,
+                        onAuthorTap: {
+                            let username = normalized(viewModel.author)
+                            guard !username.isEmpty else { return }
+                            onAuthorTap(username)
+                        },
+                        onPostedByTap: {
+                            let username = normalized(viewModel.postedBy)
+                            guard !username.isEmpty, username != "Unknown" else { return }
+                            onPostedByTap(username)
+                        }
+                    )
+                        .imageLoaderService(imageLoaderService)
 
                     VStack(spacing: Metrics.oneAndHalfModule) {
                         markVisitedButton
                         contributeButton
                     }
                     .padding(.horizontal, Metrics.tenTimesModule)
-                    .padding(.top, Metrics.doubleModule)
                 }
-            }
-            .navigationDestination(isPresented: $viewModel.isPhotoPreviewPresented) {
-                PhotoView(
-                    selectedPhotoIndex: $viewModel.selectedPhotoIndex,
-                    photoImageNames: self.viewModel.photoImageNames
-                )
-            }
-            .confirmationDialog("Add a photo", isPresented: $showContributeSourceDialog, titleVisibility: .visible) {
-                if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                    Button("Take Photo") {
-                        contributePickerSource = .camera
-                    }
-                }
-                Button("Photo Library") {
-                    contributePickerSource = .photoLibrary
-                }
-                Button("Cancel", role: .cancel) {}
-            }
-            .fullScreenCover(item: $contributePickerSource) { source in
-                UIImagePickerBridge(
-                    sourceType: source.imagePickerSourceType,
-                    onDismiss: { contributePickerSource = nil }
-                )
-                .ignoresSafeArea()
+                .padding(.top, Metrics.twoAndHalfModule)
+                .padding(.bottom, Metrics.doubleModule)
             }
         }
+        .navigationDestination(isPresented: $viewModel.isPhotoPreviewPresented) {
+            PhotoView(
+                selectedPhotoIndex: $viewModel.selectedPhotoIndex,
+                photoImageNames: self.viewModel.photoImageNames
+            )
+            .imageLoaderService(imageLoaderService)
+        }
+        .confirmationDialog("Add a photo", isPresented: $showContributeSourceDialog, titleVisibility: .visible) {
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                Button("Take Photo") {
+                    contributePickerSource = .camera
+                }
+            }
+            Button("Photo Library") {
+                contributePickerSource = .photoLibrary
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+        .fullScreenCover(item: $contributePickerSource) { source in
+            UIImagePickerBridge(
+                sourceType: source.imagePickerSourceType,
+                onDismiss: { contributePickerSource = nil }
+            )
+            .ignoresSafeArea()
+        }
+        .task {
+            if imageLoaderService == nil {
+                imageLoaderService = ImageLoaderService(imageCacheService: ImageCacheService())
+            }
+
+            print("DETAIL PHOTO URLS:", viewModel.photoImageNames)
+        }
+        .toolbar(.hidden, for: .tabBar)
+    }
+
+    private func normalized(_ value: String) -> String {
+        value.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private var markVisitedButton: some View {
@@ -69,9 +109,9 @@ struct ArtObjectView: View {
                 Spacer()
                 Icons.checkmark
                     .renderingMode(.template)
-                    .foregroundColor(.black)
+                    .foregroundColor(Color.appContrastForeground)
             }
-            .foregroundStyle(viewModel.isVisited ? .white : .primary)
+            .foregroundStyle(viewModel.isVisited ? Color.appContrastForeground : Color.appPrimaryText)
             .padding(.horizontal, Metrics.twoAndHalfModule)
             .frame(maxWidth: .infinity)
             .frame(height: 52)
@@ -83,7 +123,7 @@ struct ArtObjectView: View {
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .overlay(
                 RoundedRectangle(cornerRadius: 14)
-                    .stroke(Color.primary, lineWidth: viewModel.isVisited ? 0 : 1.5)
+                    .stroke(Color.appPrimaryText, lineWidth: viewModel.isVisited ? 0 : 1.5)
             )
         }
         .buttonStyle(.plain)
@@ -100,11 +140,11 @@ struct ArtObjectView: View {
                 Spacer()
                 Icons.camera
             }
-            .foregroundStyle(.white)
+            .foregroundStyle(Color.appContrastForeground)
             .padding(.horizontal, Metrics.twoAndHalfModule)
             .frame(maxWidth: .infinity)
             .frame(height: 52)
-            .background(Color.black)
+            .background(Color.appContrastBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
         .buttonStyle(.plain)
@@ -162,8 +202,4 @@ private struct UIImagePickerBridge: UIViewControllerRepresentable {
             onDismiss()
         }
     }
-}
-
-#Preview {
-    ArtObjectView()
 }

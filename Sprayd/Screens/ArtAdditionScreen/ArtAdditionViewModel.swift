@@ -12,6 +12,7 @@ import UIKit
 internal import Combine
 import CoreLocation
 
+@MainActor
 final class ArtAdditionViewModel: ObservableObject {
     struct SelectedPhoto: Identifiable {
         let id = UUID()
@@ -19,14 +20,7 @@ final class ArtAdditionViewModel: ObservableObject {
     }
     
     // MARK: - Fields
-    @Published var availableAuthors: [Author] = [
-        Author(name: "Ana Markov"),
-        Author(name: "Mira Chen"),
-        Author(name: "Theo Ivanov"),
-        Author(name: "Lina Petrova"),
-        Author(name: "Noah Kim"),
-        Author(name: "Sofia Belov")
-    ]
+    @Published var availableAuthors: [Author] = []
     @Published var availableCategories: [Category] = [
         Category(name: "Mural"),
         Category(name: "Graffiti"),
@@ -35,7 +29,6 @@ final class ArtAdditionViewModel: ObservableObject {
         Category(name: "Sticker art"),
         Category(name: "Poster")
     ]
-    
     @Published var addedPhotos: [SelectedPhoto] = []
     @Published var title: String = ""
     @Published var description: String = ""
@@ -51,8 +44,82 @@ final class ArtAdditionViewModel: ObservableObject {
     @Published var isCategoryPickerPresented: Bool = false
     @Published var selectedAuthor: Author?
     @Published var selectedCategory: Category?
+    @Published var isLoading: Bool = false
+    @Published var isCreateButtonDisabled: Bool = false
+    @Published var errorMessage: String?
+    @Published var isErrorAlertPresented: Bool = false
+    @Published var didCreateArtItem: Bool = false
+
+    private let repository: ArtAdditionRepository
+    private var didLoadInitialData = false
     
-    // MARK: - Logic
+    init(repository: ArtAdditionRepository) {
+        self.repository = repository
+    }
+
+    var canCreate: Bool {
+        !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        selectedCoordinate != nil &&
+        selectedLocationName?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false &&
+        !isCreateButtonDisabled
+    }
+
+    func loadInitialDataIfNeeded() async {
+        guard !didLoadInitialData else { return }
+        didLoadInitialData = true
+        await loadInitialData()
+    }
+
+    func loadInitialData() async {
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            availableAuthors = try await repository.syncArtists()
+        } catch {
+            do {
+                availableAuthors = try repository.fetchAuthors()
+            } catch {
+                presentError(error)
+            }
+        }
+
+        do {
+            availableCategories = try await repository.fetchCategories()
+        } catch {
+            // Keep the local fallback categories for now if backend loading fails.
+        }
+    }
+
+    func createArtItem() async {
+        guard canCreate,
+              let coordinate = selectedCoordinate,
+              let selectedLocationName else {
+            presentError(APIError.invalidRequest)
+            return
+        }
+
+        isCreateButtonDisabled = true
+        defer { isCreateButtonDisabled = false }
+
+        do {
+            _ = try await repository.createArtItem(
+                title: title,
+                description: description,
+                locationName: selectedLocationName,
+                latitude: coordinate.latitude,
+                longitude: coordinate.longitude,
+                author: selectedAuthor,
+                category: selectedCategory,
+                photos: addedPhotos.map(\.image)
+            )
+            didCreateArtItem = true
+        } catch {
+            presentError(error)
+        }
+    }
+
     func toggleImageOptions() {
         isImageSourceDialogPresented.toggle()
     }
@@ -153,10 +220,24 @@ final class ArtAdditionViewModel: ObservableObject {
         permissionAlertMessage = ""
         shouldOfferSettingsRedirect = false
     }
+
+    func dismissError() {
+        errorMessage = nil
+        isErrorAlertPresented = false
+    }
     
     private func presentPermissionAlert(message: String, offerSettingsRedirect: Bool) {
         permissionAlertMessage = message
         shouldOfferSettingsRedirect = offerSettingsRedirect
         isPermissionAlertPresented = true
+    }
+
+    private func presentError(_ error: Error) {
+        if let apiError = error as? APIErrorResponse {
+            errorMessage = apiError.errorMessage
+        } else {
+            errorMessage = error.localizedDescription
+        }
+        isErrorAlertPresented = true
     }
 }

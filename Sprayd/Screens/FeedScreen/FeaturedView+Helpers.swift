@@ -1,0 +1,147 @@
+import SwiftUI
+
+extension FeaturedView {
+    var searchBar: some View {
+        SearchBarView(placeholder: "Search for an art object")
+    }
+
+    func sectionTitle(_ title: String) -> some View {
+        Text(title)
+            .font(.ClimateCrisis22)
+            .foregroundStyle(Color.appPrimaryText)
+    }
+
+    func featuredCard(item: ArtItem) -> some View {
+        VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
+            artworkImage(for: item, height: FeaturedView.Layout.featuredImageHeight)
+
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: Metrics.module) {
+                    Text(item.name)
+                        .font(.InstrumentBold20)
+                        .foregroundStyle(Color.appPrimaryText)
+
+                    personLine(label: "Creator", value: item.author, size: 24, font: .InstrumentMedium13)
+
+                    if let uploadedBy = uploadedByText(for: item) {
+                        personLine(label: "Uploaded by", value: uploadedBy, size: 20, font: .InstrumentMedium13)
+                    }
+
+                    dateLine(createdAt: item.createdAt, font: .InstrumentMedium13)
+                }
+
+                Spacer()
+
+                likesView(count: item.likesCount)
+                    .padding(.top, Metrics.module)
+            }
+        }
+    }
+
+    func cityCard(title: String) -> some View {
+        VStack(alignment: .leading, spacing: Metrics.module) {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(Color.appMutedFill)
+                .frame(maxWidth: .infinity)
+                .frame(height: 78)
+
+            HStack(alignment: .top, spacing: Metrics.module) {
+                Text(title)
+                    .font(.InstrumentBold17)
+                    .foregroundStyle(Color.appPrimaryText)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Spacer(minLength: Metrics.halfModule)
+
+                Icons.chevronRight
+                    .font(.system(size: 11, weight: .semibold))
+                    .padding(.top, 2)
+                    .foregroundStyle(Color.appPrimaryText.opacity(0.75))
+            }
+            .frame(maxWidth: .infinity, minHeight: 42, alignment: .topLeading)
+        }
+        .frame(width: 116, alignment: .leading)
+    }
+
+    func likesView(count: Int) -> some View {
+        HStack(spacing: Metrics.halfModule) {
+            Text("\(count)")
+                .font(.InstrumentMedium13)
+                .foregroundStyle(Color.appPrimaryText)
+
+            Icons.heart
+        }
+    }
+
+    var emptyState: some View {
+        stateCard(
+            title: "Nothing here yet",
+            message: "Featured objects will appear here as soon as new works are added."
+        )
+    }
+
+    func stateCard(title: String, message: String) -> some View {
+        VStack(alignment: .leading, spacing: Metrics.module) {
+            Text(title)
+                .font(.InstrumentBold20)
+                .foregroundStyle(Color.appPrimaryText)
+
+            Text(message)
+                .font(.InstrumentRegular13)
+                .foregroundStyle(Color.secondaryColor)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(Metrics.doubleModule)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(Color.appSurface)
+                .stroke(Color.appPrimaryText.opacity(0.14), lineWidth: 1)
+        )
+    }
+
+    func personLine(label: String, value: String, size: CGFloat, font: Font) -> some View {
+        HStack(spacing: Metrics.module) {
+            Circle()
+                .fill(Color.appMutedFill)
+                .frame(width: size, height: size)
+                .overlay {
+                    Icons.person
+                        .font(.system(size: max(7, size / 3)))
+                }
+
+            personText(label: label, value: value, font: font)
+        }
+    }
+
+    func personText(label: String, value: String, font: Font) -> some View {
+        Text("\(label): \(value)")
+            .font(font)
+            .foregroundStyle(Color.appPrimaryText.opacity(0.8))
+            .lineLimit(1)
+    }
+
+    func metadataLine<Icon: View>(text: String, icon: Icon, font: Font) -> some View {
+        HStack(spacing: Metrics.halfModule) {
+            icon
+                .frame(width: Metrics.oneAndHalfModule, height: Metrics.oneAndHalfModule)
+
+            Text(text)
+                .font(font)
+                .foregroundStyle(Color.secondaryColor)
+        }
+    }
+
+    func dateLine(createdAt: Date, font: Font) -> some View {
+        Text("Uploaded: \(uploadDateText(for: createdAt))")
+            .font(font)
+            .foregroundStyle(Color.secondaryColor)
+            .lineLimit(1)
+    }
+
+    func uploadDateText(for date: Date) -> String {
+        date.formatted(date: .numeric, time: .omitted)
+    }
+}

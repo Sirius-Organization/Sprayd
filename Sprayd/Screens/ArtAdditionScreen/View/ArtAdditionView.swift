@@ -12,7 +12,6 @@ import UIKit
 struct ArtAdditionView: View {
     // MARK: - Constants
     private enum Const {
-        // UI Constraint properties
         static let photoItemHeight: CGFloat = 136
         static let photoItemWidth: CGFloat = 127
         static let photoItemCornerRadius: CGFloat = 30
@@ -20,8 +19,6 @@ struct ArtAdditionView: View {
         static let createButtonCornerRadius: CGFloat = 24
         static let narrowInputFieldHeight: CGFloat = 44
         static let wideInputFieldHeight: CGFloat = 120
-        
-        // Fonts
         static let iconFont: Font = .system(size: 16, weight: .medium)
     }
     
@@ -42,7 +39,7 @@ struct ArtAdditionView: View {
     // MARK: - Body
     var body: some View {
         ZStack {
-            Color(Color.appBackground)
+            Color.appBackground
                 .ignoresSafeArea()
             
             if viewModel.isImageSourceDialogPresented {
@@ -90,6 +87,13 @@ struct ArtAdditionView: View {
         }
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .tabBar)
+        .task {
+            await viewModel.loadInitialDataIfNeeded()
+        }
+        .onChange(of: viewModel.didCreateArtItem) { _, didCreateArtItem in
+            guard didCreateArtItem else { return }
+            onBackButtonTapped()
+        }
         .sheet(item: $viewModel.activeImagePickerSource) { source in
             ImagePickerView(
                 source: source,
@@ -138,6 +142,13 @@ struct ArtAdditionView: View {
         } message: {
             Text(viewModel.permissionAlertMessage)
         }
+        .alert("Error", isPresented: $viewModel.isErrorAlertPresented) {
+            Button("OK", role: .cancel) {
+                viewModel.dismissError()
+            }
+        } message: {
+            Text(viewModel.errorMessage ?? "Something went wrong")
+        }
     }
     
     // MARK: - Subviews
@@ -155,7 +166,7 @@ struct ArtAdditionView: View {
             
             Text("Add new art")
                 .font(.InstrumentBold20)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.appPrimaryText)
         }
         .frame(height: 44)
     }
@@ -204,11 +215,11 @@ struct ArtAdditionView: View {
             VStack(spacing: Metrics.oneAndHalfModule) {
                 Icons.photo
                     .font(.system(size: 28, weight: .medium))
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(Color.appContrastForeground)
                 
                 Text("Add a picture*")
                     .font(.InstrumentRegular13)
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(Color.appContrastForeground)
             }
             .frame(width: Const.photoItemWidth, height: Const.photoItemHeight)
             .background(Color.accentRed)
@@ -220,7 +231,7 @@ struct ArtAdditionView: View {
         VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
             Text("Author")
                 .font(.InstrumentMedium18)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.appPrimaryText)
             
             if let selectedAuthor = viewModel.selectedAuthor {
                 MiniProfileView(name: selectedAuthor.name)
@@ -239,7 +250,7 @@ struct ArtAdditionView: View {
         VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
             Text("Location")
                 .font(.InstrumentMedium18)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.appPrimaryText)
             
             if let selectedCoordinate = viewModel.selectedCoordinate {
                 HStack(alignment: .top, spacing: Metrics.halfModule) {
@@ -248,10 +259,10 @@ struct ArtAdditionView: View {
                     
                     VStack(alignment: .leading, spacing: Metrics.halfModule) {
                         let coordText = Self.formatCoordinate(selectedCoordinate)
-                        if let selectedLocationName = viewModel.selectedLocationName{
+                        if let selectedLocationName = viewModel.selectedLocationName {
                             Text(selectedLocationName)
                                 .font(.InstrumentMedium16)
-                                .foregroundStyle(Color.black)
+                                .foregroundStyle(Color.appPrimaryText)
                         }
                         if viewModel.selectedLocationName != coordText {
                             Text(coordText)
@@ -275,7 +286,7 @@ struct ArtAdditionView: View {
         VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
             Text("Category")
                 .font(.InstrumentMedium18)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.appPrimaryText)
             
             if let selectedCategory = viewModel.selectedCategory {
                 CategoryCapsule(title: selectedCategory.name)
@@ -292,14 +303,16 @@ struct ArtAdditionView: View {
     
     var createButton: some View {
         Button {
-            // TODO: create object action
+            Task {
+                await viewModel.createArtItem()
+            }
         } label: {
             HStack {
                 Spacer()
                 
                 Text("Create")
                     .font(.InstrumentMedium20)
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(Color.appContrastForeground)
                 
                 Spacer()
                 
@@ -307,9 +320,10 @@ struct ArtAdditionView: View {
             }
             .padding(.horizontal, Metrics.tripleModule)
             .frame(height: Const.createButtonHeight)
-            .background(Color.accentRed)
+            .background(viewModel.canCreate ? Color.accentRed : Color.placeholderGrey)
             .clipShape(RoundedRectangle(cornerRadius: Const.createButtonCornerRadius))
         }
+        .disabled(!viewModel.canCreate)
         .padding(.horizontal, Metrics.quadrupleModule)
     }
     
@@ -326,8 +340,3 @@ struct ArtAdditionView: View {
         String(format: "%.4f, %.4f", coordinate.latitude, coordinate.longitude)
     }
 }
-
-//// MARK: - Preview
-//#Preview {
-//    ArtAdditionView()
-//}

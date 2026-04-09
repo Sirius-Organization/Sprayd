@@ -146,7 +146,7 @@ private extension LocationPickerView {
         .clipShape(RoundedRectangle(cornerRadius: Metrics.module))
         .overlay(
             RoundedRectangle(cornerRadius: Metrics.module)
-                .stroke(Color.black.opacity(0.08), lineWidth: 1)
+                .stroke(Color.appPrimaryText.opacity(0.08), lineWidth: 1)
         )
     }
 

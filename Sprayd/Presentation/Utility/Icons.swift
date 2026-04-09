@@ -10,12 +10,12 @@ import SwiftUI
 struct Icons {
     static var magnifyingGlass: some View {
         Image(systemName: "magnifyingglass")
-            .foregroundStyle(.gray)
+            .foregroundStyle(Color.secondaryColor)
     }
     
     static var person: some View {
         Image(systemName: "person.fill")
-            .foregroundStyle(.white)
+            .foregroundStyle(Color.appContrastForeground)
     }
     
     static var chevronRight: some View {
@@ -77,7 +77,7 @@ struct Icons {
     
     static var rightArrow: some View {
         Image("rightArrowIcon")
-            .foregroundStyle(Color.white)
+            .foregroundStyle(Color.appContrastForeground)
     }
     
     static var leftArrow: some View {
@@ -104,24 +104,24 @@ struct Icons {
     
     static var logOut: some View {
         Image(systemName: "rectangle.portrait.and.arrow.right")
-            .foregroundStyle(Color.white)
+            .foregroundStyle(Color.appContrastForeground)
     }
     
     static var validationCheckmark: some View {
         Image(systemName: "checkmark")
             .font(.system(size: 11, weight: .bold))
-            .foregroundStyle(.white)
+            .foregroundStyle(Color.appContrastForeground)
             .frame(width: 22, height: 22)
-            .background(Color.green)
+            .background(Color.validationSuccess)
             .clipShape(Circle())
     }
     
     static var validationXmark: some View {
         Image(systemName: "xmark")
             .font(.system(size: 11, weight: .bold))
-            .foregroundStyle(.white)
+            .foregroundStyle(Color.appContrastForeground)
             .frame(width: 22, height: 22)
-            .background(Color.red)
+            .background(Color.validationError)
             .clipShape(Circle())
     }
 }

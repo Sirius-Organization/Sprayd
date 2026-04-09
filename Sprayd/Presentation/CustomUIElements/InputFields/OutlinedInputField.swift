@@ -38,7 +38,7 @@ struct OutlinedInputField: View {
             
             Text(title)
                 .font(.InstrumentMedium16)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.appPrimaryText)
                 .padding(Metrics.threeQuartersModule)
                 .background(Color.appBackground)
                 .offset(x: Metrics.oneAndHalfModule, y: -Metrics.doubleModule)
@@ -82,10 +82,10 @@ struct MultilineTextField: View {
                            .padding(.leading, Metrics.halfModule)
                    }
                    
-                   TextEditor(text: $text)
+                       TextEditor(text: $text)
                        .scrollContentBackground(.hidden)
                        .font(.InstrumentRegular13)
-                       .foregroundStyle(Color.black)
+                       .foregroundStyle(Color.appPrimaryText)
                        .background(Color.clear)
                }
     }

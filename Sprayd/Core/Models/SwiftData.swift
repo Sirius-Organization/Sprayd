@@ -8,6 +8,7 @@
 import SwiftData
 
 private let artSchema = Schema([
+    Author.self,
     ArtItem.self,
     ArtImage.self
 ])

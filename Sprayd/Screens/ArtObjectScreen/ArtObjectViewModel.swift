@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import SwiftData
 
 @Observable
 final class ArtObjectViewModel {
@@ -43,6 +44,29 @@ final class ArtObjectViewModel {
         self.category = category
         self.postedBy = postedBy
         self.dateText = dateText
+    }
+
+    convenience init(item: ArtItem) {
+        let uploadedByValue = item.uploadedBy?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let imageURLs = item.images
+            .map(\.urlString)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+
+        self.init(
+            name: item.name,
+            itemDescription: item.itemDescription,
+            photoImageNames: imageURLs,
+            location: item.location,
+            author: item.author,
+            category: item.category,
+            postedBy: (uploadedByValue?.isEmpty == false ? uploadedByValue! : "Unknown"),
+            dateText: item.createdAt.formatted(date: .numeric, time: .omitted)
+        )
+
+        likesCount = item.likesCount
     }
 
     // MARK: - Actions

@@ -14,11 +14,7 @@ struct ArtMediumCardView: View {
         static let imageHeight: CGFloat = 318
         static let imageCornerRadius: CGFloat = 30
         
-        static let placeholderColor = Color(
-            red: 224 / 255,
-            green: 224 / 255,
-            blue: 224 / 255
-        )
+        static let placeholderColor = Color.appMutedFill
     }
     
     // MARK: - Lifecycle
@@ -59,14 +55,14 @@ struct ArtMediumCardView: View {
         HStack(alignment: .firstTextBaseline) {
             Text(item.name)
                 .font(.InstrumentBold20)
-                .foregroundStyle(.black)
+                .foregroundStyle(Color.appPrimaryText)
             
             Spacer(minLength: Metrics.oneAndHalfModule)
             
             HStack(spacing: Metrics.module) {
                 Text(String(likesCount))
                     .font(.InstrumentMedium13)
-                    .foregroundStyle(.black)
+                    .foregroundStyle(Color.appPrimaryText)
                 
                 if isLiked {
                     Icons.filledHeart

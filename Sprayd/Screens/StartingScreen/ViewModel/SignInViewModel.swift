@@ -57,7 +57,7 @@ final class SignInViewModel {
                 UserDefaults.standard.set(true, forKey: "isLoggedIn")
                 onLoginSuccess()
             } catch let error as APIErrorResponse {
-                showError(error.reason)
+                showError(error.errorMessage)
             } catch {
                 showError("Something went wrong. Please try again.")
             }

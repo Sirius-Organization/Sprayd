@@ -48,7 +48,7 @@ struct CreateAccountView: View {
             VStack(alignment: .leading, spacing: Metrics.doubleModule) {
                 Text(Const.titleText)
                     .font(.ClimateCrisis52)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.appPrimaryText)
 
                 AuthInputField(
                     title: Const.usernameTitle,
@@ -113,11 +113,11 @@ struct CreateAccountView: View {
             HStack {
                 if isLoading {
                     ProgressView()
-                        .tint(.white)
+                        .tint(Color.appContrastForeground)
                 } else {
                     Text(Const.continueText)
                         .font(.InstrumentMedium20)
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(Color.appContrastForeground)
                 }
 
                 Spacer()
@@ -125,12 +125,12 @@ struct CreateAccountView: View {
                 if !isLoading {
                     Icons.chevronRight
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(Color.appContrastForeground)
                 }
             }
             .padding(.horizontal, Metrics.tripleModule)
             .frame(height: Const.buttonHeight)
-            .background(isFormValid ? Color.black : Color.black.opacity(0.3))
+            .background(isFormValid ? Color.appContrastBackground : Color.appContrastBackground.opacity(0.3))
             .clipShape(RoundedRectangle(cornerRadius: Const.buttonCornerRadius))
         }
         .buttonStyle(.plain)

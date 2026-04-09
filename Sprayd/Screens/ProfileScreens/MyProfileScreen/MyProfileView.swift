@@ -35,7 +35,7 @@ struct MyProfileView: View {
     // MARK: - Body
     var body: some View {
         ZStack {
-            Color(Color.appBackground)
+            Color.appBackground
                 .ignoresSafeArea()
             
             if viewModel.isImageSourceDialogPresented {
@@ -129,7 +129,7 @@ struct MyProfileView: View {
                         Icons.photo
                             .foregroundStyle(Color.accentRed)
                             .frame(width: Const.choosePhotoButtonSize, height: Const.choosePhotoButtonSize)
-                            .background(Color.black)
+                            .background(Color.appContrastBackground)
                             .clipShape(Circle())
                     }
                     .buttonStyle(.plain)
@@ -180,7 +180,7 @@ struct MyProfileView: View {
                             if (viewModel.isEditingUsername) {
                                 Icons.checkmark
                                     .renderingMode(.template)
-                                    .foregroundColor(Color.green)
+                                    .foregroundColor(Color.validationSuccess)
                             } else {
                                 Icons.pencil
                             }
@@ -213,7 +213,7 @@ struct MyProfileView: View {
                             if (viewModel.isEditingBio) {
                                 Icons.checkmark
                                     .renderingMode(.template)
-                                    .foregroundColor(Color.green)
+                                    .foregroundColor(Color.validationSuccess)
                             } else {
                                 Icons.pencil
                             }
@@ -272,7 +272,7 @@ struct MyProfileView: View {
                 .overlay {
                     if viewModel.isLoggingOut {
                         ProgressView()
-                            .tint(.white)
+                            .tint(Color.appContrastForeground)
                     } else {
                         Icons.logOut
                             .font(.system(size: Const.logoutIconPointSize, weight: .semibold))
@@ -284,4 +284,12 @@ struct MyProfileView: View {
         .disabled(viewModel.isLoggingOut || viewModel.isProfileSyncInProgress)
         .accessibilityLabel("Log out")
     }
+}
+#Preview {
+    MyProfileView(
+        onAddArt: {},
+        viewModel: MyProfileViewModel(
+            authorizationService: AuthorizationService(sender: Sender())
+        )
+    )
 }

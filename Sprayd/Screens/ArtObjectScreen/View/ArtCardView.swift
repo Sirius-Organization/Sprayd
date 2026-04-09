@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct ArtCardView: View {
     // MARK: - Constants
@@ -15,20 +16,46 @@ struct ArtCardView: View {
 
     // MARK: - Fields
     var viewModel: ArtObjectViewModel
+    let onAuthorTap: () -> Void
+    let onPostedByTap: () -> Void
 
     // MARK: - Subviews
     @ViewBuilder
     private func photoPage(index: Int, side: CGFloat) -> some View {
-        Image(viewModel.photoImageNames[index])
-            .resizable()
-            .scaledToFill()
-            .frame(width: side, height: side)
-            .clipped()
-            .contentShape(Rectangle())
-            .onTapGesture {
-                viewModel.openPhotoPreview(at: index)
+        let source = viewModel.photoImageNames[index]
+
+        Group {
+            if let url = URL(string: source), let scheme = url.scheme, scheme.hasPrefix("http") {
+                CachedAsyncImage(url: url) { phase in
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                            .frame(width: side, height: side)
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    case .failure:
+                        Image(systemName: "photo")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundStyle(Color.secondaryColor)
+                            .padding(Metrics.tripleModule)
+                    }
+                }
+            } else {
+                Image(source)
+                    .resizable()
+                    .scaledToFill()
             }
-            .tag(index)
+        }
+        .frame(width: side, height: side)
+        .clipped()
+        .contentShape(Rectangle())
+        .onTapGesture {
+            viewModel.openPhotoPreview(at: index)
+        }
+        .tag(index)
     }
 
     private func photoPager(selection: Binding<Int>) -> some View {
@@ -39,7 +66,7 @@ struct ArtCardView: View {
                     photoPage(index: index, side: side)
                 }
             }
-            .tabViewStyle(.page(indexDisplayMode: .always))
+            .tabViewStyle(.page(indexDisplayMode: viewModel.photoImageNames.count > 1 ? .automatic : .never))
             .frame(width: side, height: side)
         }
         .aspectRatio(1, contentMode: .fit)
@@ -50,14 +77,14 @@ struct ArtCardView: View {
         HStack(alignment: .firstTextBaseline) {
             Text(viewModel.name)
                 .font(Font.InstrumentBold20)
-                .foregroundStyle(.black)
+                .foregroundStyle(Color.appPrimaryText)
 
             Spacer(minLength: Metrics.oneAndHalfModule)
 
             HStack(spacing: Metrics.module) {
                 Text(String(viewModel.likesCount))
                     .font(Font.InstrumentMedium13)
-                    .foregroundStyle(.black)
+                    .foregroundStyle(Color.appPrimaryText)
 
                 if viewModel.isLiked {
                     Icons.filledHeart
@@ -95,13 +122,22 @@ struct ArtCardView: View {
             .padding(.top, Metrics.module)
     }
 
-    private func personSection(title: String, titleFont: Font, name: String) -> some View {
+    private func personSection(
+        title: String,
+        titleFont: Font,
+        name: String,
+        action: @escaping () -> Void
+    ) -> some View {
         VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
             Text(title)
                 .font(titleFont)
                 .foregroundStyle(Color.accentRed)
 
-            MiniProfileView(name: name)
+            Button(action: action) {
+                MiniProfileView(name: name)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
         }
     }
 
@@ -122,13 +158,15 @@ struct ArtCardView: View {
                 personSection(
                     title: "Author",
                     titleFont: Font.InstrumentMedium13,
-                    name: viewModel.author
+                    name: viewModel.author,
+                    action: onAuthorTap
                 )
 
                 personSection(
                     title: "Posted by",
                     titleFont: Font.InstrumentRegular13,
-                    name: viewModel.postedBy
+                    name: viewModel.postedBy,
+                    action: onPostedByTap
                 )
             }
         }
@@ -140,5 +178,9 @@ struct ArtCardView: View {
 }
 
 #Preview {
-    ArtCardView(viewModel: .sample)
+    ArtCardView(
+        viewModel: .sample,
+        onAuthorTap: {},
+        onPostedByTap: {}
+    )
 }

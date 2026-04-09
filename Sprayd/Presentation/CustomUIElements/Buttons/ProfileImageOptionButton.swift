@@ -33,7 +33,7 @@ struct ProfileImageOptionButton: View {
                 
                 Text(title)
                     .font(.InstrumentMedium16)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.appPrimaryText)
                 
                 Spacer()
             }

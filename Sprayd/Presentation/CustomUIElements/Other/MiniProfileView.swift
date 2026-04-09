@@ -25,7 +25,7 @@ struct MiniProfileView: View {
             
             Text(name)
                 .font(.InstrumentRegular13)
-                .foregroundStyle(.black)
+                .foregroundStyle(Color.appPrimaryText)
         }
     }
 }

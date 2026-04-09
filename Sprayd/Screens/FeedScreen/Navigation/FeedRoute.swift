@@ -7,4 +7,8 @@
 
 import Foundation
 
-enum FeedRoute: Hashable { }
+enum FeedRoute: Hashable {
+    case artObject(UUID)
+    case artistProfile(String)
+    case userProfile(String)
+}

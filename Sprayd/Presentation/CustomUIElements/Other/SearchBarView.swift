@@ -64,7 +64,7 @@ struct SearchBarView: View {
             if let text {
                 TextField(placeholder, text: text)
                     .font(.InstrumentRegular13)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.appPrimaryText)
                     .textInputAutocapitalization(textInputAutocapitalization)
                     .autocorrectionDisabled()
                     .focused($isFocused)
@@ -77,7 +77,7 @@ struct SearchBarView: View {
             } else {
                 Text(placeholder)
                     .font(.InstrumentRegular13)
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color.placeholderGrey)
             }
 
             Spacer(minLength: Metrics.halfModule)
@@ -87,7 +87,7 @@ struct SearchBarView: View {
                     onSubmit?()
                 }
                 .font(.InstrumentMedium16)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.appPrimaryText)
                 .disabled(isActionDisabled)
             }
         }
@@ -95,11 +95,11 @@ struct SearchBarView: View {
         .frame(height: Const.height)
         .background(
             RoundedRectangle(cornerRadius: Const.cornerRadius, style: .continuous)
-                .fill(Color.white.opacity(0.5))
+                .fill(Color.appSurface)
         )
         .overlay(
             RoundedRectangle(cornerRadius: Const.cornerRadius, style: .continuous)
-                .stroke(Color.black.opacity(Const.borderOpacity), lineWidth: Const.borderLineWidth)
+                .stroke(Color.appPrimaryText.opacity(Const.borderOpacity), lineWidth: Const.borderLineWidth)
         )
         .onChange(of: isFocused) { _, newValue in
             onFocusChange?(newValue)

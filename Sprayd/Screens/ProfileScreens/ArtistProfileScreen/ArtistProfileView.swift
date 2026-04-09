@@ -56,7 +56,7 @@ struct ArtistProfileView: View {
     // MARK: - Body
     var body: some View {
         ZStack {
-            Color(Color.appBackground)
+            Color.appBackground
                 .ignoresSafeArea()
             
             ScrollView {

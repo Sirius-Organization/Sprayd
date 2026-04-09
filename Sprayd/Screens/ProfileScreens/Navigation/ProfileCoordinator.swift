@@ -11,7 +11,7 @@ internal import Combine
 final class ProfileCoordinator: ObservableObject {
     // MARK: - Fields
     @Published var path: [ProfileRoute] = []
-
+    private let artAdditionRepository: ArtAdditionRepository
     private let authorizationService: AuthorizationService
     private let userService: UserService
     private let tokenStore: SessionTokenStoring
@@ -20,13 +20,15 @@ final class ProfileCoordinator: ObservableObject {
     init(
         authorizationService: AuthorizationService,
         userService: UserService,
-        tokenStore: SessionTokenStoring
+        tokenStore: SessionTokenStoring,
+        artAdditionRepository: ArtAdditionRepository
+
     ) {
         self.authorizationService = authorizationService
         self.userService = userService
         self.tokenStore = tokenStore
+        self.artAdditionRepository = artAdditionRepository
     }
-
     // MARK: - Navigation logic
     func openAddArt() {
         path.append(.addArt)
@@ -43,15 +45,15 @@ final class ProfileCoordinator: ObservableObject {
     
     @ViewBuilder
     func makeRootView() -> some View {
-        MyProfileView(
+        MyProfileAssembly(
+            authorizationService: authorizationService,
+            userService: userService,
+            tokenStore: tokenStore
+        )
+        .build(
             onAddArt: { [weak self] in
                 self?.openAddArt()
-            },
-            viewModel: MyProfileViewModel(
-                authorizationService: authorizationService,
-                userService: userService,
-                tokenStore: tokenStore
-            )
+            }
         )
     }
     
@@ -62,7 +64,9 @@ final class ProfileCoordinator: ObservableObject {
             ArtAdditionView(
                 onBackButtonTapped: { [weak self] in
                     self?.pop()},
-                viewModel: ArtAdditionViewModel()
+                viewModel: ArtAdditionViewModel(
+                    repository: artAdditionRepository
+                )
             )
         }
     }

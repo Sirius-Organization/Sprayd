@@ -6,13 +6,24 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Author: Identifiable, Hashable {
-    let id: UUID
+@Model
+final class Author {
+    @Attribute(.unique) var id: UUID
     var name: String
+    var bio: String
+    var imageURLString: String?
 
-    init(id: UUID = UUID(), name: String) {
+    init(
+        id: UUID = UUID(),
+        name: String = "",
+        bio: String = "",
+        imageURLString: String? = nil
+    ) {
         self.id = id
         self.name = name
+        self.bio = bio
+        self.imageURLString = imageURLString
     }
 }

@@ -44,7 +44,7 @@ struct AuthInputField: View {
                 gapStartX: Const.labelOffsetX + Metrics.module,
                 gapWidth: titleWidth + (Const.labelHorizontalPadding * 2) + Const.gapExtraWidth
             )
-                .stroke(Color.black.opacity(0.45), lineWidth: Const.borderWidth)
+                .stroke(Color.appPrimaryText.opacity(0.45), lineWidth: Const.borderWidth)
                 .frame(height: Const.fieldHeight)
 
             HStack(spacing: Metrics.module) {
@@ -56,7 +56,7 @@ struct AuthInputField: View {
 
             Text(title)
                 .font(.InstrumentMedium16)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.appPrimaryText)
                 .padding(.horizontal, Metrics.module)
                 .offset(x: Const.labelOffsetX + Metrics.module, y: -Metrics.oneAndHalfModule)
         }
@@ -70,26 +70,26 @@ struct AuthInputField: View {
             SecureField(
                 "",
                 text: $text,
-                prompt: Text(placeholder).foregroundStyle(Color.black.opacity(0.7))
+                prompt: Text(placeholder).foregroundStyle(Color.appPrimaryText.opacity(0.7))
             )
-            .tint(Color.black.opacity(0.7))
+            .tint(Color.appPrimaryText.opacity(0.7))
             .textContentType(textContentType)
             .textInputAutocapitalization(.never)
             .autocorrectionDisabled()
             .font(.InstrumentRegular18)
-            .foregroundStyle(Color.black)
+            .foregroundStyle(Color.appPrimaryText)
         } else {
             TextField(
                 "",
                 text: $text,
-                prompt: Text(placeholder).foregroundStyle(Color.black.opacity(0.7))
+                prompt: Text(placeholder).foregroundStyle(Color.appPrimaryText.opacity(0.7))
             )
-            .tint(Color.black.opacity(0.7))
+            .tint(Color.appPrimaryText.opacity(0.7))
             .textContentType(textContentType)
             .textInputAutocapitalization(.never)
             .autocorrectionDisabled()
             .font(.InstrumentRegular18)
-            .foregroundStyle(Color.black)
+            .foregroundStyle(Color.appPrimaryText)
         }
     }
 
@@ -106,7 +106,7 @@ struct AuthInputField: View {
                 } label: {
                     Image(systemName: isRevealed ? "eye.slash" : "eye")
                         .font(.system(size: 16))
-                        .foregroundStyle(Color.black.opacity(0.6))
+                        .foregroundStyle(Color.appPrimaryText.opacity(0.6))
                 }
                 .buttonStyle(.plain)
             }

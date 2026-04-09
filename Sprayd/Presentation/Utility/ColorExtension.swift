@@ -6,35 +6,37 @@
 //
 
 import SwiftUI
+import UIKit
 
 extension Color {
-    static let appBackground = Color(
-        red: 232 / 255,
-        green: 227 / 255,
-        blue: 224 / 255
-    )
+    static let appBackground = Color("DesignBackground")
+    static let appSurface = Color("DesignSurface")
+    static let appMutedFill = Color("DesignMutedFill")
+    static let appPrimaryText = Color("DesignPrimaryText")
+    static let appSecondaryText = Color("DesignSecondaryText")
+    static let appPlaceholderText = Color("DesignPlaceholderText")
+    static let appContrastBackground = Color("DesignContrastBackground")
+    static let appContrastForeground = Color("DesignContrastForeground")
 
-    static let accentRed = Color(
-        red: 255 / 255,
-        green: 85 / 255,
-        blue: 73 / 255
-    )
+    static let accentRed = Color("AccentColor")
+    static let secondaryColor = Color.appSecondaryText
+    static let placeholderGrey = Color.appPlaceholderText
 
-    static let secondaryColor = Color(
-        red: 107 / 255,
-        green: 106 / 255,
-        blue: 105 / 255
-    )
+    static let gradientCenterColor = Color("DesignGradientCenter")
+    static let gradientEdgeColor = Color("DesignGradientEdge")
+    static let validationSuccess = Color("DesignValidationSuccess")
+    static let validationError = Color("DesignValidationError")
+}
 
-    static let placeholderGrey = Color(
-        red: 137 / 255,
-        green: 137 / 255,
-        blue: 137 / 255
-    )
-    
-    static let gradientCenterColor = Color(red: 1, green: 0.53, blue: 0.28)
-    
-    static let gradientEdgeColor = Color(red: 1, green: 0.33, blue: 0.29)
+extension UIColor {
+    static let appBackground = UIColor(named: "DesignBackground") ?? .systemBackground
+    static let appSurface = UIColor(named: "DesignSurface") ?? .secondarySystemBackground
+    static let appMutedFill = UIColor(named: "DesignMutedFill") ?? .tertiarySystemFill
+    static let appPrimaryText = UIColor(named: "DesignPrimaryText") ?? .label
+    static let appSecondaryText = UIColor(named: "DesignSecondaryText") ?? .secondaryLabel
+    static let appContrastBackground = UIColor(named: "DesignContrastBackground") ?? .label
+    static let appContrastForeground = UIColor(named: "DesignContrastForeground") ?? .systemBackground
+    static let accentRed = UIColor(named: "AccentColor") ?? .systemRed
 }
 
 extension RadialGradient {

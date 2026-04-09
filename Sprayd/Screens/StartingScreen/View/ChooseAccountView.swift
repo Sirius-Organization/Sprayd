@@ -33,7 +33,7 @@ struct ChooseAccountView: View {
 
                 Text("Sprayd")
                     .font(.ClimateCrisis52)
-                    .foregroundStyle(.black)
+                    .foregroundStyle(Color.appPrimaryText)
                     .padding(.top, Const.titleTopInset)
 
                 Spacer()
@@ -45,7 +45,7 @@ struct ChooseAccountView: View {
                     Spacer(minLength: 0)
                     Text("or")
                         .font(.InstrumentRegular16)
-                        .foregroundStyle(.black.opacity(0.5))
+                        .foregroundStyle(Color.appPrimaryText.opacity(0.5))
                     Spacer(minLength: 0)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -65,12 +65,12 @@ struct ChooseAccountView: View {
             VStack(spacing: Metrics.halfModule) {
                 Text("Don't have an account?")
                     .font(.InstrumentRegular16)
-                    .foregroundStyle(.black)
+                    .foregroundStyle(Color.appPrimaryText)
 
                 Button(action: onCreateAccountTapped) {
                     Text("Create an account")
                         .font(.InstrumentBold17)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(Color.appPrimaryText)
                 }
             }
         }
@@ -83,17 +83,17 @@ struct ChooseAccountView: View {
 
                 Text("Sign in")
                     .font(.InstrumentMedium18)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.appContrastForeground)
 
                 Spacer()
 
                 Image(systemName: "person")
                     .font(.system(size: Const.personIconSize, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.appContrastForeground)
             }
             .padding(.horizontal, Metrics.tripleModule)
             .frame(height: Const.buttonHeight)
-            .background(.black)
+            .background(Color.appContrastBackground)
             .clipShape(RoundedRectangle(cornerRadius: Const.buttonCornerRadius))
         }
         .padding(.horizontal, Metrics.tripleModule)
@@ -106,17 +106,17 @@ struct ChooseAccountView: View {
 
                 Text("Proceed without an account")
                     .font(.InstrumentMedium18)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.appContrastForeground)
 
                 Spacer()
 
                 Icons.chevronRight
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.appContrastForeground)
             }
             .padding(.horizontal, Metrics.tripleModule)
             .frame(height: Const.buttonHeight)
-            .background(.black)
+            .background(Color.appContrastBackground)
             .clipShape(RoundedRectangle(cornerRadius: Const.buttonCornerRadius))
         }
         .padding(.horizontal, Metrics.tripleModule)

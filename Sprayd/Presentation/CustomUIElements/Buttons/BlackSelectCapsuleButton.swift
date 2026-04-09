@@ -25,13 +25,13 @@ struct BlackSelectCapsuleButton: View {
             HStack(spacing: Metrics.oneAndHalfModule) {
                 Text(title)
                     .font(Const.textFont)
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(Color.appContrastForeground)
                 
                 Icons.rightArrow
             }
             .padding(.horizontal, Metrics.oneAndHalfModule)
             .frame(height: Const.height)
-            .background(Color.black)
+            .background(Color.appContrastBackground)
             .clipShape(Capsule())
         }
     }

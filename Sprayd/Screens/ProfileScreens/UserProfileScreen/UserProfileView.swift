@@ -55,8 +55,8 @@ struct UserProfileView: View {
     // MARK: - Body
     var body: some View {
         ZStack {
-            Color(Color.appBackground)
-                        .ignoresSafeArea()
+            Color.appBackground
+                .ignoresSafeArea()
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
