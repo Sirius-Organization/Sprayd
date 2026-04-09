@@ -9,6 +9,19 @@ import SwiftUI
 import SwiftData
 
 struct FeaturedView: View {
+    private enum Layout {
+        static let referenceFeedWidth: CGFloat = 345
+        static let featuredImageHeight: CGFloat = 122
+        static let discoverHeroImageHeight: CGFloat = 192
+        static let discoverGridImageHeight: CGFloat = 122
+        static let artworkCornerRadius: CGFloat = 18
+        static let discoverGridColumnWidth: CGFloat = (referenceFeedWidth - Metrics.oneAndHalfModule) / 2
+
+        // Keep the current visual proportions on the reference layout while scaling with real card width.
+        static let discoverHeroImageAspectRatio: CGFloat = referenceFeedWidth / discoverHeroImageHeight
+        static let discoverGridImageAspectRatio: CGFloat = discoverGridColumnWidth / discoverGridImageHeight
+    }
+
     @Environment(\.modelContext) private var modelContext
     @Query(
         sort: [
@@ -144,7 +157,7 @@ struct FeaturedView: View {
 
     private func featuredCard(item: ArtItem) -> some View {
         VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
-            artworkImage(for: item, height: 122)
+            artworkImage(for: item, height: Layout.featuredImageHeight)
 
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: Metrics.module) {
@@ -198,7 +211,7 @@ struct FeaturedView: View {
 
     private func discoverLargeCard(item: ArtItem) -> some View {
         VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
-            artworkImage(for: item, height: 192)
+            artworkImage(for: item, aspectRatio: Layout.discoverHeroImageAspectRatio)
 
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: Metrics.module) {
@@ -226,11 +239,12 @@ struct FeaturedView: View {
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .stroke(Color.black.opacity(0.35), lineWidth: 1)
         )
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func discoverSmallCard(item: ArtItem) -> some View {
         VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
-            artworkImage(for: item, height: 122)
+            artworkImage(for: item, aspectRatio: Layout.discoverGridImageAspectRatio)
 
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: Metrics.module) {
@@ -260,6 +274,7 @@ struct FeaturedView: View {
                     .scaleEffect(0.9, anchor: .topTrailing)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func likesView(count: Int) -> some View {
@@ -339,8 +354,29 @@ struct FeaturedView: View {
     }
 
     private func artworkImage(for item: ArtItem, height: CGFloat) -> some View {
+        artworkImageContent(for: item)
+            .frame(maxWidth: .infinity)
+            .frame(height: height)
+            .clipShape(
+                RoundedRectangle(cornerRadius: Layout.artworkCornerRadius, style: .continuous)
+            )
+    }
+
+    private func artworkImage(for item: ArtItem, aspectRatio: CGFloat) -> some View {
+        Color.clear
+            .aspectRatio(aspectRatio, contentMode: .fit)
+            .overlay {
+                artworkImageContent(for: item)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .clipShape(
+                RoundedRectangle(cornerRadius: Layout.artworkCornerRadius, style: .continuous)
+            )
+    }
+
+    private func artworkImageContent(for item: ArtItem) -> some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
+            RoundedRectangle(cornerRadius: Layout.artworkCornerRadius, style: .continuous)
                 .fill(Color.gray.opacity(0.16))
 
             if let imageURL = item.primaryImageURL {
@@ -358,8 +394,6 @@ struct FeaturedView: View {
                 placeholderArtworkImage
             }
         }
-        .frame(height: height)
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 
     private var placeholderArtworkImage: some View {
