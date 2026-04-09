@@ -61,13 +61,29 @@ struct ArtCardView: View {
     private func photoPager(selection: Binding<Int>) -> some View {
         GeometryReader { geo in
             let side = geo.size.width
-            TabView(selection: selection) {
-                ForEach(viewModel.photoImageNames.indices, id: \.self) { index in
+            let photos = Array(viewModel.photoImageNames.enumerated())
+            let selectedPhoto = Binding<String>(
+                get: {
+                    guard photos.indices.contains(selection.wrappedValue) else {
+                        return photos.first?.element ?? ""
+                    }
+
+                    return photos[selection.wrappedValue].element
+                },
+                set: { newValue in
+                    guard let newIndex = photos.firstIndex(where: { $0.element == newValue }) else { return }
+                    selection.wrappedValue = newIndex
+                }
+            )
+
+            TabView(selection: selectedPhoto) {
+                ForEach(photos, id: \.element) { index, _ in
                     photoPage(index: index, side: side)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: viewModel.photoImageNames.count > 1 ? .automatic : .never))
             .frame(width: side, height: side)
+            .id(photos.map(\.element).joined(separator: "|"))
         }
         .aspectRatio(1, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: Const.imageCornerRadius))

@@ -145,10 +145,21 @@ final class ArtItemsInBoxService {
         item.latitude = mappedItem.latitude
         item.longitude = mappedItem.longitude
 
-        for image in item.images {
-            modelContext.delete(image)
+        let remoteImages = mappedItem.images.map { image in
+            RemoteArtImagePayload(
+                remoteID: nil,
+                urlString: image.urlString,
+                createdAt: nil,
+                timeStamp: nil,
+                userID: nil
+            )
         }
 
-        item.images = mappedItem.images
+        ArtItemImageMerger.merge(
+            remoteImages,
+            into: item,
+            modelContext: modelContext,
+            mode: .preserveExisting
+        )
     }
 }

@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 import UIKit
 
 struct ArtObjectView: View {
+    @Environment(\.modelContext) private var modelContext
     @State private var viewModel: ArtObjectViewModel
     @State private var showContributeSourceDialog = false
     @State private var contributePickerSource: ContributePickerSource?
@@ -82,11 +84,27 @@ struct ArtObjectView: View {
             )
             .ignoresSafeArea()
         }
+        .task(id: viewModel.itemID) {
+            await loadArtItemDetails()
+        }
         .toolbar(.hidden, for: .tabBar)
     }
 
     private func normalized(_ value: String) -> String {
         value.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    @MainActor
+    private func loadArtItemDetails() async {
+        guard let itemID = viewModel.itemID else { return }
+
+        do {
+            let service = ArtSyncService(modelContext: modelContext)
+            let item = try await service.syncArtItemDetails(for: itemID)
+            viewModel.apply(item: item)
+        } catch {
+            print("Art item detail sync error:", error)
+        }
     }
 
     private var markVisitedButton: some View {

@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftData
-import CryptoKit
 
 @MainActor
 final class ArtSyncService {
@@ -49,7 +48,52 @@ final class ArtSyncService {
         try modelContext.save()
     }
 
+    func syncArtItemDetails(for id: UUID) async throws -> ArtItem {
+        let remoteItem: ArtItemDetailsResponse = try await sender.send(
+            endpoint: "\(Constants.artItemsEndpoint)/\(id.uuidString)",
+            method: .get
+        )
+
+        let localItem = try fetchLocalItem(by: remoteItem.id) ?? makeLocalItem(from: remoteItem)
+        apply(remoteItem, to: localItem)
+        syncImages(
+            remoteItem.images.map { image in
+                RemoteArtImagePayload(
+                    remoteID: image.id,
+                    urlString: image.url,
+                    createdAt: image.date,
+                    timeStamp: image.timeStamp,
+                    userID: image.userId
+                )
+            },
+            to: localItem,
+            mode: .replaceAll
+        )
+
+        try modelContext.save()
+        return localItem
+    }
+
     private func makeLocalItem(from remote: RemoteArtItemResponse) -> ArtItem {
+        let item = ArtItem(
+            id: remote.id,
+            name: remote.name,
+            itemDescription: remote.itemDescription,
+            images: [],
+            location: remote.location,
+            author: remote.author,
+            uploadedBy: nil,
+            createdAt: .now,
+            state: remote.state,
+            category: remote.category,
+            latitude: remote.latitude,
+            longitude: remote.longitude
+        )
+        modelContext.insert(item)
+        return item
+    }
+
+    private func makeLocalItem(from remote: ArtItemDetailsResponse) -> ArtItem {
         let item = ArtItem(
             id: remote.id,
             name: remote.name,
@@ -79,42 +123,42 @@ final class ArtSyncService {
         localItem.longitude = remote.longitude
     }
 
-    private func syncImages(for remote: RemoteArtItemResponse, localItem: ArtItem) {
-        let imageURLs = remote.imageURLs
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty }
-
-        let remoteIDs = Set(imageURLs.map(stableUUID(for:)))
-
-        let imagesToDelete = localItem.images.filter { !remoteIDs.contains($0.id) }
-        for image in imagesToDelete {
-            modelContext.delete(image)
-        }
-
-        localItem.images.removeAll { !remoteIDs.contains($0.id) }
-
-        for urlString in imageURLs {
-            let remoteID = stableUUID(for: urlString)
-
-            if let existingImage = localItem.images.first(where: { $0.id == remoteID }) {
-                existingImage.urlString = urlString
-            } else {
-                let image = ArtImage(id: remoteID, urlString: urlString)
-                modelContext.insert(image)
-                localItem.images.append(image)
-            }
-        }
+    private func apply(_ remote: ArtItemDetailsResponse, to localItem: ArtItem) {
+        localItem.name = remote.name
+        localItem.itemDescription = remote.itemDescription
+        localItem.location = remote.location
+        localItem.author = remote.author
+        localItem.state = remote.state
+        localItem.category = remote.category
+        localItem.latitude = remote.latitude
+        localItem.longitude = remote.longitude
     }
 
-    private func stableUUID(for value: String) -> UUID {
-        let digest = Insecure.MD5.hash(data: Data(value.utf8))
-        let bytes = Array(digest)
-        return UUID(uuid: (
-            bytes[0], bytes[1], bytes[2], bytes[3],
-            bytes[4], bytes[5], bytes[6], bytes[7],
-            bytes[8], bytes[9], bytes[10], bytes[11],
-            bytes[12], bytes[13], bytes[14], bytes[15]
-        ))
+    private func syncImages(for remote: RemoteArtItemResponse, localItem: ArtItem) {
+        let remoteImages = remote.imageURLs.map { imageURL in
+            RemoteArtImagePayload(
+                remoteID: nil,
+                urlString: imageURL,
+                createdAt: nil,
+                timeStamp: nil,
+                userID: nil
+            )
+        }
+
+        syncImages(remoteImages, to: localItem, mode: .preserveExisting)
+    }
+
+    private func syncImages(
+        _ remoteImages: [RemoteArtImagePayload],
+        to localItem: ArtItem,
+        mode: ArtItemImageMergeMode
+    ) {
+        ArtItemImageMerger.merge(
+            remoteImages,
+            into: localItem,
+            modelContext: modelContext,
+            mode: mode
+        )
     }
 
     private func fetchAllLocalItems() throws -> [ArtItem] {
