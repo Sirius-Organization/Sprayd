@@ -21,7 +21,20 @@ extension FeaturedView {
                         .font(.InstrumentBold20)
                         .foregroundStyle(Color.appPrimaryText)
 
-                    personLine(label: "Creator", value: item.author, size: 24, font: .InstrumentMedium13)
+                    HStack(spacing: Metrics.module) {
+                        Circle()
+                            .fill(Color.appMutedFill)
+                            .frame(width: 24, height: 24)
+                            .overlay {
+                                Icons.person
+                                    .font(.system(size: 8))
+                            }
+
+                        Text(item.author)
+                            .font(.InstrumentMedium13)
+                            .foregroundStyle(Color.appPrimaryText.opacity(0.8))
+                            .lineLimit(1)
+                    }
 
                     if let uploadedBy = uploadedByText(for: item) {
                         personLine(label: "Uploaded by", value: uploadedBy, size: 20, font: .InstrumentMedium13)

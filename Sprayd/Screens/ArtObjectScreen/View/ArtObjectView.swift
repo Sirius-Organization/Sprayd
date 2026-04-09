@@ -12,7 +12,6 @@ struct ArtObjectView: View {
     @State private var viewModel: ArtObjectViewModel
     @State private var showContributeSourceDialog = false
     @State private var contributePickerSource: ContributePickerSource?
-    @State private var imageLoaderService: ImageLoaderService?
     private let onAuthorTap: (String) -> Void
     private let onPostedByTap: (String) -> Void
 
@@ -32,7 +31,7 @@ struct ArtObjectView: View {
         ZStack {
             Color.appBackground
                 .ignoresSafeArea(edges: .all)
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: Metrics.doubleModule) {
 
                     ArtCardView(
@@ -48,7 +47,6 @@ struct ArtObjectView: View {
                             onPostedByTap(username)
                         }
                     )
-                        .imageLoaderService(imageLoaderService)
 
                     VStack(spacing: Metrics.oneAndHalfModule) {
                         markVisitedButton
@@ -65,7 +63,6 @@ struct ArtObjectView: View {
                 selectedPhotoIndex: $viewModel.selectedPhotoIndex,
                 photoImageNames: self.viewModel.photoImageNames
             )
-            .imageLoaderService(imageLoaderService)
         }
         .confirmationDialog("Add a photo", isPresented: $showContributeSourceDialog, titleVisibility: .visible) {
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -84,13 +81,6 @@ struct ArtObjectView: View {
                 onDismiss: { contributePickerSource = nil }
             )
             .ignoresSafeArea()
-        }
-        .task {
-            if imageLoaderService == nil {
-                imageLoaderService = ImageLoaderService(imageCacheService: ImageCacheService())
-            }
-
-            print("DETAIL PHOTO URLS:", viewModel.photoImageNames)
         }
         .toolbar(.hidden, for: .tabBar)
     }
