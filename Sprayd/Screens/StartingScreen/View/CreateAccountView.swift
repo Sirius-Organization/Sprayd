@@ -47,54 +47,57 @@ struct CreateAccountView: View {
             RadialGradient.onboardingBackground
                 .ignoresSafeArea()
 
-            VStack(alignment: .leading, spacing: Metrics.doubleModule) {
-                Text(Const.titleText)
-                    .font(.ClimateCrisis52)
-                    .foregroundStyle(Color.appPrimaryText)
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: Metrics.doubleModule) {
+                    Text(Const.titleText)
+                        .font(.ClimateCrisis52)
+                        .foregroundStyle(Color.appPrimaryText)
 
-                AuthInputField(
-                    title: Const.usernameTitle,
-                    placeholder: Const.usernamePlaceholder,
-                    text: $username,
-                    validationState: usernameValidationState,
-                    textContentType: .username
-                )
+                    AuthInputField(
+                        title: Const.usernameTitle,
+                        placeholder: Const.usernamePlaceholder,
+                        text: $username,
+                        validationState: usernameValidationState,
+                        textContentType: .username
+                    )
 
-                AuthInputField(
-                    title: Const.emailTitle,
-                    placeholder: Const.emailPlaceholder,
-                    text: $email,
-                    validationState: emailValidationState,
-                    textContentType: .emailAddress
-                )
+                    AuthInputField(
+                        title: Const.emailTitle,
+                        placeholder: Const.emailPlaceholder,
+                        text: $email,
+                        validationState: emailValidationState,
+                        textContentType: .emailAddress
+                    )
 
-                AuthInputField(
-                    title: Const.passwordTitle,
-                    placeholder: Const.passwordPlaceholder,
-                    text: $password,
-                    isSecure: true,
-                    isPasswordToggleable: true,
-                    validationState: .none,
-                    textContentType: .oneTimeCode
-                )
+                    AuthInputField(
+                        title: Const.passwordTitle,
+                        placeholder: Const.passwordPlaceholder,
+                        text: $password,
+                        isSecure: true,
+                        isPasswordToggleable: true,
+                        validationState: .none,
+                        textContentType: .oneTimeCode
+                    )
 
-                AuthInputField(
-                    title: Const.repeatPasswordTitle,
-                    placeholder: Const.repeatPasswordPlaceholder,
-                    text: $repeatedPassword,
-                    isSecure: true,
-                    isPasswordToggleable: true,
-                    validationState: repeatPasswordValidationState,
-                    textContentType: .oneTimeCode
-                )
+                    AuthInputField(
+                        title: Const.repeatPasswordTitle,
+                        placeholder: Const.repeatPasswordPlaceholder,
+                        text: $repeatedPassword,
+                        isSecure: true,
+                        isPasswordToggleable: true,
+                        validationState: repeatPasswordValidationState,
+                        textContentType: .oneTimeCode
+                    )
 
-                continueButton
-                    .padding(.top, Metrics.doubleModule)
+                    continueButton
+                        .padding(.top, Metrics.doubleModule)
 
-                Spacer()
+                    Spacer()
+                }
+                .padding(.horizontal, Metrics.tripleModule)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(.horizontal, Metrics.tripleModule)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .scrollDismissesKeyboard(.interactively)
         }
         .alert("Error", isPresented: $isErrorAlertPresented) {
             Button("OK", role: .cancel) {
