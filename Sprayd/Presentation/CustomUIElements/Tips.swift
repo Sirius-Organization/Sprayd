@@ -25,7 +25,7 @@ struct MapTip: Tip {
     }
 }
 
-struct feedTip: Tip {
+struct FeedTip: Tip {
     var title: Text {
         Text("Find new piece of art here")
     }
