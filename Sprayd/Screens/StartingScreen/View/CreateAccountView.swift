@@ -33,8 +33,13 @@ struct CreateAccountView: View {
     @Binding var isErrorAlertPresented: Bool
 
     let usernameValidationState: ValidationState
+    let usernameValidationMessage: String?
     let emailValidationState: ValidationState
+    let emailValidationMessage: String?
+    let passwordValidationState: ValidationState
+    let passwordValidationMessage: String?
     let repeatPasswordValidationState: ValidationState
+    let repeatPasswordValidationMessage: String?
     let isLoading: Bool
     let errorMessage: String?
     let isFormValid: Bool
@@ -53,41 +58,45 @@ struct CreateAccountView: View {
                         .font(.ClimateCrisis52)
                         .foregroundStyle(Color.appPrimaryText)
 
-                    AuthInputField(
-                        title: Const.usernameTitle,
-                        placeholder: Const.usernamePlaceholder,
-                        text: $username,
-                        validationState: usernameValidationState,
-                        textContentType: .username
-                    )
+                AuthInputField(
+                    title: Const.usernameTitle,
+                    placeholder: Const.usernamePlaceholder,
+                    text: $username,
+                    validationState: usernameValidationState,
+                    validationMessage: usernameValidationMessage,
+                    textContentType: .username
+                )
 
-                    AuthInputField(
-                        title: Const.emailTitle,
-                        placeholder: Const.emailPlaceholder,
-                        text: $email,
-                        validationState: emailValidationState,
-                        textContentType: .emailAddress
-                    )
+                AuthInputField(
+                    title: Const.emailTitle,
+                    placeholder: Const.emailPlaceholder,
+                    text: $email,
+                    validationState: emailValidationState,
+                    validationMessage: emailValidationMessage,
+                    textContentType: .emailAddress
+                )
 
-                    AuthInputField(
-                        title: Const.passwordTitle,
-                        placeholder: Const.passwordPlaceholder,
-                        text: $password,
-                        isSecure: true,
-                        isPasswordToggleable: true,
-                        validationState: .none,
-                        textContentType: .oneTimeCode
-                    )
+                AuthInputField(
+                    title: Const.passwordTitle,
+                    placeholder: Const.passwordPlaceholder,
+                    text: $password,
+                    isSecure: true,
+                    isPasswordToggleable: true,
+                    validationState: passwordValidationState,
+                    validationMessage: passwordValidationMessage,
+                    textContentType: .newPassword
+                )
 
-                    AuthInputField(
-                        title: Const.repeatPasswordTitle,
-                        placeholder: Const.repeatPasswordPlaceholder,
-                        text: $repeatedPassword,
-                        isSecure: true,
-                        isPasswordToggleable: true,
-                        validationState: repeatPasswordValidationState,
-                        textContentType: .oneTimeCode
-                    )
+                AuthInputField(
+                    title: Const.repeatPasswordTitle,
+                    placeholder: Const.repeatPasswordPlaceholder,
+                    text: $repeatedPassword,
+                    isSecure: true,
+                    isPasswordToggleable: true,
+                    validationState: repeatPasswordValidationState,
+                    validationMessage: repeatPasswordValidationMessage,
+                    textContentType: .newPassword
+                )
 
                     continueButton
                         .padding(.top, Metrics.doubleModule)
@@ -161,8 +170,13 @@ private struct CreateAccountPreview: View {
             repeatedPassword: $repeatedPassword,
             isErrorAlertPresented: .constant(false),
             usernameValidationState: .none,
+            usernameValidationMessage: nil,
             emailValidationState: .none,
+            emailValidationMessage: nil,
+            passwordValidationState: .none,
+            passwordValidationMessage: nil,
             repeatPasswordValidationState: .none,
+            repeatPasswordValidationMessage: nil,
             isLoading: false,
             errorMessage: nil,
             isFormValid: false,

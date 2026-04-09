@@ -115,24 +115,18 @@ final class MyProfileViewModel: ObservableObject {
         isLoggingOut = true
 
         Task {
-            do {
-                let token = tokenStore.token() ?? ""
-                try await authorizationService.logout(token: token)
-                clearSession()
-            } catch {
-                showLogoutError = true
+            defer {
+                Task { await MainActor.run {
+                    self.isLoggingOut = false
+                } }
             }
-            isLoggingOut = false
-        }
-    }
 
-    private func clearSession() {
-        UserDefaults.standard.removeObject(forKey: "userId")
-        UserDefaults.standard.removeObject(forKey: "userEmail")
-        _ = tokenStore.clearToken()
-        withAnimation(.easeInOut(duration: 0.35)) {
-            isLoggedIn = false
-            hasCompletedOnboarding = false
+            await authorizationService.logoutCurrentSession()
+
+            withAnimation(.easeInOut(duration: 0.35)) {
+                self.isLoggedIn = false
+                self.hasCompletedOnboarding = false
+            }
         }
     }
 

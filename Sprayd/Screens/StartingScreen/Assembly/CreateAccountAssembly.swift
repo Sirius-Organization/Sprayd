@@ -42,14 +42,19 @@ private struct CreateAccountScreen: View {
                 for: viewModel.username,
                 isValid: viewModel.isUsernameValid
             ),
+            usernameValidationMessage: viewModel.usernameValidationMessage,
             emailValidationState: viewModel.validationState(
                 for: viewModel.email,
                 isValid: viewModel.isEmailValid
             ),
+            emailValidationMessage: viewModel.emailValidationMessage,
+            passwordValidationState: viewModel.passwordValidationState,
+            passwordValidationMessage: viewModel.passwordValidationMessage,
             repeatPasswordValidationState: viewModel.validationState(
                 for: viewModel.repeatedPassword,
                 isValid: viewModel.isRepeatPasswordMatching
             ),
+            repeatPasswordValidationMessage: viewModel.repeatPasswordValidationMessage,
             isLoading: viewModel.isLoading,
             errorMessage: viewModel.errorMessage,
             isFormValid: viewModel.isFormValid,

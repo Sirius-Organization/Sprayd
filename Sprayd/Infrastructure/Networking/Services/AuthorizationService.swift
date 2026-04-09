@@ -10,9 +10,14 @@ import Foundation
 final class AuthorizationService {
 
     private let sender: Sender
+    private let tokenStore: SessionTokenStoring
 
-    init(sender: Sender) {
+    init(
+        sender: Sender,
+        tokenStore: SessionTokenStoring
+    ) {
         self.sender = sender
+        self.tokenStore = tokenStore
     }
 
     // MARK: - Models
@@ -67,5 +72,25 @@ final class AuthorizationService {
             method: .post,
             headers: ["Authorization": "Bearer \(token)"]
         )
+    }
+
+    func logoutCurrentSession() async {
+        let token = tokenStore.token()?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+        if !token.isEmpty {
+            do {
+                try await logout(token: token)
+            } catch {
+                // Local session cleanup should still complete when remote logout fails.
+            }
+        }
+
+        clearSession()
+    }
+
+    func clearSession() {
+        UserDefaults.standard.removeObject(forKey: "userId")
+        UserDefaults.standard.removeObject(forKey: "userEmail")
+        _ = tokenStore.clearToken()
     }
 }
