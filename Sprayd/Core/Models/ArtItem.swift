@@ -59,8 +59,12 @@ final class ArtItem {
         set { stateRawValue = newValue.rawValue }
     }
 
+    var orderedImages: [ArtImage] {
+        images.sorted(by: Self.isImage(_:before:))
+    }
+
     var primaryImageURL: URL? {
-        for image in images {
+        for image in orderedImages {
             let value = image.urlString.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !value.isEmpty else { continue }
             if let url = URL(string: value) {
@@ -78,5 +82,24 @@ final class ArtItem {
             .filter { !$0.isEmpty }
 
         return parts.last
+    }
+
+    private static func isImage(_ lhs: ArtImage, before rhs: ArtImage) -> Bool {
+        if lhs.timeStamp != rhs.timeStamp {
+            return lhs.timeStamp < rhs.timeStamp
+        }
+
+        if lhs.createdAt != rhs.createdAt {
+            return lhs.createdAt < rhs.createdAt
+        }
+
+        let lhsURL = lhs.urlString.trimmingCharacters(in: .whitespacesAndNewlines)
+        let rhsURL = rhs.urlString.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if lhsURL != rhsURL {
+            return lhsURL.localizedStandardCompare(rhsURL) == .orderedAscending
+        }
+
+        return lhs.id.uuidString < rhs.id.uuidString
     }
 }
