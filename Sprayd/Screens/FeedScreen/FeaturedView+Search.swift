@@ -14,6 +14,10 @@ extension FeaturedView {
 
     @ViewBuilder
     var feedSections: some View {
+        let featuredItem = featuredItem
+        let cityPreviews = cities
+        let discoverItems = discoverItems
+
         if let featuredItem {
             VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
                 sectionTitle("Featured")
@@ -25,16 +29,19 @@ extension FeaturedView {
             }
         }
 
-        if !cities.isEmpty {
+        if !cityPreviews.isEmpty {
             VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
                 sectionTitle("Cities")
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: Metrics.oneAndHalfModule) {
-                        ForEach(cities, id: \.self) { city in
+                    LazyHStack(spacing: Metrics.oneAndHalfModule) {
+                        ForEach(cityPreviews) { city in
                             NavigationLink {
-                                CityScreenView(city: city)
+                                CityScreenView(city: city.title)
                             } label: {
-                                cityCard(title: city)
+                                cityCard(
+                                    title: city.title,
+                                    imageURL: city.imageURL
+                                )
                             }
                             .buttonStyle(.plain)
                         }

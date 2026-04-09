@@ -9,6 +9,13 @@ import SwiftUI
 import SwiftData
 
 struct FeaturedView: View {
+    struct CityPreview: Identifiable {
+        let title: String
+        let imageURL: URL?
+
+        var id: String { title }
+    }
+
     enum Layout {
         static let referenceFeedWidth: CGFloat = 345
         static let featuredImageHeight: CGFloat = 122
@@ -55,18 +62,31 @@ struct FeaturedView: View {
         Array(items.dropFirst())
     }
 
-    var cities: [String] {
-        var seen = Set<String>()
+    var cities: [CityPreview] {
+        var orderedKeys: [String] = []
+        var previewsByKey: [String: CityPreview] = [:]
 
-        return items.compactMap { item in
-            guard let city = item.cityName else { return nil }
-            let normalizedCity = city.folding(
-                options: [.caseInsensitive, .diacriticInsensitive],
-                locale: .current
-            )
-            guard seen.insert(normalizedCity).inserted else { return nil }
-            return city
+        for item in items {
+            guard let city = item.cityName else { continue }
+            let key = normalizedCityKey(city)
+
+            if let existingPreview = previewsByKey[key] {
+                guard existingPreview.imageURL == nil, let imageURL = item.primaryImageURL else { continue }
+
+                previewsByKey[key] = CityPreview(
+                    title: existingPreview.title,
+                    imageURL: imageURL
+                )
+            } else {
+                previewsByKey[key] = CityPreview(
+                    title: city,
+                    imageURL: item.primaryImageURL
+                )
+                orderedKeys.append(key)
+            }
         }
+
+        return orderedKeys.compactMap { previewsByKey[$0] }
     }
 
     var trimmedSearchQuery: String {
@@ -268,6 +288,12 @@ struct FeaturedView: View {
     private func cleanedText(_ value: String) -> String? {
         let trimmedValue = value.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmedValue.isEmpty ? nil : trimmedValue
+    }
+
+    private func normalizedCityKey(_ value: String) -> String {
+        value
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
     }
 }
 

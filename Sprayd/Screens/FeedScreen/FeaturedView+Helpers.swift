@@ -47,12 +47,9 @@ extension FeaturedView {
         }
     }
 
-    func cityCard(title: String) -> some View {
+    func cityCard(title: String, imageURL: URL?) -> some View {
         VStack(alignment: .leading, spacing: Metrics.module) {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color.appMutedFill)
-                .frame(maxWidth: .infinity)
-                .frame(height: 78)
+            cityImage(url: imageURL)
 
             HStack(alignment: .top, spacing: Metrics.module) {
                 Text(title)
@@ -72,6 +69,33 @@ extension FeaturedView {
             .frame(maxWidth: .infinity, minHeight: 42, alignment: .topLeading)
         }
         .frame(width: 116, alignment: .leading)
+    }
+
+    private func cityImage(url: URL?) -> some View {
+        RoundedRectangle(cornerRadius: 18, style: .continuous)
+            .fill(Color.appMutedFill)
+            .frame(maxWidth: .infinity)
+            .overlay {
+                CachedAsyncImage(url: url) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    case .empty, .failure:
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .fill(Color.clear)
+                            .overlay {
+                                Icons.photo
+                                    .font(.system(size: 22, weight: .regular))
+                                    .foregroundStyle(Color.secondaryColor)
+                            }
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        .frame(height: 78)
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 
     func favoriteButton(for item: ArtItem) -> some View {
