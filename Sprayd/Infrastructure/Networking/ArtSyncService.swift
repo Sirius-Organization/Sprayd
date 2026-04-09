@@ -21,10 +21,10 @@ final class ArtSyncService {
 
     init(
         modelContext: ModelContext,
-        sender: Sender = Sender()
+        sender: Sender? = nil
     ) {
         self.modelContext = modelContext
-        self.sender = sender
+        self.sender = sender ?? Sender()
     }
 
     func syncArtItems() async throws {

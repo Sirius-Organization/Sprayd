@@ -37,6 +37,7 @@ private struct CreateAccountScreen: View {
             email: $viewModel.email,
             password: $viewModel.password,
             repeatedPassword: $viewModel.repeatedPassword,
+            isErrorAlertPresented: $viewModel.isErrorAlertPresented,
             usernameValidationState: viewModel.validationState(
                 for: viewModel.username,
                 isValid: viewModel.isUsernameValid
@@ -52,7 +53,8 @@ private struct CreateAccountScreen: View {
             isLoading: viewModel.isLoading,
             errorMessage: viewModel.errorMessage,
             isFormValid: viewModel.isFormValid,
-            onContinueTapped: viewModel.register
+            onContinueTapped: viewModel.register,
+            onErrorDismissed: viewModel.dismissError
         )
     }
 }

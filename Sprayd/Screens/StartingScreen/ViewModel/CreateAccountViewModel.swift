@@ -18,11 +18,11 @@ final class CreateAccountViewModel {
     var repeatedPassword: String = ""
     var isLoading: Bool = false
     var errorMessage: String?
+    var isErrorAlertPresented: Bool = false
 
     private let authorizationService: AuthorizationService
     private let tokenStore: SessionTokenStoring
     private let onRegistrationSuccess: () -> Void
-    private static let errorBannerDuration: TimeInterval = 3
 
     // MARK: - Init
     init(
@@ -108,9 +108,11 @@ final class CreateAccountViewModel {
 
     private func showError(_ message: String) {
         errorMessage = message
-        Task {
-            try? await Task.sleep(for: .seconds(Self.errorBannerDuration))
-            errorMessage = nil
-        }
+        isErrorAlertPresented = true
+    }
+
+    func dismissError() {
+        errorMessage = nil
+        isErrorAlertPresented = false
     }
 }

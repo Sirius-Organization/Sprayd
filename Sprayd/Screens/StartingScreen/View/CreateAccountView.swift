@@ -30,6 +30,7 @@ struct CreateAccountView: View {
     @Binding var email: String
     @Binding var password: String
     @Binding var repeatedPassword: String
+    @Binding var isErrorAlertPresented: Bool
 
     let usernameValidationState: ValidationState
     let emailValidationState: ValidationState
@@ -38,6 +39,7 @@ struct CreateAccountView: View {
     let errorMessage: String?
     let isFormValid: Bool
     let onContinueTapped: () -> Void
+    let onErrorDismissed: () -> Void
 
     // MARK: - Body
     var body: some View {
@@ -93,18 +95,14 @@ struct CreateAccountView: View {
             }
             .padding(.horizontal, Metrics.tripleModule)
             .frame(maxWidth: .infinity, alignment: .leading)
-
-            if let errorMessage {
-                VStack {
-                    errorBanner(message: errorMessage)
-                        .padding(.horizontal, Metrics.tripleModule)
-                        .padding(.top, Metrics.module)
-                        .transition(.move(edge: .top).combined(with: .opacity))
-                    Spacer()
-                }
-            }
         }
-        .animation(.easeInOut(duration: 0.3), value: errorMessage)
+        .alert("Error", isPresented: $isErrorAlertPresented) {
+            Button("OK", role: .cancel) {
+                onErrorDismissed()
+            }
+        } message: {
+            Text(errorMessage ?? "Something went wrong")
+        }
     }
 
     // MARK: - Subviews
@@ -138,15 +136,6 @@ struct CreateAccountView: View {
         .disabled(!isFormValid || isLoading)
     }
 
-    private func errorBanner(message: String) -> some View {
-        Text(message)
-            .font(.InstrumentMedium16)
-            .foregroundStyle(.white)
-            .padding(Metrics.doubleModule)
-            .frame(maxWidth: .infinity)
-            .background(Color.accentRed)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
 }
 
 // MARK: - Preview
@@ -166,13 +155,15 @@ private struct CreateAccountPreview: View {
             email: $email,
             password: $password,
             repeatedPassword: $repeatedPassword,
+            isErrorAlertPresented: .constant(false),
             usernameValidationState: .none,
             emailValidationState: .none,
             repeatPasswordValidationState: .none,
             isLoading: false,
             errorMessage: nil,
             isFormValid: false,
-            onContinueTapped: {}
+            onContinueTapped: {},
+            onErrorDismissed: {}
         )
     }
 }

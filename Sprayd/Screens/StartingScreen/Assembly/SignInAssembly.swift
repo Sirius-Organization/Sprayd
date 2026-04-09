@@ -35,10 +35,12 @@ private struct SignInScreen: View {
         SignInView(
             email: $viewModel.email,
             password: $viewModel.password,
+            isErrorAlertPresented: $viewModel.isErrorAlertPresented,
             isLoading: viewModel.isLoading,
             errorMessage: viewModel.errorMessage,
             isFormValid: viewModel.isFormValid,
-            onContinueTapped: viewModel.login
+            onContinueTapped: viewModel.login,
+            onErrorDismissed: viewModel.dismissError
         )
     }
 }

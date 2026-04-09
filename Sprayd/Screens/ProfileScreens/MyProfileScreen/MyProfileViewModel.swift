@@ -162,7 +162,7 @@ final class MyProfileViewModel: ObservableObject {
                 applyProfile(profile)
                 isEditingUsername = false
             } catch let error as APIErrorResponse {
-                presentPermissionAlert(message: error.reason, offerSettingsRedirect: false)
+                presentPermissionAlert(message: error.errorMessage, offerSettingsRedirect: false)
             } catch {
                 presentPermissionAlert(
                     message: "Could not update username. Please try again.",
@@ -193,7 +193,7 @@ final class MyProfileViewModel: ObservableObject {
                 applyProfile(profile)
                 isEditingBio = false
             } catch let error as APIErrorResponse {
-                presentPermissionAlert(message: error.reason, offerSettingsRedirect: false)
+                presentPermissionAlert(message: error.errorMessage, offerSettingsRedirect: false)
             } catch {
                 presentPermissionAlert(
                     message: "Could not update bio. Please try again.",
@@ -304,7 +304,7 @@ final class MyProfileViewModel: ObservableObject {
                 let profile = try await userService.changeAvatar(token: token, imageData: imageData)
                 applyProfile(profile)
             } catch let error as APIErrorResponse {
-                presentPermissionAlert(message: error.reason, offerSettingsRedirect: false)
+                presentPermissionAlert(message: error.errorMessage, offerSettingsRedirect: false)
             } catch {
                 presentPermissionAlert(
                     message: "Could not update profile image. Please try again.",

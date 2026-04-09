@@ -310,7 +310,8 @@ struct MyProfileView: View {
     MyProfileView(
         onAddArt: {},
         viewModel: MyProfileViewModel(
-            authorizationService: AuthorizationService(sender: Sender())
+            authorizationService: AuthorizationService(sender: Sender()),
+            userService: UserService(sender: Sender())
         )
     )
 }
