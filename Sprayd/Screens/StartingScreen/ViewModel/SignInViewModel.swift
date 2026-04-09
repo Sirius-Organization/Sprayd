@@ -54,7 +54,6 @@ final class SignInViewModel {
                     isLoading = false
                     return
                 }
-                UserDefaults.standard.set(true, forKey: "isLoggedIn")
                 onLoginSuccess()
             } catch let error as APIErrorResponse {
                 showError(error.errorMessage)

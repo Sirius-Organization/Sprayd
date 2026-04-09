@@ -7,6 +7,8 @@ protocol SessionTokenStoring {
 
     func token() -> String?
 
+    func hasToken() -> Bool
+
     @discardableResult
     func clearToken() -> Bool
 }
@@ -28,6 +30,13 @@ final class SessionTokenStore: SessionTokenStoring {
 
     func token() -> String? {
         keychain.get(Keys.userToken)
+    }
+
+    func hasToken() -> Bool {
+        guard let token = token(), !token.isEmpty else {
+            return false
+        }
+        return true
     }
 
     func clearToken() -> Bool {

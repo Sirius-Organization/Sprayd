@@ -12,7 +12,6 @@ import SwiftData
 struct ContentView: View {
     private let compositionRoot: CompositionRoot
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
-    @AppStorage("isLoggedIn") private var isLoggedIn = false
 
     init(compositionRoot: CompositionRoot) {
         self.compositionRoot = compositionRoot
@@ -20,7 +19,7 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            if hasCompletedOnboarding || isLoggedIn {
+            if hasCompletedOnboarding || hasSessionToken {
                 AppCoordinatorView(compositionRoot: compositionRoot)
                     .transition(.asymmetric(
                         insertion: .opacity,
@@ -46,5 +45,9 @@ struct ContentView: View {
         .task {
             compositionRoot.locationProvider.requestAuthorize()
         }
+    }
+
+    private var hasSessionToken: Bool {
+        compositionRoot.sessionTokenStore.hasToken()
     }
 }

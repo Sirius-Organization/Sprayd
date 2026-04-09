@@ -95,7 +95,6 @@ final class CreateAccountViewModel {
                     isLoading = false
                     return
                 }
-                UserDefaults.standard.set(true, forKey: "isLoggedIn")
                 onRegistrationSuccess()
             } catch let error as APIErrorResponse {
                 showError(error.errorMessage)

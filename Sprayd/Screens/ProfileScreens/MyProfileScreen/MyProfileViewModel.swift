@@ -33,7 +33,6 @@ final class MyProfileViewModel: ObservableObject {
     @Published var showLogoutError: Bool = false
     @Published var isLoggingOut: Bool = false
     @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
-    @AppStorage("isLoggedIn") var isLoggedIn = false
 
     // profile image + permissions state (main)
     @Published var profileImage: UIImage?
@@ -115,11 +114,18 @@ final class MyProfileViewModel: ObservableObject {
         isLoggingOut = true
 
         Task {
-            do {
-                let token = tokenStore.token() ?? ""
-                try await authorizationService.logout(token: token)
-                clearSession()
-            } catch {
+            var didFailRemoteLogout = false
+            if let token = tokenStore.token(), !token.isEmpty {
+                do {
+                    try await authorizationService.logout(token: token)
+                } catch {
+                    didFailRemoteLogout = true
+                }
+            }
+
+            clearSession()
+
+            if didFailRemoteLogout {
                 showLogoutError = true
             }
             isLoggingOut = false
@@ -129,9 +135,12 @@ final class MyProfileViewModel: ObservableObject {
     private func clearSession() {
         UserDefaults.standard.removeObject(forKey: "userId")
         UserDefaults.standard.removeObject(forKey: "userEmail")
-        _ = tokenStore.clearToken()
+        let clearTokenSucceeded = tokenStore.clearToken()
+        guard clearTokenSucceeded, !tokenStore.hasToken() else {
+            showLogoutError = true
+            return
+        }
         withAnimation(.easeInOut(duration: 0.35)) {
-            isLoggedIn = false
             hasCompletedOnboarding = false
         }
     }
