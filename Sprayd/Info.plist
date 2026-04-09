@@ -30,5 +30,7 @@
 	<string>Sprayd needs camera access to let you take profile and art photos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Sprayd needs photo library access to let you choose profile and art photos.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Sprayd needs your location to show nearby art objects and map data.</string>
 </dict>
 </plist>

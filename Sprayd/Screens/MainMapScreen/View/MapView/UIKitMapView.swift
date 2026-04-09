@@ -9,9 +9,10 @@ import SwiftUI
 import MapKit
 
 struct UIKitMapView: UIViewRepresentable {
-    let region: MKCoordinateRegion
+    let startRegion: MKCoordinateRegion
     let items: [ArtItem]
     let isItemSheetPresented: Bool
+    
     let onRegionDidChange: (MKCoordinateRegion) -> Void
     let onSelectItem: (ArtItem) -> Void
 
@@ -28,7 +29,8 @@ struct UIKitMapView: UIViewRepresentable {
             ArtItemAnnotationView.self,
             forAnnotationViewWithReuseIdentifier: ArtItemAnnotationView.clusterReuseIdentifier
         )
-        mapView.setRegion(region, animated: false)
+        mapView.setRegion(startRegion, animated: false)
+        context.coordinator.lastAppliedStartRegion = startRegion
         
         return mapView
     }
@@ -37,6 +39,17 @@ struct UIKitMapView: UIViewRepresentable {
         context.coordinator.imageLoaderService = imageLoaderService
         context.coordinator.onSelectItem = onSelectItem
         context.coordinator.onRegionDidChange = onRegionDidChange
+        
+        if let lastAppliedStartRegion = context.coordinator.lastAppliedStartRegion {
+            if !regionsEqual(lastAppliedStartRegion, startRegion) {
+                context.coordinator.lastAppliedStartRegion = startRegion
+                uiView.setRegion(startRegion, animated: true)
+            }
+        } else {
+            context.coordinator.lastAppliedStartRegion = startRegion
+            uiView.setRegion(startRegion, animated: true)
+        }
+        
         updateAnnotations(for: uiView)
         updateSelection(for: uiView)
     }
@@ -91,6 +104,13 @@ struct UIKitMapView: UIViewRepresentable {
             mapView.deselectAnnotation(annotation, animated: false)
         }
     }
+
+    private func regionsEqual(_ lhs: MKCoordinateRegion, _ rhs: MKCoordinateRegion) -> Bool {
+        abs(lhs.center.latitude - rhs.center.latitude) < 0.000001 &&
+        abs(lhs.center.longitude - rhs.center.longitude) < 0.000001 &&
+        abs(lhs.span.latitudeDelta - rhs.span.latitudeDelta) < 0.000001 &&
+        abs(lhs.span.longitudeDelta - rhs.span.longitudeDelta) < 0.000001
+    }
 }
 
 // MARK: - Coordinator
@@ -100,6 +120,7 @@ final class UIKitMapCoordinator: NSObject, MKMapViewDelegate {
     var imageLoaderService: ImageLoaderService?
     var onRegionDidChange: (MKCoordinateRegion) -> Void
     var onSelectItem: (ArtItem) -> Void
+    var lastAppliedStartRegion: MKCoordinateRegion?
 
     init(
         onRegionDidChange: @escaping (MKCoordinateRegion) -> Void,

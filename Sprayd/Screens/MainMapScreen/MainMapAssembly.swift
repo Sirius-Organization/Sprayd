@@ -10,18 +10,12 @@ import MapKit
 
 struct MainMapAssembly {
     let artItemsInBoxService: ArtItemsInBoxService
-    let onSelectItem: (ArtItem) -> Void
+    let locationProvider: LocationProvider
 
-    func build() -> some View {
-        let coord = MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: 55.7558, longitude: 37.6176),
-            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-        )
-
+    func build(onSelectItem: @escaping (ArtItem) -> Void = { _ in }) -> some View {
         let viewModel = MainMapViewModel(
-            region: coord,
-            items: [],
-            artItemsInBoxService: artItemsInBoxService
+            artItemsInBoxService: artItemsInBoxService,
+            locationProvider: locationProvider
         )
         return MainMapView(
             viewModel: viewModel,

@@ -1,10 +1,6 @@
 import SwiftUI
 
 extension FeaturedView {
-    var searchBar: some View {
-        SearchBarView(placeholder: "Search for an art object")
-    }
-
     func sectionTitle(_ title: String) -> some View {
         Text(title)
             .font(.ClimateCrisis22)

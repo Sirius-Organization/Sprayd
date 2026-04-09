@@ -6,6 +6,7 @@
 //
 
 import SwiftData
+import CoreLocation
 
 @MainActor
 final class CompositionRoot {
@@ -22,6 +23,10 @@ final class CompositionRoot {
     lazy var imageLoaderService: ImageLoaderService = {
         ImageLoaderService(imageCacheService: imageCacheService)
     }()
+
+    lazy var locationProvider: LocationProvider = LocationProvider(
+        locationManager: CLLocationManager()
+    )
 
     lazy var sender: Sender = Sender()
     lazy var artItemsInBoxService: ArtItemsInBoxService = {
