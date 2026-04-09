@@ -11,10 +11,15 @@ import UIKit
 final class ArtAdditionService {
     // MARK: - Fields
     private let sender: Sender
+    private let tokenStore: SessionTokenStoring
 
     // MARK: - Lifecycle
-    init(sender: Sender) {
+    init(
+        sender: Sender,
+        tokenStore: SessionTokenStoring
+    ) {
         self.sender = sender
+        self.tokenStore = tokenStore
     }
 
     // MARK: - Networking logic
@@ -46,17 +51,23 @@ final class ArtAdditionService {
         itemID: UUID,
         imageData: Data
     ) async throws -> ArtImageResponse {
+        guard let token = tokenStore.token()?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !token.isEmpty else {
+            throw APIError.invalidRequest
+        }
+
         let boundary = "Boundary-\(UUID().uuidString)"
         let body = makeMultipartImageBody(
             imageData: imageData,
             boundary: boundary
         )
 
-        return try await sender.sendAuthorized(
+        return try await sender.send(
             endpoint: "/art-items/\(itemID.uuidString)/images",
             method: .post,
             headers: [
-                "Content-Type": "multipart/form-data; boundary=\(boundary)"
+                "Content-Type": "multipart/form-data; boundary=\(boundary)",
+                "Authorization": "Bearer \(token)"
             ],
             body: body
         )

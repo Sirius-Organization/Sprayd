@@ -27,14 +27,9 @@ final class Sender {
     
     private let baseURL: String
     private let delays: [TimeInterval] = [1, 3, 10]
-    private let tokenStore: SessionTokenStoring?
     
-    init(
-        baseURL: String = Constants.baseURL,
-        tokenStore: SessionTokenStoring? = nil
-    ) {
+    init(baseURL: String = Constants.baseURL) {
         self.baseURL = baseURL
-        self.tokenStore = tokenStore
     }
     
     func send<T: Decodable>(
@@ -81,34 +76,6 @@ final class Sender {
         guard (200...299).contains(http.statusCode) else {
             throw try decodeErrorResponse(data)
         }
-    }
-
-    func sendAuthorized<T: Decodable>(
-        endpoint: String,
-        method: HTTPMethod,
-        headers: [String: String]? = nil,
-        body: Data? = nil
-    ) async throws -> T {
-        try await send(
-            endpoint: endpoint,
-            method: method,
-            headers: authorizedHeaders(merging: headers),
-            body: body
-        )
-    }
-
-    func sendAuthorizedEmpty(
-        endpoint: String,
-        method: HTTPMethod,
-        headers: [String: String]? = nil,
-        body: Data? = nil
-    ) async throws {
-        try await sendEmpty(
-            endpoint: endpoint,
-            method: method,
-            headers: authorizedHeaders(merging: headers),
-            body: body
-        )
     }
 
     private func sendWithRetry<T: Decodable>(
@@ -209,16 +176,5 @@ final class Sender {
         } catch {
             throw APIError.decodingError(error)
         }
-    }
-
-    private func authorizedHeaders(merging headers: [String: String]?) throws -> [String: String] {
-        guard let token = tokenStore?.token()?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !token.isEmpty else {
-            throw APIError.invalidRequest
-        }
-
-        var result = headers ?? [:]
-        result["Authorization"] = "Bearer \(token)"
-        return result
     }
 }
