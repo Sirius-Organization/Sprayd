@@ -10,6 +10,7 @@ import MapKit
 
 struct MainMapAssembly {
     let artItemsInBoxService: ArtItemsInBoxService
+    let onSelectItem: (ArtItem) -> Void
 
     func build() -> some View {
         let coord = MKCoordinateRegion(
@@ -22,6 +23,9 @@ struct MainMapAssembly {
             items: [],
             artItemsInBoxService: artItemsInBoxService
         )
-        return MainMapView(viewModel: viewModel)
+        return MainMapView(
+            viewModel: viewModel,
+            onSelectItem: onSelectItem
+        )
     }
 }

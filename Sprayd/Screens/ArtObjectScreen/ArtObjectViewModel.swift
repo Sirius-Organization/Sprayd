@@ -16,7 +16,7 @@ final class ArtObjectViewModel {
     var author: String
     var category: String
     var postedBy: String
-    var dateText: String
+    var dateText: String?
 
     // MARK: - UI state
     var selectedPhotoIndex: Int = 0
@@ -38,7 +38,7 @@ final class ArtObjectViewModel {
         author: String,
         category: String,
         postedBy: String,
-        dateText: String
+        dateText: String?
     ) {
         self.name = name
         self.itemDescription = itemDescription
@@ -60,7 +60,7 @@ final class ArtObjectViewModel {
             author: item.author,
             category: item.category,
             postedBy: Self.postedByText(from: item),
-            dateText: item.createdAt.formatted(date: .numeric, time: .omitted)
+            dateText: Self.dateText(from: item)
         )
 
         self.item = item
@@ -96,7 +96,7 @@ final class ArtObjectViewModel {
         author = item.author
         category = item.category
         postedBy = Self.postedByText(from: item)
-        dateText = item.createdAt.formatted(date: .numeric, time: .omitted)
+        dateText = Self.dateText(from: item)
         isFavorite = item.isFavorite
 
         if let currentPhoto, let preservedIndex = photoImageNames.firstIndex(of: currentPhoto) {
@@ -113,6 +113,11 @@ final class ArtObjectViewModel {
             .trimmingCharacters(in: .whitespacesAndNewlines)
 
         return uploadedByValue?.isEmpty == false ? uploadedByValue! : "Unknown"
+    }
+
+    private static func dateText(from item: ArtItem) -> String? {
+        guard let createdDate = item.createdDate else { return nil }
+        return createdDate.formatted(date: .numeric, time: .omitted)
     }
 
     private static func makeImageURLs(from item: ArtItem) -> [String] {

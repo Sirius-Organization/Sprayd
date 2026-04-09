@@ -7,4 +7,8 @@
 
 import Foundation
 
-enum MapRoute: Hashable { }
+enum MapRoute: Hashable {
+    case artObject(UUID)
+    case artistProfile(String)
+    case userProfile(String)
+}

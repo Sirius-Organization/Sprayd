@@ -18,6 +18,7 @@ struct ArtItemResponse: Codable {
     let state: String
     let category: String
     let firstImageUrl: String?
+    let createdAt: Date?
 }
 
 struct ArtItemDetailsResponse: Decodable {
@@ -31,6 +32,7 @@ struct ArtItemDetailsResponse: Decodable {
     let state: ArtState
     let category: String
     let images: [ArtImageResponse]
+    let createdAt: Date?
 
     private enum CodingKeys: String, CodingKey {
         case id
@@ -45,6 +47,8 @@ struct ArtItemDetailsResponse: Decodable {
         case stateRawValue
         case category
         case images
+        case createdAt
+        case createdDate
     }
 
     init(from decoder: Decoder) throws {
@@ -58,6 +62,11 @@ struct ArtItemDetailsResponse: Decodable {
         author = try container.decodeIfPresent(String.self, forKey: .author) ?? ""
         category = try container.decodeIfPresent(String.self, forKey: .category) ?? ""
         images = try container.decodeIfPresent([ArtImageResponse].self, forKey: .images) ?? []
+        if let createdAtValue = try container.decodeIfPresent(Date.self, forKey: .createdAt) {
+            createdAt = createdAtValue
+        } else {
+            createdAt = try container.decodeIfPresent(Date.self, forKey: .createdDate)
+        }
 
         if let descriptionValue = try container.decodeIfPresent(String.self, forKey: .itemDescription) {
             itemDescription = descriptionValue

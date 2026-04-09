@@ -73,12 +73,3 @@ struct PhotoView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
-
-#Preview {
-    NavigationStack {
-        PhotoView(
-            selectedPhotoIndex: .constant(0),
-            photoImageNames: ArtObjectViewModel.sample.photoImageNames
-        )
-    }
-}

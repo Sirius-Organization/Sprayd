@@ -59,6 +59,34 @@ final class ArtItemsInBoxService {
             return fetchCachedItems(in: boundingBox)
         }
     }
+    
+    func item(withID id: UUID) -> ArtItem? {
+        let descriptor = FetchDescriptor<ArtItem>(
+            predicate: #Predicate<ArtItem> { item in
+                item.id == id
+            }
+        )
+        
+        return try? modelContext.fetch(descriptor).first
+    }
+
+    func items(forAuthor author: String) -> [ArtItem] {
+        let authorName = Self.normalized(author)
+        guard !authorName.isEmpty else { return [] }
+        let items = (try? modelContext.fetch(FetchDescriptor<ArtItem>())) ?? []
+        return items.filter { Self.normalized($0.author) == authorName }
+    }
+
+    func items(forUploadedByUsername username: String) -> [ArtItem] {
+        let name = Self.normalized(username)
+        guard !name.isEmpty else { return [] }
+        let items = (try? modelContext.fetch(FetchDescriptor<ArtItem>())) ?? []
+        return items.filter { Self.normalized($0.uploadedBy ?? "") == name }
+    }
+
+    private static func normalized(_ value: String) -> String {
+        value.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 
     private func upsertResponses(_ responses: [ArtItemResponse]) throws -> [ArtItem] {
         var items: [ArtItem] = []
@@ -140,6 +168,7 @@ final class ArtItemsInBoxService {
         item.itemDescription = mappedItem.itemDescription
         item.location = mappedItem.location
         item.author = mappedItem.author
+        item.createdDate = mappedItem.createdDate
         item.state = mappedItem.state
         item.category = mappedItem.category
         item.latitude = mappedItem.latitude
