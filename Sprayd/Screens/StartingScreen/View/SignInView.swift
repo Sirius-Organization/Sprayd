@@ -77,6 +77,7 @@ struct SignInView: View {
         } message: {
             Text(errorMessage ?? "Something went wrong")
         }
+        .dismissKeyboardOnTap()
     }
 
     // MARK: - Subviews
