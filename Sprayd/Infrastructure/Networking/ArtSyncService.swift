@@ -48,6 +48,29 @@ final class ArtSyncService {
         try modelContext.save()
     }
 
+    func searchArtItems(matching query: String) async throws -> [ArtItem] {
+        let normalizedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !normalizedQuery.isEmpty else { return [] }
+
+        let remoteItems: [RemoteArtItemResponse] = try await sender.send(
+            endpoint: try searchEndpoint(for: normalizedQuery),
+            method: .get
+        )
+
+        var results: [ArtItem] = []
+        results.reserveCapacity(remoteItems.count)
+
+        for remoteItem in remoteItems {
+            let localItem = try fetchLocalItem(by: remoteItem.id) ?? makeLocalItem(from: remoteItem)
+            apply(remoteItem, to: localItem)
+            syncImages(for: remoteItem, localItem: localItem)
+            results.append(localItem)
+        }
+
+        try modelContext.save()
+        return sortSearchResults(results, query: normalizedQuery)
+    }
+
     func syncArtItemDetails(for id: UUID) async throws -> ArtItem {
         let remoteItem: ArtItemDetailsResponse = try await sender.send(
             endpoint: "\(Constants.artItemsEndpoint)/\(id.uuidString)",
@@ -176,6 +199,63 @@ final class ArtSyncService {
             }
         )
         return try modelContext.fetch(descriptor).first
+    }
+
+    private func searchEndpoint(for query: String) throws -> String {
+        var components = URLComponents()
+        components.path = "\(Constants.artItemsEndpoint)/search"
+        components.queryItems = [
+            URLQueryItem(name: "q", value: query)
+        ]
+
+        guard let endpoint = components.string else {
+            throw APIError.invalidURL
+        }
+
+        return endpoint
+    }
+
+    private func sortSearchResults(_ items: [ArtItem], query: String) -> [ArtItem] {
+        items.sorted { lhs, rhs in
+            let lhsRank = searchRank(for: lhs, query: query)
+            let rhsRank = searchRank(for: rhs, query: query)
+
+            if lhsRank != rhsRank {
+                return lhsRank < rhsRank
+            }
+
+            return lhs.name.localizedStandardCompare(rhs.name) == .orderedAscending
+        }
+    }
+
+    private func searchRank(for item: ArtItem, query: String) -> Int {
+        let normalizedQuery = normalizedSearchValue(query)
+        let normalizedName = normalizedSearchValue(item.name)
+        let normalizedDescription = normalizedSearchValue(item.itemDescription)
+
+        if normalizedName == normalizedQuery {
+            return 0
+        }
+
+        if normalizedName.hasPrefix(normalizedQuery) {
+            return 1
+        }
+
+        if normalizedName.contains(normalizedQuery) {
+            return 2
+        }
+
+        if normalizedDescription.contains(normalizedQuery) {
+            return 3
+        }
+
+        return 4
+    }
+
+    private func normalizedSearchValue(_ value: String) -> String {
+        value
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
     }
 }
 

@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct FeaturedView: View {
-    private struct CityPreview: Identifiable {
+    struct CityPreview: Identifiable {
         let title: String
         let imageURL: URL?
 
@@ -29,35 +29,40 @@ struct FeaturedView: View {
         static let discoverGridImageAspectRatio: CGFloat = discoverGridColumnWidth / discoverGridImageHeight
     }
 
-    private let onSelectItem: (ArtItem) -> Void
+    let onSelectItem: (ArtItem) -> Void
 
     init(onSelectItem: @escaping (ArtItem) -> Void = { _ in }) {
         self.onSelectItem = onSelectItem
     }
 
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) var modelContext
+    @State var searchText = ""
+    @State var searchResults: [ArtItem] = []
+    @State var isSearching = false
+    @State var isSearchFocused = false
+    @State var searchErrorMessage: String?
     @Query(
         sort: [
             SortDescriptor(\ArtItem.createdAt, order: .reverse),
             SortDescriptor(\ArtItem.name)
         ]
     )
-    private var items: [ArtItem]
+    var items: [ArtItem]
 
-    private let gridColumns = [
+    let gridColumns = [
         GridItem(.flexible(), spacing: Metrics.oneAndHalfModule),
         GridItem(.flexible(), spacing: Metrics.oneAndHalfModule)
     ]
 
-    private var featuredItem: ArtItem? {
+    var featuredItem: ArtItem? {
         items.first
     }
 
-    private var discoverItems: [ArtItem] {
+    var discoverItems: [ArtItem] {
         Array(items.dropFirst())
     }
 
-    private var cities: [CityPreview] {
+    var cities: [CityPreview] {
         var orderedKeys: [String] = []
         var previewsByKey: [String: CityPreview] = [:]
 
@@ -84,79 +89,36 @@ struct FeaturedView: View {
         return orderedKeys.compactMap { previewsByKey[$0] }
     }
 
-    var body: some View {
-        let featuredItem = featuredItem
-        let cityPreviews = cities
-        let discoverItems = discoverItems
+    var trimmedSearchQuery: String {
+        searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 
+    var isShowingSearchResults: Bool {
+        !trimmedSearchQuery.isEmpty
+    }
+
+    var isSearchModeActive: Bool {
+        isSearchFocused || isShowingSearchResults
+    }
+
+    var body: some View {
         ZStack {
             Color.appBackground
                 .ignoresSafeArea()
+
+            if isSearchModeActive {
+                Color.black.opacity(0.18)
+                    .ignoresSafeArea()
+            }
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Metrics.tripleModule) {
                     searchBar
 
-                    if let featuredItem {
-                        VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
-                            sectionTitle("Featured")
-                            featuredCard(item: featuredItem)
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    onSelectItem(featuredItem)
-                                }
-                        }
-                    }
-
-                    if !cityPreviews.isEmpty {
-                        VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
-                            sectionTitle("Cities")
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                LazyHStack(spacing: Metrics.oneAndHalfModule) {
-                                    ForEach(cityPreviews) { city in
-                                        NavigationLink {
-                                            CityScreenView(city: city.title)
-                                        } label: {
-                                            cityCard(
-                                                title: city.title,
-                                                imageURL: city.imageURL
-                                            )
-                                        }
-                                        .buttonStyle(.plain)
-                                    }
-                                }
-                                .padding(.trailing, Metrics.module)
-                            }
-                        }
-                    }
-
-                    if !discoverItems.isEmpty {
-                        VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
-                            sectionTitle("Discover")
-
-                            if let first = discoverItems.first {
-                                discoverLargeCard(item: first)
-                                    .contentShape(Rectangle())
-                                    .onTapGesture {
-                                        onSelectItem(first)
-                                    }
-                                .padding(.bottom, Metrics.module)
-                            }
-
-                            LazyVGrid(columns: gridColumns, spacing: Metrics.doubleModule) {
-                                ForEach(Array(discoverItems.dropFirst().enumerated()), id: \.offset) { _, item in
-                                    discoverSmallCard(item: item)
-                                        .contentShape(Rectangle())
-                                        .onTapGesture {
-                                            onSelectItem(item)
-                                        }
-                                }
-                            }
-                        }
-                    }
-
-                    if items.isEmpty {
-                        emptyState
+                    if isSearchModeActive {
+                        searchResultsSection
+                    } else {
+                        feedSections
                     }
 
                     Color.clear
@@ -169,6 +131,9 @@ struct FeaturedView: View {
             .refreshable {
                 await refresh()
             }
+            .task(id: trimmedSearchQuery) {
+                await performSearch(for: trimmedSearchQuery)
+            }
         }
     }
 
@@ -177,12 +142,21 @@ struct FeaturedView: View {
         do {
             let service = ArtSyncService(modelContext: modelContext)
             try await service.syncArtItems()
+
+            if isShowingSearchResults {
+                searchResults = try await service.searchArtItems(matching: trimmedSearchQuery)
+                searchErrorMessage = nil
+            }
         } catch {
+            if isShowingSearchResults {
+                searchResults = []
+                searchErrorMessage = message(for: error)
+            }
             print("Refresh sync error:", error)
         }
     }
 
-    private func discoverLargeCard(item: ArtItem) -> some View {
+    func discoverLargeCard(item: ArtItem) -> some View {
         VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
             artworkImage(for: item, aspectRatio: Layout.discoverHeroImageAspectRatio)
 
@@ -215,7 +189,7 @@ struct FeaturedView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private func discoverSmallCard(item: ArtItem) -> some View {
+    func discoverSmallCard(item: ArtItem) -> some View {
         VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
             artworkImage(for: item, aspectRatio: Layout.discoverGridImageAspectRatio)
 

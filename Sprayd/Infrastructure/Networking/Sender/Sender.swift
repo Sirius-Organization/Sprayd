@@ -172,6 +172,7 @@ final class Sender {
         do {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
+            decoder.dateDecodingStrategy = .iso8601
             return try decoder.decode(APIErrorResponse.self, from: data)
         } catch {
             throw APIError.decodingError(error)

@@ -13,10 +13,15 @@ final class MapCoordinator: ObservableObject {
     // MARK: - Fields
     @Published var path: [MapRoute] = []
     private let artItemsInBoxService: ArtItemsInBoxService
+    private let locationProvider: LocationProvider
 
     // MARK: - Lifecycle
-    init(artItemsInBoxService: ArtItemsInBoxService) {
+    init(
+        artItemsInBoxService: ArtItemsInBoxService,
+        locationProvider: LocationProvider
+    ) {
         self.artItemsInBoxService = artItemsInBoxService
+        self.locationProvider = locationProvider
     }
     
     // MARK: - Navigation logic
@@ -49,11 +54,11 @@ final class MapCoordinator: ObservableObject {
     func makeRootView() -> some View {
         MainMapAssembly(
             artItemsInBoxService: artItemsInBoxService,
-            onSelectItem: { [weak self] item in
-                self?.openArtObject(item)
-            }
+            locationProvider: locationProvider
         )
-        .build()
+        .build(onSelectItem: { [weak self] item in
+            self?.openArtObject(item)
+        })
     }
     
     @ViewBuilder
