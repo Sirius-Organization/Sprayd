@@ -564,6 +564,9 @@
         }
       }
     },
+    "Searching..." : {
+
+    },
     "Select an author" : {
       "extractionState" : "stale",
       "localizations" : {
