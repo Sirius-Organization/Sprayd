@@ -16,6 +16,8 @@ struct ArtCardView: View {
 
     // MARK: - Fields
     var viewModel: ArtObjectViewModel
+    let onAuthorTap: () -> Void
+    let onPostedByTap: () -> Void
 
     // MARK: - Subviews
     @ViewBuilder
@@ -120,13 +122,22 @@ struct ArtCardView: View {
             .padding(.top, Metrics.module)
     }
 
-    private func personSection(title: String, titleFont: Font, name: String) -> some View {
+    private func personSection(
+        title: String,
+        titleFont: Font,
+        name: String,
+        action: @escaping () -> Void
+    ) -> some View {
         VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
             Text(title)
                 .font(titleFont)
                 .foregroundStyle(Color.accentRed)
 
-            MiniProfileView(name: name)
+            Button(action: action) {
+                MiniProfileView(name: name)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
         }
     }
 
@@ -147,13 +158,15 @@ struct ArtCardView: View {
                 personSection(
                     title: "Author",
                     titleFont: Font.InstrumentMedium13,
-                    name: viewModel.author
+                    name: viewModel.author,
+                    action: onAuthorTap
                 )
 
                 personSection(
                     title: "Posted by",
                     titleFont: Font.InstrumentRegular13,
-                    name: viewModel.postedBy
+                    name: viewModel.postedBy,
+                    action: onPostedByTap
                 )
             }
         }
@@ -165,5 +178,9 @@ struct ArtCardView: View {
 }
 
 #Preview {
-    ArtCardView(viewModel: .sample)
+    ArtCardView(
+        viewModel: .sample,
+        onAuthorTap: {},
+        onPostedByTap: {}
+    )
 }

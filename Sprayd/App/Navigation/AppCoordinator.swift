@@ -21,7 +21,9 @@ final class AppCoordinator: ObservableObject {
         self.mapCoordinator = MapCoordinator(
             modelContext: compositionRoot.modelContext
         )
-        self.feedCoordinator = FeedCoordinator()
+        self.feedCoordinator = FeedCoordinator(
+            modelContext: compositionRoot.modelContext
+        )
         self.profileCoordinator = ProfileCoordinator(
             authorizationService: compositionRoot.authorizationService,
             tokenStore: compositionRoot.sessionTokenStore,

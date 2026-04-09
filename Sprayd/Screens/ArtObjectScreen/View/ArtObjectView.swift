@@ -13,9 +13,17 @@ struct ArtObjectView: View {
     @State private var showContributeSourceDialog = false
     @State private var contributePickerSource: ContributePickerSource?
     @State private var imageLoaderService: ImageLoaderService?
+    private let onAuthorTap: (String) -> Void
+    private let onPostedByTap: (String) -> Void
 
-    init(item: ArtItem) {
+    init(
+        item: ArtItem,
+        onAuthorTap: @escaping (String) -> Void = { _ in },
+        onPostedByTap: @escaping (String) -> Void = { _ in }
+    ) {
         _viewModel = State(initialValue: ArtObjectViewModel(item: item))
+        self.onAuthorTap = onAuthorTap
+        self.onPostedByTap = onPostedByTap
     }
 
     var body: some View {
@@ -27,7 +35,19 @@ struct ArtObjectView: View {
             ScrollView {
                 VStack(spacing: Metrics.doubleModule) {
 
-                    ArtCardView(viewModel: self.viewModel)
+                    ArtCardView(
+                        viewModel: self.viewModel,
+                        onAuthorTap: {
+                            let username = normalized(viewModel.author)
+                            guard !username.isEmpty else { return }
+                            onAuthorTap(username)
+                        },
+                        onPostedByTap: {
+                            let username = normalized(viewModel.postedBy)
+                            guard !username.isEmpty, username != "Unknown" else { return }
+                            onPostedByTap(username)
+                        }
+                    )
                         .imageLoaderService(imageLoaderService)
 
                     VStack(spacing: Metrics.oneAndHalfModule) {
@@ -73,6 +93,10 @@ struct ArtObjectView: View {
             print("DETAIL PHOTO URLS:", viewModel.photoImageNames)
         }
         .toolbar(.hidden, for: .tabBar)
+    }
+
+    private func normalized(_ value: String) -> String {
+        value.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private var markVisitedButton: some View {
