@@ -40,14 +40,14 @@ final class ProfileCoordinator: ObservableObject {
     
     @ViewBuilder
     func makeRootView() -> some View {
-        MyProfileView(
+        MyProfileAssembly(
+            authorizationService: authorizationService,
+            tokenStore: tokenStore
+        )
+        .build(
             onAddArt: { [weak self] in
                 self?.openAddArt()
-            },
-            viewModel: MyProfileViewModel(
-                authorizationService: authorizationService,
-                tokenStore: tokenStore
-            )
+            }
         )
     }
     
