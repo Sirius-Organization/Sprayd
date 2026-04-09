@@ -2,7 +2,7 @@
 //  UserProfileAssembly.swift
 //  Sprayd
 //
-//  Created by Codex on 09.04.2026.
+//  Created by loxxy on 09.04.2026.
 //
 
 import SwiftUI
