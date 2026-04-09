@@ -39,6 +39,11 @@ struct CachedAsyncImage<Content: View>: View {
     @Environment(\.imageLoaderService) private var imageLoaderService
     @State private var phase: CachedAsyncImagePhase = .empty
 
+    private var loadTaskID: String {
+        let loaderID = imageLoaderService.map { String(ObjectIdentifier($0).hashValue) } ?? "nil"
+        return "\(url?.absoluteString ?? "")::\(loaderID)"
+    }
+
     init(
         url: URL?,
         transaction: Transaction = Transaction(),
@@ -51,7 +56,7 @@ struct CachedAsyncImage<Content: View>: View {
 
     var body: some View {
         content(phase)
-            .task(id: url?.absoluteString) {
+            .task(id: loadTaskID) {
                 await loadImage()
             }
     }

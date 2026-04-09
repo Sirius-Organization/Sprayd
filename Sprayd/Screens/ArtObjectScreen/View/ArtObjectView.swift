@@ -12,7 +12,7 @@ struct ArtObjectView: View {
     @State private var viewModel: ArtObjectViewModel
     @State private var showContributeSourceDialog = false
     @State private var contributePickerSource: ContributePickerSource?
-    @State private var imageLoaderService: ImageLoaderService?
+    @Environment(\.imageLoaderService) private var imageLoaderService
     private let onAuthorTap: (String) -> Void
     private let onPostedByTap: (String) -> Void
 
@@ -84,13 +84,6 @@ struct ArtObjectView: View {
                 onDismiss: { contributePickerSource = nil }
             )
             .ignoresSafeArea()
-        }
-        .task {
-            if imageLoaderService == nil {
-                imageLoaderService = ImageLoaderService(imageCacheService: ImageCacheService())
-            }
-
-            print("DETAIL PHOTO URLS:", viewModel.photoImageNames)
         }
         .toolbar(.hidden, for: .tabBar)
     }
