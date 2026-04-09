@@ -19,11 +19,10 @@ final class AppCoordinator: ObservableObject {
     // MARK: - Lifecycle
     init(compositionRoot: CompositionRoot) {
         self.mapCoordinator = MapCoordinator(
-            artItemsInBoxService: compositionRoot.artItemsInBoxService,
-            modelContext: compositionRoot.modelContext
+            artItemsInBoxService: compositionRoot.artItemsInBoxService
         )
         self.feedCoordinator = FeedCoordinator(
-            modelContext: compositionRoot.modelContext
+            artItemsInBoxService: compositionRoot.artItemsInBoxService
         )
         self.profileCoordinator = ProfileCoordinator(
             authorizationService: compositionRoot.authorizationService,

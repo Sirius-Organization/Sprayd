@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftData
 import Combine
 
 @MainActor
@@ -14,15 +13,10 @@ final class MapCoordinator: ObservableObject {
     // MARK: - Fields
     @Published var path: [MapRoute] = []
     private let artItemsInBoxService: ArtItemsInBoxService
-    private let modelContext: ModelContext
 
     // MARK: - Lifecycle
-    init(
-        artItemsInBoxService: ArtItemsInBoxService,
-        modelContext: ModelContext
-    ) {
+    init(artItemsInBoxService: ArtItemsInBoxService) {
         self.artItemsInBoxService = artItemsInBoxService
-        self.modelContext = modelContext
     }
     
     // MARK: - Navigation logic
@@ -82,37 +76,18 @@ final class MapCoordinator: ObservableObject {
         case .artistProfile(let username):
             ArtistProfileAssembly().build(
                 username: username,
-                works: works(forAuthor: username)
+                works: artItemsInBoxService.items(forAuthor: username)
             )
         case .userProfile(let username):
             UserProfileAssembly().build(
                 username: username,
-                posts: posts(forUser: username)
+                posts: artItemsInBoxService.items(forUploadedByUsername: username)
             )
         }
     }
 
     private func item(withID id: UUID) -> ArtItem? {
-        let descriptor = FetchDescriptor<ArtItem>(
-            predicate: #Predicate<ArtItem> { item in
-                item.id == id
-            }
-        )
-        return try? modelContext.fetch(descriptor).first
-    }
-
-    private func works(forAuthor author: String) -> [ArtItem] {
-        let authorName = normalized(author)
-        guard !authorName.isEmpty else { return [] }
-        let items = (try? modelContext.fetch(FetchDescriptor<ArtItem>())) ?? []
-        return items.filter { normalized($0.author) == authorName }
-    }
-
-    private func posts(forUser user: String) -> [ArtItem] {
-        let username = normalized(user)
-        guard !username.isEmpty else { return [] }
-        let items = (try? modelContext.fetch(FetchDescriptor<ArtItem>())) ?? []
-        return items.filter { normalized($0.uploadedBy ?? "") == username }
+        artItemsInBoxService.item(withID: id)
     }
 
     private func normalized(_ value: String) -> String {
