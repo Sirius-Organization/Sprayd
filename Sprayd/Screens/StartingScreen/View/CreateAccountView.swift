@@ -32,8 +32,13 @@ struct CreateAccountView: View {
     @Binding var repeatedPassword: String
 
     let usernameValidationState: ValidationState
+    let usernameValidationMessage: String?
     let emailValidationState: ValidationState
+    let emailValidationMessage: String?
+    let passwordValidationState: ValidationState
+    let passwordValidationMessage: String?
     let repeatPasswordValidationState: ValidationState
+    let repeatPasswordValidationMessage: String?
     let isLoading: Bool
     let errorMessage: String?
     let isFormValid: Bool
@@ -55,6 +60,7 @@ struct CreateAccountView: View {
                     placeholder: Const.usernamePlaceholder,
                     text: $username,
                     validationState: usernameValidationState,
+                    validationMessage: usernameValidationMessage,
                     textContentType: .username
                 )
 
@@ -63,6 +69,7 @@ struct CreateAccountView: View {
                     placeholder: Const.emailPlaceholder,
                     text: $email,
                     validationState: emailValidationState,
+                    validationMessage: emailValidationMessage,
                     textContentType: .emailAddress
                 )
 
@@ -72,8 +79,9 @@ struct CreateAccountView: View {
                     text: $password,
                     isSecure: true,
                     isPasswordToggleable: true,
-                    validationState: .none,
-                    textContentType: .oneTimeCode
+                    validationState: passwordValidationState,
+                    validationMessage: passwordValidationMessage,
+                    textContentType: .newPassword
                 )
 
                 AuthInputField(
@@ -83,7 +91,8 @@ struct CreateAccountView: View {
                     isSecure: true,
                     isPasswordToggleable: true,
                     validationState: repeatPasswordValidationState,
-                    textContentType: .oneTimeCode
+                    validationMessage: repeatPasswordValidationMessage,
+                    textContentType: .newPassword
                 )
 
                 continueButton
@@ -167,8 +176,13 @@ private struct CreateAccountPreview: View {
             password: $password,
             repeatedPassword: $repeatedPassword,
             usernameValidationState: .none,
+            usernameValidationMessage: nil,
             emailValidationState: .none,
+            emailValidationMessage: nil,
+            passwordValidationState: .none,
+            passwordValidationMessage: nil,
             repeatPasswordValidationState: .none,
+            repeatPasswordValidationMessage: nil,
             isLoading: false,
             errorMessage: nil,
             isFormValid: false,

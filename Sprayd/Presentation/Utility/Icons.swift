@@ -124,4 +124,10 @@ struct Icons {
             .background(Color.validationError)
             .clipShape(Circle())
     }
+
+    static var validationAlert: some View {
+        Image(systemName: "exclamationmark.circle")
+            .font(.system(size: 18, weight: .medium))
+            .foregroundStyle(Color.validationError)
+    }
 }

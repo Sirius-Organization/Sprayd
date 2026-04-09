@@ -71,6 +71,38 @@ final class CreateAccountViewModel {
         return isValid ? .valid : .invalid
     }
 
+    var passwordValidationState: ValidationState {
+        validationState(for: password, isValid: isPasswordValid)
+    }
+
+    var usernameValidationMessage: String? {
+        guard !username.isEmpty, !isUsernameValid else { return nil }
+        return "Username must be 3-20 characters and use only letters, numbers, or _"
+    }
+
+    var emailValidationMessage: String? {
+        guard !email.isEmpty, !isEmailValid else { return nil }
+        return "Please enter a valid email address"
+    }
+
+    var passwordValidationMessage: String? {
+        guard !password.isEmpty else { return nil }
+        guard password.count >= 8 else {
+            return "Password must consist of at least 8+ symbols"
+        }
+
+        guard isPasswordValid else {
+            return "Password must include at least 2 character types"
+        }
+
+        return nil
+    }
+
+    var repeatPasswordValidationMessage: String? {
+        guard !repeatedPassword.isEmpty, !isRepeatPasswordMatching else { return nil }
+        return "Passwords do not match"
+    }
+
     // MARK: - Actions
 
     func register() {

@@ -32,33 +32,40 @@ struct AuthInputField: View {
     var isSecure: Bool = false
     var isPasswordToggleable: Bool = false
     var validationState: ValidationState = .none
+    var validationMessage: String? = nil
     var textContentType: UITextContentType? = nil
 
     @State private var isRevealed: Bool = false
 
     // MARK: - Body
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            TopGapRoundedRectangle(
-                cornerRadius: Const.cornerRadius,
-                gapStartX: Const.labelOffsetX + Metrics.module,
-                gapWidth: titleWidth + (Const.labelHorizontalPadding * 2) + Const.gapExtraWidth
-            )
-                .stroke(Color.appPrimaryText.opacity(0.45), lineWidth: Const.borderWidth)
-                .frame(height: Const.fieldHeight)
-
-            HStack(spacing: Metrics.module) {
-                field
-                trailingIcons
+        VStack(alignment: .leading, spacing: Metrics.module) {
+            if let validationMessage, validationState == .invalid {
+                ValidationMessageBubble(message: validationMessage)
             }
-            .padding(.horizontal, Metrics.doubleModule)
-            .frame(height: Const.fieldHeight, alignment: .center)
 
-            Text(title)
-                .font(.InstrumentMedium16)
-                .foregroundStyle(Color.appPrimaryText)
-                .padding(.horizontal, Metrics.module)
-                .offset(x: Const.labelOffsetX + Metrics.module, y: -Metrics.oneAndHalfModule)
+            ZStack(alignment: .topLeading) {
+                TopGapRoundedRectangle(
+                    cornerRadius: Const.cornerRadius,
+                    gapStartX: Const.labelOffsetX + Metrics.module,
+                    gapWidth: titleWidth + (Const.labelHorizontalPadding * 2) + Const.gapExtraWidth
+                )
+                    .stroke(Color.appPrimaryText.opacity(0.45), lineWidth: Const.borderWidth)
+                    .frame(height: Const.fieldHeight)
+
+                HStack(spacing: Metrics.module) {
+                    field
+                    trailingIcons
+                }
+                .padding(.horizontal, Metrics.doubleModule)
+                .frame(height: Const.fieldHeight, alignment: .center)
+
+                Text(title)
+                    .font(.InstrumentMedium16)
+                    .foregroundStyle(Color.appPrimaryText)
+                    .padding(.horizontal, Metrics.module)
+                    .offset(x: Const.labelOffsetX + Metrics.module, y: -Metrics.oneAndHalfModule)
+            }
         }
         .padding(.top, Metrics.oneAndHalfModule)
     }
@@ -96,7 +103,7 @@ struct AuthInputField: View {
     @ViewBuilder
     private var trailingIcons: some View {
         HStack(spacing: Metrics.halfModule) {
-            if validationState != .none {
+            if validationState == .valid {
                 validationIndicator
             }
 
@@ -119,7 +126,7 @@ struct AuthInputField: View {
         case .valid:
             Icons.validationCheckmark
         case .invalid:
-            Icons.validationXmark
+            EmptyView()
         case .none:
             EmptyView()
         }
