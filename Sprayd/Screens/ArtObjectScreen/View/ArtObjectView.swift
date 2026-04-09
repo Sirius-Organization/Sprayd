@@ -32,7 +32,7 @@ struct ArtObjectView: View {
         ZStack {
             Color.appBackground
                 .ignoresSafeArea(edges: .all)
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: Metrics.doubleModule) {
 
                     ArtCardView(
