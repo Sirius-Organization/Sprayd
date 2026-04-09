@@ -121,31 +121,12 @@ final class MyProfileViewModel: ObservableObject {
                 } }
             }
 
-            let token = tokenStore.token()?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            await authorizationService.logoutCurrentSession()
 
-            guard !token.isEmpty else {
-                await clearSession()
-                return
+            withAnimation(.easeInOut(duration: 0.35)) {
+                self.isLoggedIn = false
+                self.hasCompletedOnboarding = false
             }
-
-            do {
-                try await authorizationService.logout(token: token)
-            } catch {
-                // Server-side logout can fail if the token is already invalidated.
-                // Local session cleanup should still complete.
-            }
-
-            await clearSession()
-        }
-    }
-
-    private func clearSession() {
-        UserDefaults.standard.removeObject(forKey: "userId")
-        UserDefaults.standard.removeObject(forKey: "userEmail")
-        _ = tokenStore.clearToken()
-        withAnimation(.easeInOut(duration: 0.35)) {
-            isLoggedIn = false
-            hasCompletedOnboarding = false
         }
     }
 

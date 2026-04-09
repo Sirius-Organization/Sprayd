@@ -23,7 +23,9 @@ final class CompositionRoot {
         ImageLoaderService(imageCacheService: imageCacheService)
     }()
 
-    lazy var sender: Sender = Sender()
+    lazy var sender: Sender = {
+        Sender(tokenStore: sessionTokenStore)
+    }()
     lazy var artItemsInBoxService: ArtItemsInBoxService = {
         ArtItemsInBoxService(
             sender: sender,
@@ -31,7 +33,10 @@ final class CompositionRoot {
         )
     }()
     lazy var authorizationService: AuthorizationService = {
-        AuthorizationService(sender: sender)
+        AuthorizationService(
+            sender: sender,
+            tokenStore: sessionTokenStore
+        )
     }()
     lazy var userService: UserService = {
         UserService(sender: sender)
@@ -44,8 +49,7 @@ final class CompositionRoot {
     lazy var artAdditionRepository: ArtAdditionRepository = {
         ArtAdditionRepository(
             service: artAdditionService,
-            modelContext: modelContext,
-            tokenStore: sessionTokenStore
+            modelContext: modelContext
         )
     }()
 
