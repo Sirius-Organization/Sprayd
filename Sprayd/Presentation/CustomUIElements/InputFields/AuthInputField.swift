@@ -111,7 +111,7 @@ struct AuthInputField: View {
                 Button {
                     isRevealed.toggle()
                 } label: {
-                    Image(systemName: isRevealed ? "eye.slash" : "eye")
+                    Image(systemName: isRevealed ? "eye" : "eye.slash")
                         .font(.system(size: 16))
                         .foregroundStyle(Color.appPrimaryText.opacity(0.6))
                 }
