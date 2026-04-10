@@ -68,6 +68,7 @@ struct FeaturedView: View {
 
         for item in items {
             guard let city = item.cityName else { continue }
+            guard hasEligibleCityLength(city) else { continue }
             let key = normalizedCityKey(city)
 
             if let existingPreview = previewsByKey[key] {
@@ -200,7 +201,7 @@ struct FeaturedView: View {
                         .foregroundStyle(Color.appPrimaryText)
                         .lineLimit(1)
 
-                    personLine(label: "Creator", value: item.author, size: 16, font: .InstrumentMedium10)
+                    personLine(value: item.author, size: 16, font: .InstrumentMedium10)
 
                     if let uploadedBy = uploadedByText(for: item) {
                         Text("Uploaded by: \(uploadedBy)")
@@ -294,6 +295,16 @@ struct FeaturedView: View {
         value
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
+    }
+
+    private func hasEligibleCityLength(_ value: String) -> Bool {
+        let lettersCount = value.unicodeScalars.reduce(into: 0) { count, scalar in
+            if CharacterSet.letters.contains(scalar) {
+                count += 1
+            }
+        }
+
+        return lettersCount > 8
     }
 }
 

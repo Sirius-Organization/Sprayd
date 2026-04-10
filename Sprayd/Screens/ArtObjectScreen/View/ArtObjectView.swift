@@ -109,7 +109,7 @@ struct ArtObjectView: View {
 
     private var markVisitedButton: some View {
         Button {
-            viewModel.toggleVisited()
+            viewModel.toggleVisited(in: modelContext)
         } label: {
             HStack {
                 Text(viewModel.isVisited ? "Marked visited" : "Mark visited")

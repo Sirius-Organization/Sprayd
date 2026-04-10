@@ -22,6 +22,7 @@ final class ArtItem {
     var stateRawValue: String
     var category: String
     var isFavorite: Bool
+    var isVisited: Bool
     var latitude: Double
     var longitude: Double
 
@@ -38,6 +39,7 @@ final class ArtItem {
         state: ArtState = .new,
         category: String = "",
         isFavorite: Bool = false,
+        isVisited: Bool = false,
         latitude: Double = 0,
         longitude: Double = 0
     ) {
@@ -53,6 +55,7 @@ final class ArtItem {
         self.stateRawValue = state.rawValue
         self.category = category
         self.isFavorite = isFavorite
+        self.isVisited = isVisited
         self.latitude = latitude
         self.longitude = longitude
     }
