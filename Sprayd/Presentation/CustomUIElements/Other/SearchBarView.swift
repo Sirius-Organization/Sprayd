@@ -66,6 +66,7 @@ struct SearchBarView: View {
                 TextField(placeholder, text: text)
                     .font(.InstrumentRegular13)
                     .foregroundStyle(Color.appPrimaryText)
+                    .accessibilityIdentifier("searchBar.textField")
                     .textInputAutocapitalization(textInputAutocapitalization)
                     .autocorrectionDisabled()
                     .focused($isFocused)

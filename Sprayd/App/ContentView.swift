@@ -44,6 +44,7 @@ struct ContentView: View {
         .animation(Motion.standard, value: hasCompletedOnboarding)
         .imageLoaderService(compositionRoot.imageLoaderService)
         .task {
+            guard !AppTestingConfiguration.current.shouldDisableLocationRequests else { return }
             compositionRoot.locationProvider.requestAuthorize()
         }
     }

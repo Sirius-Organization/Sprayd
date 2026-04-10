@@ -12,15 +12,17 @@ import TipKit
 @main
 struct SpraydApp: App {
     private let compositionRoot: CompositionRoot
+    private let modelContainer: ModelContainer
 
     init() {
         do {
             try Tips.configure()
-        }
-        catch {
+        } catch {
             print("Error initializing TipKit \(error.localizedDescription)")
         }
-        self.compositionRoot = CompositionRoot(context: sharedModelContainer.mainContext)
+        AppTestingBootstrapper.applyRuntimeOverrides()
+        self.modelContainer = AppTestingBootstrapper.makeModelContainer()
+        self.compositionRoot = CompositionRoot(context: modelContainer.mainContext)
     }
 
     var body: some Scene {
@@ -28,6 +30,6 @@ struct SpraydApp: App {
             ContentView(compositionRoot: compositionRoot)
                 .tint(.accentRed)
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(modelContainer)
     }
 }

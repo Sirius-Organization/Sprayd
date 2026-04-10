@@ -130,6 +130,7 @@ struct FeaturedView: View {
                         .frame(height: Metrics.doubleModule)
                 }
             }
+            .accessibilityIdentifier("feed.root")
             .safeAreaPadding(.horizontal, Metrics.tripleModule)
             .safeAreaPadding(.top, Metrics.oneAndHalfModule)
             .safeAreaPadding(.bottom, Metrics.oneAndHalfModule)

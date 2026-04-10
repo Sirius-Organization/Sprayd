@@ -20,6 +20,7 @@ final class SpraydUITestsLaunchTests: XCTestCase {
     @MainActor
     func testLaunch() throws {
         let app = XCUIApplication()
+        app.launchArguments += ["-ui-testing", "-ui-testing-start-feed"]
         app.launch()
 
         XCTAssertTrue(

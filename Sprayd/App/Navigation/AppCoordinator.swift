@@ -8,10 +8,10 @@
 import SwiftUI
 import Combine
 
-final class AppCoordinator: ObservableObject {    
+final class AppCoordinator: ObservableObject {
     // MARK: - Fields
     @Published var selectedTab: AppTab = .map
-    
+
     let mapCoordinator: MapCoordinator
     let feedCoordinator: FeedCoordinator
     let profileCoordinator: ProfileCoordinator
@@ -32,8 +32,9 @@ final class AppCoordinator: ObservableObject {
             tokenStore: compositionRoot.sessionTokenStore,
             artAdditionRepository: compositionRoot.artAdditionRepository
         )
+        self.selectedTab = AppTestingConfiguration.current.initialTab
     }
-    
+
     // MARK: - Navigation logic
     func selectTab(_ tab: AppTab) {
         selectedTab = tab

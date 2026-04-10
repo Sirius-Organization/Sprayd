@@ -56,6 +56,7 @@ struct AppCoordinatorView: View {
 
     @MainActor
     private func syncArtItemsIfNeeded(force: Bool) async {
+        guard !AppTestingConfiguration.current.shouldDisableAutomaticSync else { return }
         guard force || !hasStartedInitialSync else { return }
         guard !isSyncingArtItems else { return }
 
