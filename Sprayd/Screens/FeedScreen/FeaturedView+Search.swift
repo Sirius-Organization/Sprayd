@@ -21,13 +21,13 @@ extension FeaturedView {
         if let featuredItem {
             VStack(alignment: .leading, spacing: Metrics.oneAndHalfModule) {
                 sectionTitle("Featured")
-                featuredCard(item: featuredItem)
-                    .accessibilityElement(children: .combine)
-                    .accessibilityIdentifier("feed.featuredCard")
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        onSelectItem(featuredItem)
-                    }
+                Button {
+                    onSelectItem(featuredItem)
+                } label: {
+                    featuredCard(item: featuredItem)
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("feed.featuredCard")
             }
         }
 
@@ -58,13 +58,13 @@ extension FeaturedView {
                 sectionTitle("Discover")
 
                 if let first = discoverItems.first {
-                    discoverLargeCard(item: first)
-                        .accessibilityElement(children: .combine)
-                        .accessibilityIdentifier("feed.discoverHeroCard")
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            onSelectItem(first)
-                        }
+                    Button {
+                        onSelectItem(first)
+                    } label: {
+                        discoverLargeCard(item: first)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("feed.discoverHeroCard")
                     .padding(.bottom, Metrics.module)
                 }
 
