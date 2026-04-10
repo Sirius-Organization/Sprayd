@@ -21,7 +21,7 @@ actor ImageCacheService {
     init(
         fileManager: FileManager = .default,
         cacheDirectoryURL: URL? = nil,
-        maxCacheSizeInBytes: UInt64 = 10 * 1024 * 1024
+        maxCacheSizeInBytes: UInt64 = 30 * 1024 * 1024
     ) {
         self.fileManager = fileManager
         self.maxCacheSizeInBytes = maxCacheSizeInBytes
