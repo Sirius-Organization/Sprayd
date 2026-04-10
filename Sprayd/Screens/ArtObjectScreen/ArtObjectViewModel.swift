@@ -144,7 +144,7 @@ final class ArtObjectViewModel {
     private static func makeImageURLs(from item: ArtItem) -> [String] {
         item.orderedImages
             .map(\.urlString)
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .map(RemoteAssetURL.normalizedString)
             .filter { !$0.isEmpty }
     }
 

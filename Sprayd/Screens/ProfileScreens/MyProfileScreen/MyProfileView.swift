@@ -71,16 +71,13 @@ struct MyProfileView: View {
                             .transition(.scale(scale: Motion.Scale.subtlePressed).combined(with: .opacity))
                     }
                     
-                    itemsView
-                        .id(viewModel.selectedOption)
-                        .transition(.opacity.combined(with: .move(edge: .bottom)))
+                    itemsSectionView
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .contentShape(Rectangle())
-            .onTapGesture {
+            .simultaneousGesture(TapGesture().onEnded {
                 focusedField = nil
-            }
+            })
         }
         .toolbar(.hidden, for: .navigationBar)
         .sheet(item: $viewModel.activeImagePickerSource) { source in
@@ -122,7 +119,6 @@ struct MyProfileView: View {
             viewModel.onAppear()
             hasAppeared = true
         }
-        .animation(Motion.standard, value: viewModel.selectedOption)
         .animation(Motion.quick, value: viewModel.shouldDisplayAddButton)
     }
 
@@ -131,15 +127,7 @@ struct MyProfileView: View {
         VStack() {
             VStack(spacing: Metrics.module) {
                 ZStack(alignment: .bottomTrailing) {
-                    Group {
-                        if let profileImage = viewModel.profileImage {
-                            Image(uiImage: profileImage)
-                                .resizable()
-                                .scaledToFill()
-                        } else {
-                            Icons.personCircle
-                        }
-                    }
+                    avatarView
                     .frame(width: Const.profileImageSize, height: Const.profileImageSize)
                     .clipShape(Circle())
                     
@@ -260,13 +248,14 @@ struct MyProfileView: View {
     }
     
     private var pickerView: some View {
-        Picker("", selection: $viewModel.selectedOption) {
+        Picker("", selection: selectedOptionBinding) {
             Text("Posted").tag(MyProfileViewModel.Option.posted)
             Text("Visited").tag(MyProfileViewModel.Option.visited)
             Text("Favourites").tag(MyProfileViewModel.Option.favourites)
         }
         .pickerStyle(.segmented)
         .padding(.horizontal)
+        .zIndex(1)
     }
     
     private var sectionTitle: some View {
@@ -296,6 +285,54 @@ struct MyProfileView: View {
             case .favourites:
                 FavouriteItemsListView()
             }
+        }
+    }
+
+    private var itemsSectionView: some View {
+        ZStack {
+            itemsView
+                .id(viewModel.selectedOption)
+                .transition(.opacity)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .clipped()
+        .zIndex(0)
+    }
+
+    private var selectedOptionBinding: Binding<MyProfileViewModel.Option> {
+        Binding(
+            get: { viewModel.selectedOption },
+            set: { newValue in
+                guard newValue != viewModel.selectedOption else { return }
+                withAnimation(Motion.standard) {
+                    viewModel.selectOption(newValue)
+                }
+            }
+        )
+    }
+
+    @ViewBuilder
+    private var avatarView: some View {
+        if let profileImage = viewModel.profileImage {
+            Image(uiImage: profileImage)
+                .resizable()
+                .scaledToFill()
+        } else if let profileImageURL = viewModel.profileImageURL {
+            CachedAsyncImage(
+                url: profileImageURL,
+                transaction: Transaction(animation: Motion.quick)
+            ) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                        .scaledToFill()
+                case .empty, .failure:
+                    Icons.personCircle
+                }
+            }
+        } else {
+            Icons.personCircle
         }
     }
 

@@ -13,7 +13,7 @@ enum ArtAdditionMapper {
             id: response.id ?? UUID(),
             name: response.name,
             bio: response.bio,
-            imageURLString: response.imagePath
+            imageURLString: response.imagePath.map(RemoteAssetURL.normalizedString)
         )
     }
 
@@ -21,7 +21,7 @@ enum ArtAdditionMapper {
         let images = response.firstImageUrl.map {
             [
                 ArtImage(
-                    urlString: $0,
+                    urlString: RemoteAssetURL.normalizedString($0),
                     createdAt: Date(timeIntervalSince1970: 0),
                     timeStamp: 0,
                     userID: nil
@@ -55,7 +55,7 @@ enum ArtAdditionMapper {
     static func mapArtImage(_ response: ArtImageResponse) -> ArtImage {
         ArtImage(
             id: response.id ?? UUID(),
-            urlString: response.url,
+            urlString: RemoteAssetURL.normalizedString(response.url),
             createdAt: response.date,
             timeStamp: response.timeStamp,
             userID: response.userId

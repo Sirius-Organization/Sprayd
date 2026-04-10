@@ -300,6 +300,7 @@ private struct RemoteArtItemResponse: Codable {
         latitude = try container.decodeIfPresent(Double.self, forKey: .latitude) ?? 0
         longitude = try container.decodeIfPresent(Double.self, forKey: .longitude) ?? 0
         firstImageUrl = try container.decodeIfPresent(String.self, forKey: .firstImageUrl)
+            .map(RemoteAssetURL.normalizedString)
         if let createdAtValue = try container.decodeIfPresent(Date.self, forKey: .createdAt) {
             createdAt = createdAtValue
         } else {
@@ -343,6 +344,6 @@ private struct RemoteArtItemResponse: Codable {
 
     var imageURLs: [String] {
         guard let firstImageUrl else { return [] }
-        return [firstImageUrl]
+        return [RemoteAssetURL.normalizedString(firstImageUrl)]
     }
 }

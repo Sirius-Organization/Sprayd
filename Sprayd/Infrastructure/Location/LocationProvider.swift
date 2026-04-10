@@ -2,7 +2,7 @@
 //  LocationProvider.swift
 //  Sprayd
 //
-//  Created by Codex on 09.04.2026.
+//  Created by User on 09.04.2026.
 //
 
 import CoreLocation

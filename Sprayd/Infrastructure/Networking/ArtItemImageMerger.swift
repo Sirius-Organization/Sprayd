@@ -131,8 +131,7 @@ enum ArtItemImageMerger {
         result.reserveCapacity(remoteImages.count)
 
         for remoteImage in remoteImages {
-            let urlString = remoteImage.urlString
-                .trimmingCharacters(in: .whitespacesAndNewlines)
+            let urlString = RemoteAssetURL.normalizedString(remoteImage.urlString)
 
             guard !urlString.isEmpty else { continue }
 
@@ -227,7 +226,7 @@ enum ArtItemImageMerger {
     }
 
     private static func normalized(_ value: String) -> String {
-        value.trimmingCharacters(in: .whitespacesAndNewlines)
+        RemoteAssetURL.normalizedString(value)
     }
 
     private static func stableUUID(for value: String) -> UUID {

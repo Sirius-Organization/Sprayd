@@ -21,7 +21,7 @@ final class ImageLoaderService {
     }
 
     func loadImageData(from urlString: String) async -> Data? {
-        guard let url = URL(string: urlString) else {
+        guard let url = RemoteAssetURL.normalizedURL(from: urlString) else {
             return nil
         }
 

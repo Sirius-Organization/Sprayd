@@ -27,7 +27,7 @@ struct ArtCardView: View {
         let source = viewModel.photoImageNames[index]
 
         Group {
-            if let url = URL(string: source), let scheme = url.scheme, scheme.hasPrefix("http") {
+            if let url = RemoteAssetURL.normalizedURL(from: source) {
                 CachedAsyncImage(url: url) { phase in
                     switch phase {
                     case .empty:

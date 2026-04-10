@@ -71,9 +71,7 @@ final class ArtItem {
 
     var primaryImageURL: URL? {
         for image in orderedImages {
-            let value = image.urlString.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !value.isEmpty else { continue }
-            if let url = URL(string: value) {
+            if let url = RemoteAssetURL.normalizedURL(from: image.urlString) {
                 return url
             }
         }
@@ -99,8 +97,8 @@ final class ArtItem {
             return lhs.createdAt < rhs.createdAt
         }
 
-        let lhsURL = lhs.urlString.trimmingCharacters(in: .whitespacesAndNewlines)
-        let rhsURL = rhs.urlString.trimmingCharacters(in: .whitespacesAndNewlines)
+        let lhsURL = RemoteAssetURL.normalizedString(lhs.urlString)
+        let rhsURL = RemoteAssetURL.normalizedString(rhs.urlString)
 
         if lhsURL != rhsURL {
             return lhsURL.localizedStandardCompare(rhsURL) == .orderedAscending

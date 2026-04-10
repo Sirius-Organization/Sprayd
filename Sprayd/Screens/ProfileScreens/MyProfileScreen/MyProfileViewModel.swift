@@ -37,6 +37,7 @@ final class MyProfileViewModel: ObservableObject {
 
     // profile image + permissions state (main)
     @Published var profileImage: UIImage?
+    @Published var profileImageURL: URL?
     @Published var isImageSourceDialogPresented: Bool = false
     @Published var activeImagePickerSource: ProfileImageSource?
     @Published var isPermissionAlertPresented: Bool = false
@@ -47,7 +48,6 @@ final class MyProfileViewModel: ObservableObject {
     @Published var isProfileSyncInProgress: Bool = false
 
     private let authorizationService: AuthorizationService
-    private let imageLoaderService: ImageLoaderService
     private let userService: UserService
     private let tokenStore: SessionTokenStoring
     private var hasLoadedProfile: Bool = false
@@ -74,7 +74,6 @@ final class MyProfileViewModel: ObservableObject {
     // MARK: - Lifecycle
     init(
         authorizationService: AuthorizationService,
-        imageLoaderService: ImageLoaderService,
         userService: UserService,
         tokenStore: SessionTokenStoring? = nil,
         selectedOption: Option = .posted,
@@ -85,7 +84,6 @@ final class MyProfileViewModel: ObservableObject {
         favourites: [ArtItem] = [],
     ) {
         self.authorizationService = authorizationService
-        self.imageLoaderService = imageLoaderService
         self.userService = userService
         self.tokenStore = tokenStore ?? SessionTokenStore()
         self.selectedOption = selectedOption
@@ -362,23 +360,11 @@ final class MyProfileViewModel: ObservableObject {
         }
         UserDefaults.standard.set(profile.email, forKey: "userEmail")
 
-        if let avatarURL = profile.avatar {
-            Task {
-                await loadAvatarImage(from: avatarURL)
-            }
-        } else {
+        profileImageURL = RemoteAssetURL.normalizedURL(from: profile.avatar)
+
+        if profileImageURL == nil {
             profileImage = nil
         }
-    }
-
-    private func loadAvatarImage(from rawURL: String) async {
-        guard let data = await imageLoaderService.loadImageData(from: rawURL),
-              let image = UIImage(data: data)
-        else {
-            return
-        }
-
-        profileImage = image
     }
 
     private var currentUserID: UUID? {
