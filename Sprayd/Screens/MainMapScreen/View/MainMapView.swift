@@ -13,14 +13,9 @@ struct MainMapView: View {
     @State private var selectedItem: ArtItem?
     @State private var selectedDetent: PresentationDetent = .fraction(0.5)
     private let mapTip = MapTip()
-    private let onSelectItem: (ArtItem) -> Void
 
-    init(
-        viewModel: MainMapViewModel,
-        onSelectItem: @escaping (ArtItem) -> Void = { _ in }
-    ) {
+    init(viewModel: MainMapViewModel) {
         _viewModel = State(initialValue: viewModel)
-        self.onSelectItem = onSelectItem
     }
 
     var body: some View {
@@ -51,14 +46,7 @@ struct MainMapView: View {
             )
         ) {
             if let selectedItem {
-                ArtMediumCardView(
-                    item: selectedItem,
-                    onOpenDetails: {
-                        let item = selectedItem
-                        self.selectedItem = nil
-                        onSelectItem(item)
-                    }
-                )
+                ArtMediumCardView(item: selectedItem)
                     .presentationDetents(
                         [.fraction(0.5), .large],
                         selection: $selectedDetent

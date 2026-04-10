@@ -12,14 +12,13 @@ struct MainMapAssembly {
     let artItemsInBoxService: ArtItemsInBoxService
     let locationProvider: LocationProvider
 
-    func build(onSelectItem: @escaping (ArtItem) -> Void = { _ in }) -> some View {
+    func build() -> some View {
         let viewModel = MainMapViewModel(
             artItemsInBoxService: artItemsInBoxService,
             locationProvider: locationProvider
         )
         return MainMapView(
-            viewModel: viewModel,
-            onSelectItem: onSelectItem
+            viewModel: viewModel
         )
     }
 }

@@ -56,9 +56,7 @@ final class MapCoordinator: ObservableObject {
             artItemsInBoxService: artItemsInBoxService,
             locationProvider: locationProvider
         )
-        .build(onSelectItem: { [weak self] item in
-            self?.openArtObject(item)
-        })
+        .build()
     }
     
     @ViewBuilder
