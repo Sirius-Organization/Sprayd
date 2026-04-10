@@ -200,6 +200,7 @@ private extension LocationPickerView {
                     resultRow(item)
                 }
             }
+            .scrollIndicators(.hidden)
             .navigationTitle("Results")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

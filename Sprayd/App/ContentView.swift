@@ -42,6 +42,7 @@ struct ContentView: View {
             }
         }
         .animation(Motion.standard, value: hasCompletedOnboarding)
+        .scrollIndicators(.hidden)
         .imageLoaderService(compositionRoot.imageLoaderService)
         .task {
             guard !AppTestingConfiguration.current.shouldDisableLocationRequests else { return }

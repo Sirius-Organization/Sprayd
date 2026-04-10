@@ -84,6 +84,7 @@ struct MultilineTextField: View {
                    
                        TextEditor(text: $text)
                        .scrollContentBackground(.hidden)
+                       .scrollIndicators(.hidden)
                        .font(.InstrumentRegular13)
                        .foregroundStyle(Color.appPrimaryText)
                        .background(Color.clear)
