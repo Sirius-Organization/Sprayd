@@ -84,9 +84,11 @@ struct ArtAdditionView: View {
                 .padding(.top, Metrics.twoAndHalfModule)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
+            .scrollDismissesKeyboard(.interactively)
         }
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .tabBar)
+        .dismissKeyboardOnTap()
         .task {
             await viewModel.loadInitialDataIfNeeded()
         }
