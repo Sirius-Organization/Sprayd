@@ -100,7 +100,9 @@ struct ArtCardView: View {
             Spacer(minLength: Metrics.oneAndHalfModule)
 
             Button {
-                viewModel.toggleFavorite(in: modelContext)
+                withAnimation(Motion.favorite) {
+                    viewModel.toggleFavorite(in: modelContext)
+                }
             } label: {
                 if viewModel.isFavorite {
                     Icons.filledHeart
@@ -108,7 +110,9 @@ struct ArtCardView: View {
                     Icons.heart
                 }
             }
-            .buttonStyle(.plain)
+            .scaleEffect(viewModel.isFavorite ? Motion.Scale.favoriteSelected : Motion.Scale.identity)
+            .animation(Motion.favorite, value: viewModel.isFavorite)
+            .pressScale()
         }
     }
 

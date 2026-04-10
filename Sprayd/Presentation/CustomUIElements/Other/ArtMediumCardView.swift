@@ -77,7 +77,9 @@ struct ArtMediumCardView: View {
             Spacer(minLength: Metrics.oneAndHalfModule)
             
             Button {
-                item.toggleFavorite(in: modelContext)
+                withAnimation(Motion.favorite) {
+                    item.toggleFavorite(in: modelContext)
+                }
             } label: {
                 if item.isFavorite {
                     Icons.filledHeart
@@ -85,7 +87,9 @@ struct ArtMediumCardView: View {
                     Icons.heart
                 }
             }
-            .buttonStyle(.plain)
+            .scaleEffect(item.isFavorite ? Motion.Scale.favoriteSelected : Motion.Scale.identity)
+            .animation(Motion.favorite, value: item.isFavorite)
+            .pressScale()
         }
     }
     
@@ -147,7 +151,7 @@ struct ArtMediumCardView: View {
             .background(Color.appContrastBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
-        .buttonStyle(.plain)
+        .pressScale()
     }
     
     // MARK: - Body

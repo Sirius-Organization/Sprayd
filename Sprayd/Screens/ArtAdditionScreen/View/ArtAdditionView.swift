@@ -46,7 +46,7 @@ struct ArtAdditionView: View {
                 Color.black.opacity(0.001)
                     .ignoresSafeArea()
                     .onTapGesture {
-                        withAnimation(.easeOut(duration: 0.2)) {
+                        withAnimation(Motion.quick) {
                             viewModel.dismissImageOptions()
                         }
                     }
@@ -208,7 +208,7 @@ struct ArtAdditionView: View {
     
     private var choosePhotoButton: some View {
         Button {
-            withAnimation(.spring(response: 0.28, dampingFraction: 0.82)) {
+            withAnimation(Motion.press) {
                 viewModel.toggleImageOptions()
             }
         } label: {
@@ -225,6 +225,7 @@ struct ArtAdditionView: View {
             .background(Color.accentRed)
             .clipShape(RoundedRectangle(cornerRadius: Const.photoItemCornerRadius))
         }
+        .pressScale()
     }
     
     var authorSection: some View {
@@ -324,7 +325,9 @@ struct ArtAdditionView: View {
             .clipShape(RoundedRectangle(cornerRadius: Const.createButtonCornerRadius))
         }
         .disabled(!viewModel.canCreate)
+        .pressScale()
         .padding(.horizontal, Metrics.quadrupleModule)
+        .animation(Motion.quick, value: viewModel.canCreate)
     }
     
     // MARK: - Utility
@@ -334,6 +337,7 @@ struct ArtAdditionView: View {
             .scaledToFill()
             .frame(width: Const.photoItemWidth, height: Const.photoItemHeight)
             .clipShape(RoundedRectangle(cornerRadius: Const.photoItemCornerRadius))
+            .transition(.scale(scale: Motion.Scale.subtlePressed).combined(with: .opacity))
     }
     
     private static func formatCoordinate(_ coordinate: CLLocationCoordinate2D) -> String {

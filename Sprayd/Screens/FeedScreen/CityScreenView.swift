@@ -18,6 +18,7 @@ struct CityScreenView: View {
     private let city: String
     @Environment(\.modelContext) private var modelContext
     @State private var selectedItem: ArtItem?
+    @State private var hasAppeared = false
 
     @Query(
         sort: [
@@ -52,14 +53,19 @@ struct CityScreenView: View {
 
                     if cityItems.isEmpty {
                         emptyState
+                            .entrance(isVisible: hasAppeared, delay: Motion.Delay.section * 2)
                     } else {
                         LazyVStack(spacing: Metrics.doubleModule) {
-                            ForEach(cityItems) { item in
+                            ForEach(Array(cityItems.enumerated()), id: \.element.id) { index, item in
                                 cityItemCard(item: item)
                                     .contentShape(Rectangle())
                                     .onTapGesture {
                                         selectedItem = item
                                     }
+                                    .entrance(
+                                        isVisible: hasAppeared,
+                                        delay: Motion.Delay.section * Double(index + 2)
+                                    )
                             }
                         }
                     }
@@ -72,6 +78,9 @@ struct CityScreenView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(item: $selectedItem) { item in
             ArtObjectView(item: item)
+        }
+        .onAppear {
+            hasAppeared = true
         }
     }
 
@@ -92,6 +101,7 @@ struct CityScreenView: View {
                 .fill(Color.appSurface)
                 .stroke(Color.appPrimaryText.opacity(0.16), lineWidth: 1)
         )
+        .entrance(isVisible: hasAppeared, delay: Motion.Delay.section)
     }
 
     private func cityItemCard(item: ArtItem) -> some View {
@@ -142,6 +152,7 @@ struct CityScreenView: View {
                             .resizable()
                             .scaledToFill()
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .transition(.opacity)
                     } else {
                         placeholderArtworkImage
                     }
@@ -191,7 +202,9 @@ struct CityScreenView: View {
         @Bindable var item = item
 
         return Button {
-            item.toggleFavorite(in: modelContext)
+            withAnimation(Motion.favorite) {
+                item.toggleFavorite(in: modelContext)
+            }
         } label: {
             if item.isFavorite {
                 Icons.filledHeart
@@ -199,7 +212,9 @@ struct CityScreenView: View {
                 Icons.heart
             }
         }
-        .buttonStyle(.plain)
+        .scaleEffect(item.isFavorite ? Motion.Scale.favoriteSelected : Motion.Scale.identity)
+        .animation(Motion.favorite, value: item.isFavorite)
+        .pressScale()
     }
 
     private var emptyState: some View {

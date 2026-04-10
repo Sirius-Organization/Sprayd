@@ -123,7 +123,7 @@ final class MyProfileViewModel: ObservableObject {
 
             await authorizationService.logoutCurrentSession()
 
-            withAnimation(.easeInOut(duration: 0.35)) {
+            withAnimation(Motion.standard) {
                 self.isLoggedIn = false
                 self.hasCompletedOnboarding = false
             }

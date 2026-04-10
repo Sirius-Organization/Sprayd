@@ -41,6 +41,7 @@ struct FeaturedView: View {
     @State var isSearching = false
     @State var isSearchFocused = false
     @State var searchErrorMessage: String?
+    @State var hasAppeared = false
     @Query(
         sort: [
             SortDescriptor(\ArtItem.createdAt, order: .reverse),
@@ -108,8 +109,9 @@ struct FeaturedView: View {
                 .ignoresSafeArea()
 
             if isSearchModeActive {
-                Color.black.opacity(0.18)
+                Color.black.opacity(Motion.Opacity.searchDim)
                     .ignoresSafeArea()
+                    .transition(.opacity)
             }
 
             ScrollView(showsIndicators: false) {
@@ -118,8 +120,10 @@ struct FeaturedView: View {
 
                     if isSearchModeActive {
                         searchResultsSection
+                            .transition(.move(edge: .top).combined(with: .opacity))
                     } else {
                         feedSections
+                            .transition(.opacity.combined(with: .move(edge: .bottom)))
                     }
 
                     Color.clear
@@ -135,6 +139,10 @@ struct FeaturedView: View {
             .task(id: trimmedSearchQuery) {
                 await performSearch(for: trimmedSearchQuery)
             }
+        }
+        .animation(Motion.standard, value: isSearchModeActive)
+        .onAppear {
+            hasAppeared = true
         }
     }
 
@@ -188,6 +196,7 @@ struct FeaturedView: View {
                 .stroke(Color.appPrimaryText.opacity(0.22), lineWidth: 1)
         )
         .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
     }
 
     func discoverSmallCard(item: ArtItem) -> some View {
@@ -223,6 +232,7 @@ struct FeaturedView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
     }
 
     func artworkImage(for item: ArtItem, height: CGFloat) -> some View {
@@ -251,13 +261,14 @@ struct FeaturedView: View {
             RoundedRectangle(cornerRadius: Layout.artworkCornerRadius, style: .continuous)
                 .fill(Color.appMutedFill)
 
-            if let imageURL = item.primaryImageURL {
+                    if let imageURL = item.primaryImageURL {
                 AsyncImage(url: imageURL) { phase in
                     if let image = phase.image {
                         image
                             .resizable()
                             .scaledToFill()
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .transition(.opacity)
                     } else {
                         placeholderArtworkImage
                     }

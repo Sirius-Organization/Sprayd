@@ -31,7 +31,7 @@ struct ContentView: View {
                     authorizationService: compositionRoot.authorizationService,
                     tokenStore: compositionRoot.sessionTokenStore
                 ) {
-                    withAnimation(.easeInOut(duration: 0.35)) {
+                    withAnimation(Motion.standard) {
                         hasCompletedOnboarding = true
                     }
                 }
@@ -41,7 +41,7 @@ struct ContentView: View {
                 ))
             }
         }
-        .animation(.easeInOut(duration: 0.35), value: hasCompletedOnboarding)
+        .animation(Motion.standard, value: hasCompletedOnboarding)
         .imageLoaderService(compositionRoot.imageLoaderService)
         .task {
             compositionRoot.locationProvider.requestAuthorize()

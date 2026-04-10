@@ -30,6 +30,7 @@ struct MyProfileView: View {
     @ObservedObject var viewModel: MyProfileViewModel
     let onAddArt: () -> Void
     @FocusState private var focusedField: Field?
+    @State private var hasAppeared = false
     
     // MARK: - Lifecycle
     init(
@@ -50,7 +51,7 @@ struct MyProfileView: View {
                 Color.black.opacity(0.001)
                     .ignoresSafeArea()
                     .onTapGesture {
-                        withAnimation(.easeOut(duration: 0.2)) {
+                        withAnimation(Motion.quick) {
                             viewModel.dismissProfileImageOptions()
                         }
                     }
@@ -59,14 +60,20 @@ struct MyProfileView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: Metrics.doubleModule) {
                     bioView
+                        .entrance(isVisible: hasAppeared, delay: Motion.Delay.section)
                     pickerView
+                        .entrance(isVisible: hasAppeared, delay: Motion.Delay.section * 2)
                     sectionTitle
+                        .entrance(isVisible: hasAppeared, delay: Motion.Delay.section * 3)
                     
                     if viewModel.shouldDisplayAddButton {
                         addButtonView
+                            .transition(.scale(scale: Motion.Scale.subtlePressed).combined(with: .opacity))
                     }
                     
                     itemsView
+                        .id(viewModel.selectedOption)
+                        .transition(.opacity.combined(with: .move(edge: .bottom)))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -113,7 +120,10 @@ struct MyProfileView: View {
         }
         .task {
             viewModel.onAppear()
+            hasAppeared = true
         }
+        .animation(Motion.standard, value: viewModel.selectedOption)
+        .animation(Motion.quick, value: viewModel.shouldDisplayAddButton)
     }
 
     // MARK: - Subviews
@@ -134,7 +144,7 @@ struct MyProfileView: View {
                     .clipShape(Circle())
                     
                     Button {
-                        withAnimation(.spring(response: 0.28, dampingFraction: 0.82)) {
+                        withAnimation(Motion.press) {
                             viewModel.presentProfileImageOptions()
                         }
                     } label: {
@@ -144,7 +154,7 @@ struct MyProfileView: View {
                             .background(Color.appContrastBackground)
                             .clipShape(Circle())
                     }
-                    .buttonStyle(.plain)
+                    .pressScale()
                     .offset(x: -Metrics.halfModule, y: -Metrics.halfModule)
                 }
                 
@@ -409,7 +419,9 @@ private struct ProfileArtItemCardView: View {
                     Spacer(minLength: Metrics.module)
 
                     Button {
-                        item.toggleFavorite(in: modelContext)
+                        withAnimation(Motion.favorite) {
+                            item.toggleFavorite(in: modelContext)
+                        }
                     } label: {
                         if item.isFavorite {
                             Icons.filledHeart
@@ -417,7 +429,9 @@ private struct ProfileArtItemCardView: View {
                             Icons.heart
                         }
                     }
-                    .buttonStyle(.plain)
+                    .scaleEffect(item.isFavorite ? Motion.Scale.favoriteSelected : Motion.Scale.identity)
+                    .animation(Motion.favorite, value: item.isFavorite)
+                    .pressScale()
                 }
 
                 HStack(alignment: .center, spacing: Metrics.halfModule) {
@@ -451,6 +465,7 @@ private struct ProfileArtItemCardView: View {
                 .fill(Color.appSurface)
                 .stroke(Color.appPrimaryText.opacity(0.18), lineWidth: 1)
         )
+        .entrance(isVisible: true, delay: Motion.Delay.section)
     }
 
     private var artworkImage: some View {
@@ -464,6 +479,7 @@ private struct ProfileArtItemCardView: View {
                     image
                         .resizable()
                         .scaledToFill()
+                        .transition(.opacity)
                 case .empty, .failure:
                     Icons.photo
                         .font(.system(size: 32, weight: .regular))

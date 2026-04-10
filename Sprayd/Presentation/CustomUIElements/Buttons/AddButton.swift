@@ -33,8 +33,9 @@ struct AddButton: View {
                 .background(Color.accentRed)
                 .clipShape(Circle())
                 .shadow(radius: Const.shadowRadius)
+                .scaleEffect(Motion.Scale.floatingLifted)
         }
-        .buttonStyle(.plain)
+        .pressScale()
     
     }
 }

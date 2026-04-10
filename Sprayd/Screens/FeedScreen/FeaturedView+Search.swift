@@ -27,6 +27,7 @@ extension FeaturedView {
                         onSelectItem(featuredItem)
                     }
             }
+            .entrance(isVisible: hasAppeared, delay: Motion.Delay.section)
         }
 
         if !cityPreviews.isEmpty {
@@ -49,6 +50,7 @@ extension FeaturedView {
                     .padding(.trailing, Metrics.module)
                 }
             }
+            .entrance(isVisible: hasAppeared, delay: Motion.Delay.section * 2)
         }
 
         if !discoverItems.isEmpty {
@@ -74,10 +76,12 @@ extension FeaturedView {
                     }
                 }
             }
+            .entrance(isVisible: hasAppeared, delay: Motion.Delay.section * 3)
         }
 
         if items.isEmpty {
             emptyState
+                .entrance(isVisible: hasAppeared, delay: Motion.Delay.section)
         }
     }
 
@@ -122,6 +126,7 @@ extension FeaturedView {
                 }
             }
         }
+        .entrance(isVisible: true, delay: Motion.Delay.section)
     }
 
     var searchIdleState: some View {
@@ -167,7 +172,7 @@ extension FeaturedView {
         defer { isSearching = false }
 
         do {
-            try await Task.sleep(nanoseconds: 300_000_000)
+            try await Task.sleep(nanoseconds: Motion.Duration.searchDebounce)
         } catch {
             return
         }

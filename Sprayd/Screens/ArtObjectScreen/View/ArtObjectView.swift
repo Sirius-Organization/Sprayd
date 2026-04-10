@@ -14,6 +14,7 @@ struct ArtObjectView: View {
     @State private var viewModel: ArtObjectViewModel
     @State private var showContributeSourceDialog = false
     @State private var contributePickerSource: ContributePickerSource?
+    @State private var hasAppeared = false
     private let onAuthorTap: (String) -> Void
     private let onPostedByTap: (String) -> Void
 
@@ -49,12 +50,14 @@ struct ArtObjectView: View {
                             onPostedByTap(username)
                         }
                     )
+                    .entrance(isVisible: hasAppeared, delay: Motion.Delay.section)
 
                     VStack(spacing: Metrics.oneAndHalfModule) {
                         markVisitedButton
                         contributeButton
                     }
                     .padding(.horizontal, Metrics.tenTimesModule)
+                    .entrance(isVisible: hasAppeared, delay: Motion.Delay.section * 2)
                 }
                 .padding(.top, Metrics.twoAndHalfModule)
                 .padding(.bottom, Metrics.doubleModule)
@@ -88,6 +91,9 @@ struct ArtObjectView: View {
             await loadArtItemDetails()
         }
         .toolbar(.hidden, for: .tabBar)
+        .onAppear {
+            hasAppeared = true
+        }
     }
 
     private func normalized(_ value: String) -> String {
@@ -109,7 +115,9 @@ struct ArtObjectView: View {
 
     private var markVisitedButton: some View {
         Button {
-            viewModel.toggleVisited(in: modelContext)
+            withAnimation(Motion.quick) {
+                viewModel.toggleVisited(in: modelContext)
+            }
         } label: {
             HStack {
                 Text(viewModel.isVisited ? "Marked visited" : "Mark visited")
@@ -134,8 +142,8 @@ struct ArtObjectView: View {
                     .stroke(Color.appPrimaryText, lineWidth: viewModel.isVisited ? 0 : 1.5)
             )
         }
-        .buttonStyle(.plain)
-        .animation(.easeInOut(duration: 0.2), value: viewModel.isVisited)
+        .pressScale()
+        .animation(Motion.quick, value: viewModel.isVisited)
     }
 
     private var contributeButton: some View {
@@ -155,7 +163,7 @@ struct ArtObjectView: View {
             .background(Color.appContrastBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
-        .buttonStyle(.plain)
+        .pressScale()
     }
 }
 

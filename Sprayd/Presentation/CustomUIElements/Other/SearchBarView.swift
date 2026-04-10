@@ -12,6 +12,7 @@ struct SearchBarView: View {
         static let iconSize: CGFloat = 14
         static let borderLineWidth: CGFloat = 1
         static let borderOpacity: CGFloat = 0.3
+        static let focusedBorderOpacity: CGFloat = 0.6
     }
 
     private let placeholder: String
@@ -99,8 +100,13 @@ struct SearchBarView: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: Const.cornerRadius, style: .continuous)
-                .stroke(Color.appPrimaryText.opacity(Const.borderOpacity), lineWidth: Const.borderLineWidth)
+                .stroke(
+                    Color.appPrimaryText.opacity(isFocused ? Const.focusedBorderOpacity : Const.borderOpacity),
+                    lineWidth: Const.borderLineWidth
+                )
         )
+        .scaleEffect(isFocused ? Motion.Scale.floatingLifted : Motion.Scale.identity)
+        .animation(Motion.quick, value: isFocused)
         .onChange(of: isFocused) { _, newValue in
             onFocusChange?(newValue)
         }

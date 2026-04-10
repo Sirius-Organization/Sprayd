@@ -18,6 +18,7 @@ struct StartingView: View {
 
     // MARK: - Fields
     let onGetStartedTapped: () -> Void
+    @State private var isContentVisible = false
 
     // MARK: - Body
     var body: some View {
@@ -34,6 +35,9 @@ struct StartingView: View {
             }
             .padding(.horizontal, Metrics.tripleModule)
         }
+        .onAppear {
+            isContentVisible = true
+        }
     }
 
     // MARK: - Subviews
@@ -42,11 +46,21 @@ struct StartingView: View {
             Text("Sprayd")
                 .font(.ClimateCrisis52)
                 .foregroundStyle(Color.appPrimaryText)
+                .entrance(
+                    isVisible: isContentVisible,
+                    delay: Motion.Delay.title,
+                    yOffset: Motion.Offset.titleEntranceY
+                )
 
             Text("Discover new street art and\npost your own!")
                 .font(.InstrumentMedium16)
                 .foregroundStyle(Color.appPrimaryText)
                 .multilineTextAlignment(.center)
+                .entrance(
+                    isVisible: isContentVisible,
+                    delay: Motion.Delay.subtitle,
+                    yOffset: Motion.Offset.entranceY
+                )
         }
         .padding(.top, Const.titleTopInset)
     }
@@ -61,7 +75,13 @@ struct StartingView: View {
                 .background(Color.appContrastBackground)
                 .clipShape(RoundedRectangle(cornerRadius: Const.buttonCornerRadius))
         }
+        .pressScale()
         .padding(.horizontal, Metrics.tripleModule)
+        .entrance(
+            isVisible: isContentVisible,
+            delay: Motion.Delay.button,
+            yOffset: Motion.Offset.buttonEntranceY
+        )
     }
 }
 

@@ -14,10 +14,6 @@ enum OnboardingStep {
 }
 
 final class OnboardingCoordinator: ObservableObject {
-    private enum Const {
-        static let animationDuration: CGFloat = 0.45
-    }
-
     // MARK: - Fields
     @Published var step: OnboardingStep = .welcome
     @Published var path: [OnboardingRoute] = []
@@ -39,7 +35,7 @@ final class OnboardingCoordinator: ObservableObject {
 
     // MARK: - Navigation logic
     func openChooseAccount() {
-        withAnimation(.easeInOut(duration: Const.animationDuration)) {
+        withAnimation(Motion.extended) {
             step = .chooseAccount
         }
     }
@@ -62,7 +58,7 @@ final class OnboardingCoordinator: ObservableObject {
     }
 
     func finishOnboarding() {
-        withAnimation(.easeInOut(duration: Const.animationDuration)) {
+        withAnimation(Motion.extended) {
             onFinished()
         }
     }

@@ -102,7 +102,9 @@ extension FeaturedView {
         @Bindable var item = item
 
         return Button {
-            item.toggleFavorite(in: modelContext)
+            withAnimation(Motion.favorite) {
+                item.toggleFavorite(in: modelContext)
+            }
         } label: {
             if item.isFavorite {
                 Icons.filledHeart
@@ -110,7 +112,9 @@ extension FeaturedView {
                 Icons.heart
             }
         }
-        .buttonStyle(.plain)
+        .scaleEffect(item.isFavorite ? Motion.Scale.favoriteSelected : Motion.Scale.identity)
+        .animation(Motion.favorite, value: item.isFavorite)
+        .pressScale()
     }
 
     var emptyState: some View {
