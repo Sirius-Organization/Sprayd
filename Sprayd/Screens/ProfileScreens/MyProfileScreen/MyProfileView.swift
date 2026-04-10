@@ -282,7 +282,7 @@ struct MyProfileView: View {
             case .posted:
                 profileItemsList(viewModel.posts)
             case .visited:
-                profileItemsList(viewModel.visited)
+                VisitedItemsListView()
             case .favourites:
                 FavouriteItemsListView()
             }
@@ -345,6 +345,38 @@ private struct FavouriteItemsListView: View {
         } else {
             LazyVStack(spacing: Metrics.doubleModule) {
                 ForEach(favouriteItems) { item in
+                    ProfileArtItemCardView(item: item)
+                }
+            }
+            .padding(.horizontal, Metrics.tripleModule)
+        }
+    }
+}
+
+private struct VisitedItemsListView: View {
+    @Query private var visitedItems: [ArtItem]
+
+    init() {
+        _visitedItems = Query(
+            filter: #Predicate<ArtItem> { $0.isVisited == true },
+            sort: [
+                SortDescriptor(\ArtItem.createdAt, order: .reverse),
+                SortDescriptor(\ArtItem.name)
+            ]
+        )
+    }
+
+    var body: some View {
+        if visitedItems.isEmpty {
+            Text("No visited items yet")
+                .font(.InstrumentMedium13)
+                .foregroundStyle(Color.secondaryColor)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top, Metrics.module)
+                .padding(.horizontal, Metrics.tripleModule)
+        } else {
+            LazyVStack(spacing: Metrics.doubleModule) {
+                ForEach(visitedItems) { item in
                     ProfileArtItemCardView(item: item)
                 }
             }

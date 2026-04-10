@@ -154,6 +154,23 @@ extension FeaturedView {
         }
     }
 
+    func personLine(value: String, size: CGFloat, font: Font) -> some View {
+        HStack(spacing: Metrics.module) {
+            Circle()
+                .fill(Color.appMutedFill)
+                .frame(width: size, height: size)
+                .overlay {
+                    Icons.person
+                        .font(.system(size: max(7, size / 3)))
+                }
+
+            Text(value)
+                .font(font)
+                .foregroundStyle(Color.appPrimaryText.opacity(0.8))
+                .lineLimit(1)
+        }
+    }
+
     func personText(label: String, value: String, font: Font) -> some View {
         Text("\(label): \(value)")
             .font(font)

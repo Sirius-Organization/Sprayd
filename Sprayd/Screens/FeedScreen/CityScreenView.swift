@@ -106,7 +106,7 @@ struct CityScreenView: View {
                         .lineLimit(2)
 
                     locationLine(text: cleanedText(item.location) ?? city)
-                    personLine(label: "Creator", value: item.author)
+                    personLine(value: item.author)
 
                     if let uploadedBy = uploadedByText(for: item) {
                         detailText("Uploaded by: \(uploadedBy)")
@@ -166,7 +166,7 @@ struct CityScreenView: View {
         }
     }
 
-    private func personLine(label: String, value: String) -> some View {
+    private func personLine(value: String) -> some View {
         HStack(spacing: Metrics.module) {
             Circle()
                 .fill(Color.appMutedFill)
@@ -176,7 +176,7 @@ struct CityScreenView: View {
                         .font(.system(size: 8, weight: .medium))
                 }
 
-            detailText("\(label): \(value)")
+            detailText(value)
         }
     }
 

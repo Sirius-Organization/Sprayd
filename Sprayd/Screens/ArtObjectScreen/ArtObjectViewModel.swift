@@ -65,6 +65,7 @@ final class ArtObjectViewModel {
 
         self.item = item
         isFavorite = item.isFavorite
+        isVisited = item.isVisited
     }
 
     // MARK: - Actions
@@ -83,8 +84,18 @@ final class ArtObjectViewModel {
         }
     }
 
-    func toggleVisited() {
-        isVisited.toggle()
+    func toggleVisited(in modelContext: ModelContext) {
+        let updatedValue = !isVisited
+        isVisited = updatedValue
+        item?.isVisited = updatedValue
+
+        do {
+            try modelContext.save()
+        } catch {
+            isVisited.toggle()
+            item?.isVisited = isVisited
+            print("Visited save error:", error)
+        }
     }
 
     func openPhotoPreview(at index: Int) {
@@ -107,6 +118,7 @@ final class ArtObjectViewModel {
         postedBy = Self.postedByText(from: item)
         dateText = Self.dateText(from: item)
         isFavorite = item.isFavorite
+        isVisited = item.isVisited
 
         if let currentPhoto, let preservedIndex = photoImageNames.firstIndex(of: currentPhoto) {
             selectedPhotoIndex = preservedIndex

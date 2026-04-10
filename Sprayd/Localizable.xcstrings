@@ -429,6 +429,9 @@
     "No objects yet" : {
 
     },
+    "No visited items yet" : {
+
+    },
     "Nothing here yet" : {
       "extractionState" : "stale",
       "localizations" : {
