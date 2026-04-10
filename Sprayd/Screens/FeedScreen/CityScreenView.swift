@@ -145,20 +145,17 @@ struct CityScreenView: View {
             RoundedRectangle(cornerRadius: Layout.imageCornerRadius, style: .continuous)
                 .fill(Color.appMutedFill)
 
-            if let imageURL = item.primaryImageURL {
-                AsyncImage(url: imageURL) { phase in
-                    if let image = phase.image {
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .transition(.opacity)
-                    } else {
-                        placeholderArtworkImage
-                    }
+            CachedAsyncImage(url: item.primaryImageURL) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .transition(.opacity)
+                case .empty, .failure:
+                    placeholderArtworkImage
                 }
-            } else {
-                placeholderArtworkImage
             }
         }
         .frame(maxWidth: .infinity)
